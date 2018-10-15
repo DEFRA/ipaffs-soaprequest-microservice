@@ -1,0 +1,33 @@
+#https://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
+server:
+  port: 4000
+management:
+  endpoint:
+    health:
+      show-details: "ALWAYS"
+  endpoints:
+    web:
+      exposure:
+        include: health, info
+      base-path: /admin
+      path-mapping: 
+        health: health-check
+info:
+    app:
+        name: soapRequest microservice
+        version: 0.1-SNAPSHOT
+spring:
+  security:
+      user:
+        name: ${SERVICE_USER}
+        password: ${SERVICE_PASSWORD}
+  datasource:
+      driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+      url: jdbc:sqlserver://${DB_HOST}:${DB_PORT};databaseName=${DB_NAME};user=${DB_USER};password=${DB_PASSWORD}
+      dialect: com.microsoft.sqlserver.jdbc.SQLServerDriver
+      continueOnError: true
+      initialize: false
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.SQLServer2008Dialect
