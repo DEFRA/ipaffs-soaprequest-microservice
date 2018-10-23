@@ -90,6 +90,6 @@ public class TestBasicEndpoints {
     .when()
       .patch(baseUrl + patchId)
       .then()
-    .statusCode(200);
+    .statusCode(501);
   }
 }
