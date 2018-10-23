@@ -79,10 +79,15 @@ pipeline {
        }
 
        stage('Integration Tests') {
-           steps {
-             runServiceIntegrationTests("${SERVICE_NAME}", "${ENVIRONMENT}", "${BRANCH_NAME}", resourceGroupName)
-           }
-       }
+            steps {
+              runServiceIntegrationTests("${SERVICE_NAME}", "${ENVIRONMENT}", "${BRANCH_NAME}", resourceGroupName)
+            }
+            post {
+              always {
+                junit '**/integration/target/surefire-reports/*.xml'
+              }
+            }
+        }
 
        stage('Selenium Tests') {
            steps {

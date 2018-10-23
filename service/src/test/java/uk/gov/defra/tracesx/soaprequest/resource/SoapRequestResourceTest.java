@@ -67,7 +67,7 @@ public class SoapRequestResourceTest {
     
     //Then
     assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
-    assertEquals("/soapRequest/" + id.toString() ,responseEntity.getHeaders().getLocation().toString());
+    assertEquals("/soaprequest/" + id.toString() ,responseEntity.getHeaders().getLocation().toString());
   }
 
   @Test

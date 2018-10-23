@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import uk.gov.defra.tracesx.soaprequest.service.SoapRequestService;
 
 @RestController
-@RequestMapping("/soapRequest")
+@RequestMapping("/soaprequest")
 public class SoapRequestResource {
   private static final String CONTENT_TYPE_MERGE_PATCH = "application/merge-patch+json";
   private static final String CONTENT_TYPE_COMMAND_PATCH = "application/json-patch+json";
@@ -43,7 +43,7 @@ public class SoapRequestResource {
   public ResponseEntity insert(@RequestBody JsonNode entity) throws URISyntaxException {
     UUID id = soapRequestService.create(entity);
     LOGGER.info("POST id: {}", id);
-    URI createdLocation = new URI("/soapRequest/" + id.toString());
+    URI createdLocation = new URI("/soaprequest/" + id.toString());
     return ResponseEntity.created(createdLocation).build();
   }
 

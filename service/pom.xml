@@ -62,12 +62,6 @@
       <version>${mssql.jdbc.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.jdbi</groupId>
-      <artifactId>jdbi</artifactId>
-      <version>${springboot.jdbi.version}</version>
-    </dependency>
-
-    <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
       <version>${junit.jupiter.version}</version>
@@ -135,7 +129,6 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <applicationinsights.version>2.0.0</applicationinsights.version>
     <springboot.version>2.0.5.RELEASE</springboot.version>
-    <springboot.jdbi.version>2.78</springboot.jdbi.version>
     <neovisionaries.version>1.22</neovisionaries.version>
     <notification.service.api.version>0.1-SNAPSHOT</notification.service.api.version>
     <jackson.datatype.jsr310>2.9.4</jackson.datatype.jsr310>
@@ -152,7 +145,7 @@
     </resources>
     <!-- Keep filename static to avoid updating the Dockerfile -->
     <finalName>TracesX_SoapRequest</finalName>
-    <plugins> 
+    <plugins>
      <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
