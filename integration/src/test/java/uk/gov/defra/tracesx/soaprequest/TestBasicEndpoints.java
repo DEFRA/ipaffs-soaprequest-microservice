@@ -71,7 +71,7 @@ public class TestBasicEndpoints {
   }
 
   @Test()
-  public void canPatchDocument() {
+  public void patchShouldReturn501() {
 
     String patchId = given()
       .body("{\"soapRequest\": \"test\"}")
@@ -90,6 +90,6 @@ public class TestBasicEndpoints {
     .when()
       .patch(baseUrl + patchId)
       .then()
-    .statusCode(200);
+    .statusCode(501);
   }
 }

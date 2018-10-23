@@ -9,6 +9,7 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -67,13 +68,7 @@ public class SoapRequestResource {
       @RequestHeader(value = "Content-Type") String contentType,
       @RequestBody JsonNode patch)
       throws JsonPatchException, IOException {
-
-    boolean mergePatch = false;
-    if (contentType.equals(CONTENT_TYPE_MERGE_PATCH)) mergePatch = true;
-
-    soapRequestService.update(id, patch, mergePatch);
-    LOGGER.info("PATCH id: {}", id);
-    return ResponseEntity.ok().build();
+    return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
   }
 
   @DeleteMapping(value = "/{id}")

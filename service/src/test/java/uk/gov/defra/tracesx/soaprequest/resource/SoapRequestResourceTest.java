@@ -26,7 +26,6 @@ import uk.gov.defra.tracesx.soaprequest.service.SoapRequestService;
 public class SoapRequestResourceTest {
 
   private static final String EXAMPLE_PARSER = "{\"k1\":\"v1\"}";
-  private static final String MERGE_PATCH_TYPE = "application/merge-patch+json";
   private static final String COMMAND_PATCH_TYPE = "application/json-patch+json";
 
   private JsonNode node;
@@ -85,48 +84,9 @@ public class SoapRequestResourceTest {
     assertEquals(HttpStatus.OK, entity.getStatusCode());
     assertEquals(EXAMPLE_PARSER, entity.getBody().toString());
   }
-
-  @Test
-  public void patchCallsEntityServiceWithMergePatchType() throws IOException, JsonPatchException {
-    //Given
-    SoapRequestResource resource = new SoapRequestResource(soapRequestService);
-    UUID id = UUID.randomUUID();
-    
-    //When
-    resource.patch(id, MERGE_PATCH_TYPE, node);
-    
-    //Then
-    verify(soapRequestService, times(1)).update(id, node, true);
-  }
-
-  @Test
-  public void patchCallsEntityServiceWithCommandPatchType() throws IOException, JsonPatchException {
-    //Given
-    SoapRequestResource resource = new SoapRequestResource(soapRequestService);
-    UUID id = UUID.randomUUID();
-    
-    //When
-    resource.patch(id, COMMAND_PATCH_TYPE, node);
-    
-    //Then
-    verify(soapRequestService, times(1)).update(id, node, false);
-  }
   
   @Test
-  public void patchCallsEntityServiceWithIdAndPatch() throws JsonPatchException, IOException {
-    //Given
-    SoapRequestResource resource = new SoapRequestResource(soapRequestService);
-    UUID id = UUID.randomUUID();
-    
-    //When
-    resource.patch(id, COMMAND_PATCH_TYPE, node);
-    
-    //Then
-    verify(soapRequestService, times(1)).update(id, node, false);
-  }
-  
-  @Test
-  public void patchReturnsOkayStatus() throws IOException, JsonPatchException {
+  public void patchReturnsNotImplementedStatus() throws IOException, JsonPatchException {
     //Given
     SoapRequestResource resource = new SoapRequestResource(soapRequestService);
     UUID id = UUID.randomUUID();
@@ -135,7 +95,7 @@ public class SoapRequestResourceTest {
     ResponseEntity responseEntity = resource.patch(id, COMMAND_PATCH_TYPE, node);
     
     //Then
-    assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+    assertEquals(HttpStatus.NOT_IMPLEMENTED, responseEntity.getStatusCode());
   }
 
   @Test
