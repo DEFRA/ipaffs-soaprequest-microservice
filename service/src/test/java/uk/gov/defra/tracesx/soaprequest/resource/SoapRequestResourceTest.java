@@ -1,8 +1,10 @@
-
 package uk.gov.defra.tracesx.soaprequest.resource;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -21,18 +23,21 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import uk.gov.defra.tracesx.soaprequest.dto.SoapRequestDTO;
+import uk.gov.defra.tracesx.soaprequest.exceptions.BadRequestBodyException;
 import uk.gov.defra.tracesx.soaprequest.service.SoapRequestService;
 
 public class SoapRequestResourceTest {
 
+  public static final String QUERY = "test";
+  public static final String TEST_USER = "testUser";
   private static final String EXAMPLE_PARSER = "{\"k1\":\"v1\"}";
   private static final String COMMAND_PATCH_TYPE = "application/json-patch+json";
-
+  @Mock SoapRequestService soapRequestService;
   private JsonNode node;
+  private SoapRequestDTO requestBody;
+  private UUID id;
 
-  @Mock
-  SoapRequestService soapRequestService;
-  
   @Before
   public void setUp() throws IOException {
     initMocks(this);
@@ -40,87 +45,136 @@ public class SoapRequestResourceTest {
     JsonFactory factory = mapper.getFactory();
     JsonParser jsonParser = factory.createParser(EXAMPLE_PARSER);
     node = mapper.readTree(jsonParser);
+    requestBody = createSoapRequestDTO();
+    id = UUID.randomUUID();
+  }
+
+  private SoapRequestDTO createSoapRequestDTO() {
+    SoapRequestDTO requestBody = new SoapRequestDTO();
+    requestBody.setQuery(QUERY);
+    requestBody.setUsername(TEST_USER);
+    requestBody.setRequestId(System.currentTimeMillis());
+    return requestBody;
   }
 
   @Test
   public void insertCallsServiceWithPostedJson() throws URISyntaxException {
-    //Given
+    // Given
     SoapRequestResource resource = new SoapRequestResource(soapRequestService);
-    when(soapRequestService.create(any())).thenReturn(UUID.randomUUID());
-    
-    //When
-    resource.insert(node);
-    
-    //Then
-    verify(soapRequestService, times(1)).create(node);
+    when(soapRequestService.create(any())).thenReturn(id);
+    // When
+    resource.insert(requestBody);
+
+    // Then
+    verify(soapRequestService, times(1)).create(requestBody);
   }
 
   @Test
   public void insertReturnsCreatedLocation() throws URISyntaxException {
-    //Given
+    // Given
     SoapRequestResource resource = new SoapRequestResource(soapRequestService);
-    UUID id = UUID.randomUUID();
+
     when(soapRequestService.create(any())).thenReturn(id);
-    
-    //When
-    ResponseEntity responseEntity = resource.insert(null);
-    
-    //Then
+
+    // When
+    ResponseEntity responseEntity = resource.insert(new SoapRequestDTO(id, 123L, "user", "query"));
+
+    // Then
     assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
-    assertEquals("/soaprequest/" + id.toString() ,responseEntity.getHeaders().getLocation().toString());
+    assertEquals("/soaprequest/" + id, responseEntity.getHeaders().getLocation().toString());
+  }
+
+  @Test(expected = BadRequestBodyException.class)
+  public void insertThrowsBadRequestOnQueryMissing() throws URISyntaxException {
+    // Given
+    SoapRequestResource resource = new SoapRequestResource(soapRequestService);
+    SoapRequestDTO requestDTO = new SoapRequestDTO();
+    requestDTO.setUsername(TEST_USER);
+
+    // When
+    ResponseEntity responseEntity = resource.insert(requestDTO);
+
+    // Then
+    fail("Expecting a BadRequestBodyException to be thrown");
+  }
+
+  @Test(expected = BadRequestBodyException.class)
+  public void insertThrowsBadRequestOnUsernameMissing() throws URISyntaxException {
+    // Given
+    SoapRequestResource resource = new SoapRequestResource(soapRequestService);
+    SoapRequestDTO requestDTO = new SoapRequestDTO();
+    requestDTO.setQuery(QUERY);
+
+    // When
+    ResponseEntity responseEntity = resource.insert(requestDTO);
+
+    // Then
+    fail("Expecting a BadRequestBodyException to be thrown");
   }
 
   @Test
   public void getReturnsEntityFromService() throws IOException {
-    //Given
+    // Given
     SoapRequestResource resource = new SoapRequestResource(soapRequestService);
-    UUID id = UUID.randomUUID();
-    when(soapRequestService.get(any())).thenReturn(node);
-    
-    //When
+
+    when(soapRequestService.get(any())).thenReturn(requestBody);
+
+    // When
     ResponseEntity entity = resource.get(id);
-    
-    //Then
+
+    // Then
     assertEquals(HttpStatus.OK, entity.getStatusCode());
-    assertEquals(EXAMPLE_PARSER, entity.getBody().toString());
+    assertEquals(requestBody, entity.getBody());
   }
-  
+
   @Test
   public void patchReturnsNotImplementedStatus() throws IOException, JsonPatchException {
-    //Given
+    // Given
     SoapRequestResource resource = new SoapRequestResource(soapRequestService);
-    UUID id = UUID.randomUUID();
-    
-    //When
+
+    // When
     ResponseEntity responseEntity = resource.patch(id, COMMAND_PATCH_TYPE, node);
-    
-    //Then
+
+    // Then
     assertEquals(HttpStatus.NOT_IMPLEMENTED, responseEntity.getStatusCode());
   }
 
   @Test
   public void deleteCallsServiceWithId() {
-    //Given
+    // Given
     SoapRequestResource resource = new SoapRequestResource(soapRequestService);
-    UUID id = UUID.randomUUID();
-    
-    //When
+
+    // When
     resource.delete(id);
-    
-    //Then
+
+    // Then
     verify(soapRequestService, times(1)).deleteData(id);
   }
-  
+
   @Test
   public void deleteReturnsHttpStatusOkay() {
-    //Given
+    // Given
     SoapRequestResource resource = new SoapRequestResource(soapRequestService);
-    UUID id = UUID.randomUUID();
-    
-    //When
+
+    // When
     ResponseEntity entity = resource.delete(id);
-    
-    //Then
+
+    // Then
     assertEquals(HttpStatus.OK, entity.getStatusCode());
+  }
+
+  @Test
+  public void getByUsernameAndRequestIdReturnsEntityFromService() throws IOException {
+    // Given
+    SoapRequestResource resource = new SoapRequestResource(soapRequestService);
+
+    when(soapRequestService.get(anyLong(), anyString())).thenReturn(requestBody);
+
+    // When
+    ResponseEntity entity = resource.get(requestBody.getRequestId(), requestBody.getUsername());
+
+    // Then
+    assertEquals(HttpStatus.OK, entity.getStatusCode());
+    assertEquals(requestBody, entity.getBody());
   }
 }

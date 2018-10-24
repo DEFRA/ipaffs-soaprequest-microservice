@@ -15,13 +15,15 @@ public class SoapRequest {
   @GeneratedValue(strategy = GenerationType.AUTO)
   private UUID id;
 
-  private String document;
+  private Long requestId = System.currentTimeMillis();
+  private String username;
+  private String query;
 
   public SoapRequest() {}
 
-  public SoapRequest(UUID id, String document) {
-    this.id = id;
-    this.document = document;
+  public SoapRequest(String username, String query) {
+    this.username = username;
+    this.query = query;
   }
 
   public UUID getId() {
@@ -32,11 +34,27 @@ public class SoapRequest {
     this.id = id;
   }
 
-  public String getDocument() {
-    return document;
+  public Long getRequestId() {
+    return requestId;
   }
 
-  public void setDocument(String document) {
-    this.document = document;
+  public void setRequestId(long requestId) {
+    this.requestId = requestId;
+  }
+
+  public String getUsername() {
+    return username;
+  }
+
+  public void setUsername(String username) {
+    this.username = username;
+  }
+
+  public String getQuery() {
+    return query;
+  }
+
+  public void setQuery(String query) {
+    this.query = query;
   }
 }
