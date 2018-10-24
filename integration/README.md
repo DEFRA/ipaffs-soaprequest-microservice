@@ -1,20 +1,25 @@
 # Integration
 
+## Introduction
 
 This project is a standalone maven project for running automated integration tests.
 
+## Pre-requisites
 
 - JRE / JDK 8
 - Maven v3
 - [Lombok Plugin](https://plugins.jetbrains.com/plugin/6317-lombok-plugin) (only required for development)
 
+## CI installation
 
 (Cent OS)
 
 - If there is no existing JDK, download and install 
   [Java 8 JDK](http://www.oracle.com/technetwork/java/javase/install-linux-64-rpm-138254.html)
 
+## Running
 
+### VM options
 
 There are multiple VM options that need specifying to run the tests:
 
@@ -31,11 +36,13 @@ There are multiple VM options that need specifying to run the tests:
 - `it.test` (optional) is the test runner that is used. Options: IntegrationTestRunner, WIPTestRunner
 - `skip.integration.tests` should be `false` to run the tests. See notes in the Maven section below.
 
+### Environment Variables
 
 **FIXME**: they seem to be set using VM options
 
 Passwords can be set from environment variables. For example, source `../docker-local/local_vars.sh`
 
+### Run the tests from Intellij
 
 See VM options section (above) for more details on VM options
 
@@ -66,6 +73,7 @@ Example VM Options for IntelliJ
 
 Fill in the passwords from `docker-local/local_vars.sh` or your own configuration for these services.
 
+### Running individual tests
 
 It is common practice to modify the WIPTestRunner for this. Make sure not to push these changes.
 
@@ -85,18 +93,22 @@ or
     @WIP-MYNAME
     Scneario: The best scenario
 
+### Maven
 
 VM options can be passed into maven using `-D<PARAM>=<VALUE>`
 
+#### Profiles
 
 Profiles are configured using the `-P` option e.g. `-P sanity`. The profiles determine which tests
 are run. Please refer to the `pom.xml` to see the currently available profiles and their configurations.
 
+#### Test Runners
 
 The test runners in the `uk.gov.defra.tracesx.integration.runners` similarly control which tests are
 run. You can specify a test runner on the command line using the `it.test` property e.g. 
 `-Dit.test=SanityTestRunner`
 
+#### Parallel test execution
 
 Most of the profiles are setup to run tests in parallel. The number of parallel threads is controlled
 by the `integration.test.parallel.count` property and can be overridden on the command line with
@@ -104,6 +116,7 @@ by the `integration.test.parallel.count` property and can be overridden on the c
 
 If the test runner (`it.test`) is specified at runtime then the tests will *not* run in parallel.
 
+#### Verify the entire project
 
 Running `mvn` from the project root `import-notification` will run the goal(s) on all modules.
 
@@ -117,6 +130,7 @@ during the `mvn install` goal. The integration tests are excluded by default for
 
 will run a build including integration tests (for full regression prior to push)
 
+#### Maven Example
 
 > **Tip**: run `$ source docker-local/local_vars.sh` to export environment variables that work with the
 Docker images. You will need to run this for every terminal in which you want to use these variables.
@@ -140,6 +154,7 @@ just broken at the moment?
 For the soapsearch passwords refer to `docker-local/docker-compose.yml`; these properties are not 
 currently exported as environment variables.
 
+##### Test Reports
 
 > **NOTE**: To generate reports when running from your dev machine you also need to set the maven profile
 

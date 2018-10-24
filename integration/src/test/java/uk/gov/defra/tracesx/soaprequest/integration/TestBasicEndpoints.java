@@ -1,4 +1,4 @@
-package uk.gov.defra.tracesx.soaprequest;
+package uk.gov.defra.tracesx.soaprequest.integration;
 
 import static io.restassured.RestAssured.given;
 import io.restassured.http.ContentType;
@@ -23,7 +23,7 @@ public class TestBasicEndpoints {
     password = System.getProperty("basicAuthPassword");
 
     baseUrl = System.getProperty("baseUrl");
-    resourceUrl = UriComponentsBuilder.newInstance().fromHttpUrl(baseUrl).path("soapRequest").build().toString();
+    resourceUrl = UriComponentsBuilder.newInstance().fromHttpUrl(baseUrl).path("soaprequest").build().toString();
   }
   
   @Test
