@@ -3,7 +3,7 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
     <changeSet id="create_initial_schema_soaprequest" author="mkalinowski">
-        <createTable tableName="${serviceTableName}">
+        <createTable tableName="soaprequest">
             <column name="id" type="uniqueidentifier">
                 <constraints nullable="false"/>
             </column>

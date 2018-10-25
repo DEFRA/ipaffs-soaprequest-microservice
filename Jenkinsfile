@@ -48,12 +48,14 @@ pipeline {
        stage('Docker build') {
            steps {
                dockerBuild("${SERVICE_NAME}", "${ENVIRONMENT}", "${SERVICE_VERSION}")
+               dockerBuildDatabaseMigrations("${SERVICE_NAME}", "${ENVIRONMENT}", "${SERVICE_VERSION}")
            }
        }
 
        stage('Docker push') {
            steps {
                dockerPushToRegistry("${SERVICE_NAME}", "${ENVIRONMENT}", "${SERVICE_VERSION}")
+               dockerPushToRegistry("${SERVICE_NAME}-database-migration", "${ENVIRONMENT}", "${SERVICE_VERSION}")
            }
        }
 
@@ -64,7 +66,7 @@ pipeline {
              }
              environmentImportsResync(resourceGroupName, "${ENVIRONMENT}", "${SERVICE_NAME}")
              databaseCreate(resourceGroupName, "${SERVICE_NAME}", "${ENVIRONMENT}", true)
-             databaseDeployChanges("${SERVICE_NAME}", resourceGroupName, "${SERVICE_VERSION}")
+             databaseRunMigrations("${SERVICE_NAME}", resourceGroupName, "${ENVIRONMENT}", "${SERVICE_VERSION}")
              deployComponent(resourceGroupName, "${SERVICE_NAME}", "${ENVIRONMENT}", "${BRANCH_NAME}", "${SERVICE_VERSION}")
            }
        }
