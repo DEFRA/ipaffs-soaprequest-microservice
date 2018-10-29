@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.everit.json.schema.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,15 +19,30 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
-  private static final Logger EXCEPTION_LOGGER = LoggerFactory.getLogger(RestResponseEntityExceptionHandler.class);
+  private static final Logger EXCEPTION_LOGGER =
+      LoggerFactory.getLogger(RestResponseEntityExceptionHandler.class);
+
+  @ExceptionHandler(value = {BadRequestBodyException.class})
+  protected ResponseEntity<java.lang.Object> handleBadRequestBody(
+      Exception ex, WebRequest request) {
+    EXCEPTION_LOGGER.info("Bad request body " + ex.getMessage());
+    return handleExceptionInternal(
+        ex, ex.getMessage(), new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+  }
 
   @ExceptionHandler(value = {NotImplementedException.class})
-  protected ResponseEntity<java.lang.Object> handleMethodNotImplemented(Exception ex, WebRequest request) {
+  protected ResponseEntity<java.lang.Object> handleMethodNotImplemented(
+      Exception ex, WebRequest request) {
     EXCEPTION_LOGGER.info("Method Not Implemented");
     return handleExceptionInternal(ex, "", new HttpHeaders(), HttpStatus.NOT_IMPLEMENTED, request);
   }
 
-  @ExceptionHandler(value = {NotFoundException.class, NoSuchElementException.class})
+  @ExceptionHandler(
+      value = {
+        NotFoundException.class,
+        NoSuchElementException.class,
+        EmptyResultDataAccessException.class
+      })
   protected ResponseEntity<Object> handleNotFound(Exception ex, WebRequest request) {
     EXCEPTION_LOGGER.info("{} : {}", PAGE_NOT_FOUND_LOG_CATEGORY, request.getDescription(false));
     return handleExceptionInternal(ex, "", new HttpHeaders(), HttpStatus.NOT_FOUND, request);

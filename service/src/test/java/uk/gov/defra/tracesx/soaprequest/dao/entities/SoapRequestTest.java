@@ -2,40 +2,30 @@ package uk.gov.defra.tracesx.soaprequest.dao.entities;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.UUID;
 import org.junit.Before;
 import org.junit.Test;
 
 public class SoapRequestTest {
-  
+
+  public static final String USERNAME = "username";
+  public static final String QUERY = "test";
+
   @Before
   public void setUp() {
   }
   
   @Test
-  public void verifyIdProperty() {
-    //Given
-    SoapRequest instance = new SoapRequest();
-    UUID id = UUID.randomUUID();
-    
+  public void verifyProperties() {
+    // Given
+    SoapRequest instance = new SoapRequest(USERNAME, QUERY);
+    Long requestId = 123L;
+
     //When
-    instance.setId(id);
+    instance.setRequestId(requestId);
 
     //Then
-    assertEquals(id, instance.getId());
-  }
-
-  @Test
-  public void verifyDocumentProperty() {
-    //Given
-    SoapRequest instance = new SoapRequest();
-    String jsonDocument = "{\"test\": 123}";
-    
-    //When
-    instance.setDocument(jsonDocument);
-
-    //Then
-    assertEquals(jsonDocument, instance.getDocument());
-    
+    assertEquals(requestId, instance.getRequestId());
+    assertEquals(USERNAME, instance.getUsername());
+    assertEquals(QUERY, instance.getQuery());
   }
 }

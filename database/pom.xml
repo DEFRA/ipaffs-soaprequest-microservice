@@ -49,7 +49,6 @@
                     <url>${DATABASE_DB_CONNECTION_STRING}</url>
                     <systemProperties>
                         <serviceDbPassword>${BASE_SERVICE_DB_PASSWORD}</serviceDbPassword>
-                        <serviceTableName>soaprequest</serviceTableName>
                     </systemProperties>
                     <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
                 </configuration>
