@@ -104,6 +104,7 @@ pipeline {
            }
            steps {
              dockerPromote("${SERVICE_NAME}", "${ENVIRONMENT}", "${SERVICE_VERSION}")
+             dockerPromoteConfiguration("${SERVICE_NAME}", "${ENVIRONMENT}", "${SERVICE_VERSION}")
            }
        }
    }
