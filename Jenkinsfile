@@ -95,8 +95,7 @@ pipeline {
 
        stage('Selenium Tests') {
            steps {
-             echo "No selenium tests until all services migrated"
-             //runSeleniumGridTests("${SERVICE_NAME}", "${ENVIRONMENT}", "master", "regression")
+             runSeleniumGridTests("${SERVICE_NAME}", "${ENVIRONMENT}", "master", "regression")
            }
        }
 
