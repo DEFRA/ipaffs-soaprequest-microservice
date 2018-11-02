@@ -61,8 +61,10 @@ pipeline {
 
        stage('Deploy') {
            steps {
-             script {
-               resourceGroupName = environmentGet("${BRANCH_NAME}")
+             lock ('environmentReservations') {
+               script {
+                 resourceGroupName = environmentGet("${BRANCH_NAME}")
+               }
              }
              environmentImportsResync(resourceGroupName, "${ENVIRONMENT}", "${SERVICE_NAME}")
              databaseCreate(resourceGroupName, "${SERVICE_NAME}", "${ENVIRONMENT}", true)
@@ -111,7 +113,9 @@ pipeline {
 
    post {
        always {
-         environmentReturn(resourceGroupName)
+         lock ('environmentReservations') {
+           environmentReturn(resourceGroupName)
+         }
          step([$class: 'WsCleanup'])
        }
        failure{
