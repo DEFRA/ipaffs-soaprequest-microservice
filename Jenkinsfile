@@ -5,6 +5,7 @@ pipeline {
     options {
       ansiColor('xterm')
       timestamps()
+      disableConcurrentBuilds()
   }
    environment {
        SERVICE_NAME = "soaprequest-microservice"
@@ -12,6 +13,9 @@ pipeline {
        SERVICE_VERSION = "1.0.${BUILD_NUMBER}"
        ENVIRONMENT = "Sandpit"
    }
+   parameters {
+      booleanParam(name: 'RESERVE_ENVIRONMENT', defaultValue: false, description: 'Do you want to reserve azure environment?')
+    }
 
    stages {
        stage('Azure login') {
@@ -112,13 +116,11 @@ pipeline {
 
    post {
        always {
-         lock ('environmentReservations') {
-           environmentReturn(resourceGroupName)
-         }
+         environmentReturn(resourceGroupName, params.RESERVE_ENVIRONMENT)
          step([$class: 'WsCleanup'])
        }
-       failure{
-        notifySlack("BUILD OF ${SERVICE_NAME} HAS FAILED: ${BUILD_URL}", "#FF9FA1")
+       failure {
+         notifySlack("BUILD OF ${SERVICE_NAME} HAS FAILED: ${BUILD_URL}", "#FF9FA1")
        }
    }
 }
