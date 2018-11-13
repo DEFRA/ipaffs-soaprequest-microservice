@@ -29,8 +29,12 @@ public class SoapRequestService {
     return soapRequestRepository.findById(id).map(SoapRequestDTO::from).get();
   }
 
-  public void deleteData(UUID id) {
-    soapRequestRepository.deleteById(id);
+  public SoapRequestDTO getByRequestId(Long id) throws IOException {
+    return soapRequestRepository.findByRequestId(id).map(SoapRequestDTO::from).get();
+  }
+
+  public void deleteByRequestIdAndUsername(Long requestId, String username) {
+    soapRequestRepository.deleteByRequestIdAndUsername(requestId, username);
   }
 
   public SoapRequestDTO get(Long requestId, String username) {

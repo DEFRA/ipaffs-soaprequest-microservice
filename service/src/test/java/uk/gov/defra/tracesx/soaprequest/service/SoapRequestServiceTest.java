@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.Optional;
+import java.util.Random;
 import java.util.UUID;
 import org.everit.json.schema.Schema;
 import org.junit.Before;
@@ -31,18 +32,12 @@ public class SoapRequestServiceTest {
   public static final String TEST_USER = "testUser";
 
   @Mock SoapRequestRepository soapRequestRepository;
-  @Mock Schema schema;
-
-  private JsonNode entity;
   private SoapRequestService soapRequestService;
 
   @Before
   public void setUp() throws IOException {
     initMocks(this);
     soapRequestService = new SoapRequestService(soapRequestRepository);
-    ObjectMapper mapper = new ObjectMapper();
-    JsonFactory factory = mapper.getFactory();
-    JsonParser jsonParser = factory.createParser("{\"soapRequest\":\"aName\"}");
   }
 
   private SoapRequestDTO createDefaultSoapRequestDTO() {
@@ -121,15 +116,43 @@ public class SoapRequestServiceTest {
   }
 
   @Test
-  public void deleteCallsRepositoryOnceWithId() {
+  public void getByRequestIdCallsRepositoryWithId() throws IOException {
     // Given
-    UUID id = UUID.randomUUID();
+    SoapRequest soapRequest = createDefaultSoapRequestEntity();
+    when(soapRequestRepository.findByRequestId(any())).thenReturn(Optional.of(soapRequest));
 
     // When
-    soapRequestService.deleteData(id);
+    soapRequestService.getByRequestId(soapRequest.getRequestId());
 
     // Then
-    verify(soapRequestRepository, times(1)).deleteById(id);
+    verify(soapRequestRepository, times(1)).findByRequestId(soapRequest.getRequestId());
+  }
+
+  @Test
+  public void getByRequestIdReturnsDocumentFromRepository() throws IOException {
+    // Given
+    SoapRequest soapRequest = createDefaultSoapRequestEntity();
+    when(soapRequestRepository.findByRequestId(any())).thenReturn(Optional.of(soapRequest));
+
+    // When
+    SoapRequestDTO result = soapRequestService.getByRequestId(soapRequest.getRequestId());
+
+    // Then
+    assertEquals(soapRequest.getUsername(), result.getUsername());
+    assertEquals(soapRequest.getQuery(), result.getQuery());
+    assertEquals(soapRequest.getId(), result.getId());
+  }
+
+  @Test
+  public void deleteCallsRepositoryOnceWithId() {
+    // Given
+    Long requestId = new Random().nextLong();
+
+    // When
+    soapRequestService.deleteByRequestIdAndUsername(requestId, TEST_USER);
+
+    // Then
+    verify(soapRequestRepository, times(1)).deleteByRequestIdAndUsername(requestId, TEST_USER);
   }
 
   @Test

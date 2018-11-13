@@ -3,8 +3,6 @@ package uk.gov.defra.tracesx.soaprequest.resource;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -14,7 +12,6 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.fge.jsonpatch.JsonPatchException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.UUID;
@@ -31,22 +28,17 @@ public class SoapRequestResourceTest {
 
   public static final String QUERY = "test";
   public static final String TEST_USER = "testUser";
-  private static final String EXAMPLE_PARSER = "{\"k1\":\"v1\"}";
-  private static final String COMMAND_PATCH_TYPE = "application/json-patch+json";
   @Mock SoapRequestService soapRequestService;
-  private JsonNode node;
   private SoapRequestDTO requestBody;
   private UUID id;
+  private Long requestId;
 
   @Before
   public void setUp() throws IOException {
     initMocks(this);
-    ObjectMapper mapper = new ObjectMapper();
-    JsonFactory factory = mapper.getFactory();
-    JsonParser jsonParser = factory.createParser(EXAMPLE_PARSER);
-    node = mapper.readTree(jsonParser);
     requestBody = createSoapRequestDTO();
     id = UUID.randomUUID();
+    requestId = System.currentTimeMillis();
   }
 
   private SoapRequestDTO createSoapRequestDTO() {
@@ -128,15 +120,18 @@ public class SoapRequestResourceTest {
   }
 
   @Test
-  public void patchReturnsNotImplementedStatus() throws IOException, JsonPatchException {
+  public void getByRequestIdReturnsEntityFromService() throws IOException {
     // Given
     SoapRequestResource resource = new SoapRequestResource(soapRequestService);
 
+    when(soapRequestService.getByRequestId(any())).thenReturn(requestBody);
+
     // When
-    ResponseEntity responseEntity = resource.patch(id, COMMAND_PATCH_TYPE, node);
+    ResponseEntity entity = resource.getByRequestId(requestId);
 
     // Then
-    assertEquals(HttpStatus.NOT_IMPLEMENTED, responseEntity.getStatusCode());
+    assertEquals(HttpStatus.OK, entity.getStatusCode());
+    assertEquals(requestBody, entity.getBody());
   }
 
   @Test
@@ -145,10 +140,10 @@ public class SoapRequestResourceTest {
     SoapRequestResource resource = new SoapRequestResource(soapRequestService);
 
     // When
-    resource.delete(id);
+    resource.deleteByRequestIdAndUsername(requestId, TEST_USER);
 
     // Then
-    verify(soapRequestService, times(1)).deleteData(id);
+    verify(soapRequestService, times(1)).deleteByRequestIdAndUsername(requestId, TEST_USER);
   }
 
   @Test
@@ -157,24 +152,10 @@ public class SoapRequestResourceTest {
     SoapRequestResource resource = new SoapRequestResource(soapRequestService);
 
     // When
-    ResponseEntity entity = resource.delete(id);
+    ResponseEntity entity = resource.deleteByRequestIdAndUsername(requestId, TEST_USER);
 
     // Then
     assertEquals(HttpStatus.OK, entity.getStatusCode());
   }
 
-  @Test
-  public void getByUsernameAndRequestIdReturnsEntityFromService() throws IOException {
-    // Given
-    SoapRequestResource resource = new SoapRequestResource(soapRequestService);
-
-    when(soapRequestService.get(anyLong(), anyString())).thenReturn(requestBody);
-
-    // When
-    ResponseEntity entity = resource.get(requestBody.getRequestId(), requestBody.getUsername());
-
-    // Then
-    assertEquals(HttpStatus.OK, entity.getStatusCode());
-    assertEquals(requestBody, entity.getBody());
-  }
 }

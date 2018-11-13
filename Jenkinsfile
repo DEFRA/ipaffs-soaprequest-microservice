@@ -86,6 +86,12 @@ pipeline {
          }
        }
 
+       stage('Wait for version') {
+         steps {
+             waitForVersion("${SERVICE_NAME}", resourceGroupName, "${ENVIRONMENT}", "${SERVICE_VERSION}", 5)
+         }
+       }
+
        stage('Integration Tests') {
             steps {
               runServiceIntegrationTests("${SERVICE_NAME}", "${ENVIRONMENT}", "${BRANCH_NAME}", resourceGroupName, "regression")
