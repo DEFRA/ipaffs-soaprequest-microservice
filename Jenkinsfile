@@ -94,11 +94,11 @@ pipeline {
 
        stage('Integration Tests') {
             steps {
-                runSoapIntegrationTests("${SERVICE_NAME}", "${ENVIRONMENT}", "${BRANCH_NAME}", resourceGroupName,  "regression")
+              runServiceIntegrationTests("${SERVICE_NAME}", "${ENVIRONMENT}", "${BRANCH_NAME}", resourceGroupName, "regression")
             }
             post {
               always {
-                    cucumber '**/cucumber/**/*.json'
+                junit '**/integration/target/surefire-reports/*.xml'
               }
             }
         }
