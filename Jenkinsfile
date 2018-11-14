@@ -52,14 +52,14 @@ pipeline {
        stage('Docker build') {
            steps {
                dockerBuild("${SERVICE_NAME}", "${ENVIRONMENT}", "${SERVICE_VERSION}")
-               dockerBuildDatabaseMigrations("${SERVICE_NAME}", "${ENVIRONMENT}", "${SERVICE_VERSION}")
+                dockerBuildConfigurationSetup("${SERVICE_NAME}", "${ENVIRONMENT}", "${SERVICE_VERSION}")
            }
        }
 
        stage('Docker push') {
            steps {
                dockerPushToRegistry("${SERVICE_NAME}", "${ENVIRONMENT}", "${SERVICE_VERSION}")
-               dockerPushToRegistry("${SERVICE_NAME}-database-migration", "${ENVIRONMENT}", "${SERVICE_VERSION}")
+                dockerPushConfigurationToRegistry("${SERVICE_NAME}", "${ENVIRONMENT}", "${SERVICE_VERSION}")
            }
        }
 
@@ -72,7 +72,7 @@ pipeline {
              }
              environmentImportsResync(resourceGroupName, "${ENVIRONMENT}", "${SERVICE_NAME}")
              databaseCreate(resourceGroupName, "${SERVICE_NAME}", "${ENVIRONMENT}", true)
-             databaseRunMigrations("${SERVICE_NAME}", resourceGroupName, "${ENVIRONMENT}", "${SERVICE_VERSION}")
+                runConfigurationSetup("${SERVICE_NAME}", resourceGroupName, "${ENVIRONMENT}", "${SERVICE_VERSION}")
              deployComponent(resourceGroupName, "${SERVICE_NAME}", "${ENVIRONMENT}", "${BRANCH_NAME}", "${SERVICE_VERSION}")
            }
        }
@@ -94,18 +94,23 @@ pipeline {
 
        stage('Integration Tests') {
             steps {
-              runServiceIntegrationTests("${SERVICE_NAME}", "${ENVIRONMENT}", "${BRANCH_NAME}", resourceGroupName, "regression")
+                runSoapIntegrationTests("${SERVICE_NAME}", "${ENVIRONMENT}", "${BRANCH_NAME}", resourceGroupName,  "regression")
             }
             post {
               always {
-                junit '**/integration/target/surefire-reports/*.xml'
+                    cucumber '**/cucumber/**/*.json'
               }
             }
         }
 
        stage('Selenium Tests') {
            steps {
-             runSeleniumGridTests("${SERVICE_NAME}", "${ENVIRONMENT}", "master", "regression")
+                runSeleniumGridTests("${SERVICE_NAME}", resourceGroupName, "master", "regression")
+            }
+            post {
+                always {
+                    cucumber '**/cucumber/**/*.json'
+                }
            }
        }
 
