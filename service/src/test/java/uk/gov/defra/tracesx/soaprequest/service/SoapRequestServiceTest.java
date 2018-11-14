@@ -2,22 +2,13 @@ package uk.gov.defra.tracesx.soaprequest.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
 import java.util.Optional;
-import java.util.Random;
 import java.util.UUID;
-import org.everit.json.schema.Schema;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -35,7 +26,7 @@ public class SoapRequestServiceTest {
   private SoapRequestService soapRequestService;
 
   @Before
-  public void setUp() throws IOException {
+  public void setUp() {
     initMocks(this);
     soapRequestService = new SoapRequestService(soapRequestRepository);
   }
@@ -57,7 +48,7 @@ public class SoapRequestServiceTest {
   }
 
   @Test
-  public void createsSavesAsNewEntity() throws IOException {
+  public void createsSavesAsNewEntity() {
     // Given
     SoapRequest soapRequest = createDefaultSoapRequestEntity();
     when(soapRequestRepository.save(any())).thenReturn(soapRequest);
@@ -71,7 +62,7 @@ public class SoapRequestServiceTest {
   }
 
   @Test
-  public void createSavesTheCorrectDataToTheRepository() throws IOException {
+  public void createSavesTheCorrectDataToTheRepository() {
     // Given
     SoapRequest soapRequest = createDefaultSoapRequestEntity();
 
@@ -88,7 +79,7 @@ public class SoapRequestServiceTest {
   }
 
   @Test
-  public void getCallsRepositoryWithId() throws IOException {
+  public void getCallsRepositoryWithId() {
     // Given
     SoapRequest soapRequest = createDefaultSoapRequestEntity();
     when(soapRequestRepository.findById(any())).thenReturn(Optional.of(soapRequest));
@@ -101,7 +92,7 @@ public class SoapRequestServiceTest {
   }
 
   @Test
-  public void getReturnsDocumentFromRepository() throws IOException {
+  public void getReturnsRecordFromRepository() {
     // Given
     SoapRequest soapRequest = createDefaultSoapRequestEntity();
     when(soapRequestRepository.findById(any())).thenReturn(Optional.of(soapRequest));
@@ -116,7 +107,7 @@ public class SoapRequestServiceTest {
   }
 
   @Test
-  public void getByRequestIdCallsRepositoryWithId() throws IOException {
+  public void getByRequestIdCallsRepositoryWithId() {
     // Given
     SoapRequest soapRequest = createDefaultSoapRequestEntity();
     when(soapRequestRepository.findByRequestId(any())).thenReturn(Optional.of(soapRequest));
@@ -129,7 +120,7 @@ public class SoapRequestServiceTest {
   }
 
   @Test
-  public void getByRequestIdReturnsDocumentFromRepository() throws IOException {
+  public void getByRequestIdReturnsRecordFromRepository() {
     // Given
     SoapRequest soapRequest = createDefaultSoapRequestEntity();
     when(soapRequestRepository.findByRequestId(any())).thenReturn(Optional.of(soapRequest));
@@ -146,30 +137,13 @@ public class SoapRequestServiceTest {
   @Test
   public void deleteCallsRepositoryOnceWithId() {
     // Given
-    Long requestId = new Random().nextLong();
+    UUID id = UUID.randomUUID();
 
     // When
-    soapRequestService.deleteByRequestIdAndUsername(requestId, TEST_USER);
+    soapRequestService.deleteData(id);
 
     // Then
-    verify(soapRequestRepository, times(1)).deleteByRequestIdAndUsername(requestId, TEST_USER);
+    verify(soapRequestRepository, times(1)).deleteById(id);
   }
 
-  @Test
-  public void testGetByRequestIdAndUsernameReturnsCorrectResult() {
-    // Given
-    SoapRequest soapRequest = createDefaultSoapRequestEntity();
-    when(soapRequestRepository.findByRequestIdAndUsername(anyLong(), anyString()))
-        .thenReturn(Optional.of(soapRequest));
-
-    // When
-    SoapRequestDTO result =
-        soapRequestService.get(soapRequest.getRequestId(), soapRequest.getUsername());
-
-    // Then
-    assertEquals(soapRequest.getUsername(), result.getUsername());
-    assertEquals(soapRequest.getQuery(), result.getQuery());
-    assertEquals(soapRequest.getId(), result.getId());
-    assertEquals(soapRequest.getRequestId(), soapRequest.getRequestId());
-  }
 }

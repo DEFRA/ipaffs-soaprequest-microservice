@@ -3,7 +3,6 @@ package uk.gov.defra.tracesx.soaprequest.resource;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static uk.gov.defra.tracesx.soaprequest.util.Constants.SOAP_REQUEST_ENDPOINT;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.UUID;
@@ -49,24 +48,24 @@ public class SoapRequestResource {
   }
 
   @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity get(@PathVariable("id") UUID id) throws IOException {
+  public ResponseEntity get(@PathVariable("id") UUID id) {
+    LOGGER.debug("GET id: {}", id);
     ResponseEntity response = ResponseEntity.ok(soapRequestService.get(id));
-    LOGGER.info("GET id: {}", id);
     return response;
   }
 
   @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity getByRequestId(@RequestParam("requestId") Long requestId) throws IOException {
+  public ResponseEntity getByRequestId(@RequestParam("requestId") Long requestId) {
+    LOGGER.debug("GET requestId: {}", requestId);
     ResponseEntity response = ResponseEntity.ok(soapRequestService.getByRequestId(requestId));
-    LOGGER.info("GET requestId: {}", requestId);
     return response;
   }
 
 
-  @DeleteMapping
-  public ResponseEntity deleteByRequestIdAndUsername(@RequestParam("requestId") Long requestId, @RequestParam("username") String username) {
-    soapRequestService.deleteByRequestIdAndUsername(requestId, username);
-    LOGGER.debug("DELETE requestId: {} username: {}", requestId, username);
+  @DeleteMapping(value = "/{id}")
+  public ResponseEntity delete(@PathVariable("id") UUID id) {
+    LOGGER.debug("DELETE requestId: {}", id);
+    soapRequestService.deleteData(id);
     return ResponseEntity.ok().build();
   }
 

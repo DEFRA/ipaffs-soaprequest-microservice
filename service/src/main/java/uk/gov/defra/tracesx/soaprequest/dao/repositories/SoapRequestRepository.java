@@ -9,9 +9,5 @@ import uk.gov.defra.tracesx.soaprequest.dao.entities.SoapRequest;
 @Repository
 public interface SoapRequestRepository extends CrudRepository<SoapRequest, UUID> {
 
-  Optional<SoapRequest> findByRequestIdAndUsername(Long requestId, String username);
-
   Optional<SoapRequest> findByRequestId(Long requestId);
-
-  void deleteByRequestIdAndUsername(Long requestId, String username);
 }

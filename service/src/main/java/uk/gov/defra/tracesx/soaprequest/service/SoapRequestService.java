@@ -1,6 +1,5 @@
 package uk.gov.defra.tracesx.soaprequest.service;
 
-import java.io.IOException;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,7 +13,7 @@ public class SoapRequestService {
   private final SoapRequestRepository soapRequestRepository;
 
   @Autowired
-  public SoapRequestService(SoapRequestRepository soapRequestRepository) throws IOException {
+  public SoapRequestService(SoapRequestRepository soapRequestRepository) {
     this.soapRequestRepository = soapRequestRepository;
   }
 
@@ -25,22 +24,16 @@ public class SoapRequestService {
     return searchCertificateRequest.getId();
   }
 
-  public SoapRequestDTO get(UUID id) throws IOException {
+  public SoapRequestDTO get(UUID id) {
     return soapRequestRepository.findById(id).map(SoapRequestDTO::from).get();
   }
 
-  public SoapRequestDTO getByRequestId(Long id) throws IOException {
+  public SoapRequestDTO getByRequestId(Long id) {
     return soapRequestRepository.findByRequestId(id).map(SoapRequestDTO::from).get();
   }
 
-  public void deleteByRequestIdAndUsername(Long requestId, String username) {
-    soapRequestRepository.deleteByRequestIdAndUsername(requestId, username);
+  public void deleteData(UUID id) {
+    soapRequestRepository.deleteById(id);
   }
 
-  public SoapRequestDTO get(Long requestId, String username) {
-    return soapRequestRepository
-        .findByRequestIdAndUsername(requestId, username)
-        .map(SoapRequestDTO::from)
-        .get();
-  }
 }

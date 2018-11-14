@@ -8,11 +8,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.UUID;
 import org.junit.Before;
@@ -34,7 +29,7 @@ public class SoapRequestResourceTest {
   private Long requestId;
 
   @Before
-  public void setUp() throws IOException {
+  public void setUp() {
     initMocks(this);
     requestBody = createSoapRequestDTO();
     id = UUID.randomUUID();
@@ -105,7 +100,7 @@ public class SoapRequestResourceTest {
   }
 
   @Test
-  public void getReturnsEntityFromService() throws IOException {
+  public void getReturnsEntityFromService() {
     // Given
     SoapRequestResource resource = new SoapRequestResource(soapRequestService);
 
@@ -120,7 +115,7 @@ public class SoapRequestResourceTest {
   }
 
   @Test
-  public void getByRequestIdReturnsEntityFromService() throws IOException {
+  public void getByRequestIdReturnsEntityFromService() {
     // Given
     SoapRequestResource resource = new SoapRequestResource(soapRequestService);
 
@@ -140,10 +135,10 @@ public class SoapRequestResourceTest {
     SoapRequestResource resource = new SoapRequestResource(soapRequestService);
 
     // When
-    resource.deleteByRequestIdAndUsername(requestId, TEST_USER);
+    resource.delete(id);
 
     // Then
-    verify(soapRequestService, times(1)).deleteByRequestIdAndUsername(requestId, TEST_USER);
+    verify(soapRequestService, times(1)).deleteData(id);
   }
 
   @Test
@@ -152,7 +147,7 @@ public class SoapRequestResourceTest {
     SoapRequestResource resource = new SoapRequestResource(soapRequestService);
 
     // When
-    ResponseEntity entity = resource.deleteByRequestIdAndUsername(requestId, TEST_USER);
+    ResponseEntity entity = resource.delete(id);
 
     // Then
     assertEquals(HttpStatus.OK, entity.getStatusCode());

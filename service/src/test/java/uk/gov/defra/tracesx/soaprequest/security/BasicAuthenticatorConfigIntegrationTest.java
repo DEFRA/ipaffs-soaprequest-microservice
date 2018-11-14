@@ -29,7 +29,7 @@ import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 public class BasicAuthenticatorConfigIntegrationTest {
-  
+
   AnnotationConfigWebApplicationContext context;
 
   MockHttpServletRequest request;
@@ -53,7 +53,7 @@ public class BasicAuthenticatorConfigIntegrationTest {
           this.context.close();
       }
   }
-  
+
   @Test
   public void testRequestRequiresAuthorization() throws IOException, ServletException {
     //Given
@@ -71,10 +71,10 @@ public class BasicAuthenticatorConfigIntegrationTest {
   public void verifyBasicAuthFilterCoversAllPaths() throws Exception {
     //Given
     loadConfig(BasicAuthenticatorConfig.class);
-    
+
     //When
     List<SecurityFilterChain> filterChain = this.springSecurityFilterChain.getFilterChains();
-     
+
     //Then
     assertEquals("Should only be one filter chain in place", 1, filterChain.size());
 
@@ -92,25 +92,25 @@ public class BasicAuthenticatorConfigIntegrationTest {
     assertEquals("More than one security configuration set up", 1, securityConfigurations.size());
     assertEquals("Security configuration is not set to authenticated", "authenticated", securityConfigurations.toArray()[0].toString());
     assertNotNull("No basic auth filter found, basic auth is not configured", basicAuthenticationFilter);
-    
+
     //WebExpressionConfigAttribute has a ticket with spring to be made public
     //in later release, at which point reflection can be removed
     ConfigAttribute activeSecurityConfig = (ConfigAttribute) (securityConfigurations.toArray()[0]);
     Field field = activeSecurityConfig.getClass().getDeclaredField("postProcessor");
     field.setAccessible(true);
-    Object postProcessor = field.get(activeSecurityConfig); 
+    Object postProcessor = field.get(activeSecurityConfig);
     assertNull("Basic auth should be on for all urls, so no postprocessor",postProcessor);
-    
+
   }
-  
+
   @Test
-  public void csrfIsDisabled() throws IOException, ServletException {
+  public void csrfIsDisabled() {
     //Given
     loadConfig(BasicAuthenticatorConfig.class);
 
     //When
     List<SecurityFilterChain> filterChain = this.springSecurityFilterChain.getFilterChains();
-     
+
     //Then
     assertEquals("Should only be one filter chain in place", 1, filterChain.size());
 
@@ -119,9 +119,9 @@ public class BasicAuthenticatorConfigIntegrationTest {
       fail("CSRF Filter is present");
     });
   }
-  
+
   //Check csrf off
-  
+
   public void loadConfig(Class<?>... configs) {
 		this.context = new AnnotationConfigWebApplicationContext();
 		this.context.register(configs);
