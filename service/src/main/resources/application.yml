@@ -1,6 +1,6 @@
 #https://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
 server:
-  port: 4000
+  port: ${SERVICE_PORT:5260}
 management:
   endpoint:
     health:
@@ -10,12 +10,12 @@ management:
       exposure:
         include: health, info
       base-path: /admin
-      path-mapping: 
+      path-mapping:
         health: health-check
 info:
     app:
         name: soapRequest microservice
-        version: 0.1-SNAPSHOT
+        version: ${API_VERSION}
 spring:
   security:
       user:

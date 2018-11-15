@@ -121,32 +121,6 @@ public class TestBasicEndpoints {
         .statusCode(404);
   }
 
-  @Test
-  public void patchShouldReturn501() {
-    String patchId =
-        given()
-            .body("{\"username\": \"test\", \"query\": \"queryTest\"}")
-            .auth()
-            .basic(userName, password)
-            .contentType(ContentType.JSON)
-            .when()
-            .post(resourceUrl)
-            .then()
-            .statusCode(201)
-            .extract()
-            .header("Location");
-
-    given()
-        .auth()
-        .basic(userName, password)
-        .body("[{\"op\":\"replace\",\"path\":\"/username\",\"value\":\"TEST\"}]")
-        .contentType("application/merge-patch+json")
-        .when()
-        .patch(baseUrl + patchId)
-        .then()
-        .statusCode(501);
-  }
-
   private Response createSoapRequest(String username, String query) {
     return given()
         .body("{\"username\": \"" + username + "\", \"query\": \"" + query + "\"}")
