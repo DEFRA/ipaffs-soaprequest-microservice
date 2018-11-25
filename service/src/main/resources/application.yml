@@ -15,7 +15,7 @@ management:
 info:
     app:
         name: soapRequest microservice
-        version: ${API_VERSION}
+        version: ${api_version}
 spring:
   security:
       user:
