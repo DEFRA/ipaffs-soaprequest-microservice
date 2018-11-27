@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,6 +40,7 @@ public class SoapRequestResource {
   @PostMapping(
       consumes = MediaType.APPLICATION_JSON_VALUE,
       produces = MediaType.APPLICATION_JSON_VALUE)
+  @PreAuthorize("hasAuthority('soaprequest.create')")
   public ResponseEntity insert(@RequestBody SoapRequestDTO soapRequest) throws URISyntaxException {
     validate(soapRequest);
     UUID id = soapRequestService.create(soapRequest);
@@ -48,6 +50,7 @@ public class SoapRequestResource {
   }
 
   @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+  @PreAuthorize("hasAuthority('soaprequest.read')")
   public ResponseEntity get(@PathVariable("id") UUID id) {
     LOGGER.debug("GET id: {}", id);
     ResponseEntity response = ResponseEntity.ok(soapRequestService.get(id));
@@ -55,6 +58,7 @@ public class SoapRequestResource {
   }
 
   @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+  @PreAuthorize("hasAuthority('soaprequest.read')")
   public ResponseEntity getByRequestId(@RequestParam("requestId") Long requestId) {
     LOGGER.debug("GET requestId: {}", requestId);
     ResponseEntity response = ResponseEntity.ok(soapRequestService.getByRequestId(requestId));
@@ -63,6 +67,7 @@ public class SoapRequestResource {
 
 
   @DeleteMapping(value = "/{id}")
+  @PreAuthorize("hasAuthority('soaprequest.delete')")
   public ResponseEntity delete(@PathVariable("id") UUID id) {
     LOGGER.debug("DELETE id: {}", id);
     soapRequestService.deleteData(id);
