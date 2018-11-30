@@ -23,7 +23,7 @@ spring:
         password: ${SERVICE_PASSWORD}
   datasource:
       driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
-      url: jdbc:sqlserver://${DB_HOST}:${DB_PORT};databaseName=${DB_NAME};user=${DB_USER};password=${DB_PASSWORD}
+      url: jdbc:sqlserver://${DB_HOST}:${DB_PORT};databaseName=${DB_NAME};user=${DB_USER};password=${DB_PASSWORD};trustServerCertificate=${TRUST_SERVER_CERTIFICATE};hostNameInCertificate=*.database.windows.net;encrypt=true;
       dialect: com.microsoft.sqlserver.jdbc.SQLServerDriver
       continueOnError: true
       initialize: false
