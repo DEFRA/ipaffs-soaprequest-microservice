@@ -11,8 +11,6 @@ import org.junit.Test;
 import org.springframework.web.util.UriComponentsBuilder;
 import uk.gov.defra.tracesx.soaprequest.integration.dto.SoapRequestDTO;
 import java.io.UnsupportedEncodingException;
-import java.util.Base64;
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class TestBasicEndpoints {
 
@@ -21,11 +19,6 @@ public class TestBasicEndpoints {
   private static String TEST_QUERY = "testQuery";
   private String baseUrl;
   private String resourceUrl;
-  private String userName;
-  private String password;
-  public static final String COLON = ":";
-  public static final String BASIC = "Basic ";
-  private String encodedBasicAuth;
 
   private String stripEnvDelims(String src) {
     return src.substring(2, src.length() - 1);
@@ -33,8 +26,6 @@ public class TestBasicEndpoints {
 
   @Before
   public void setup() throws UnsupportedEncodingException{
-    userName = System.getProperty("auth.username");
-    password = System.getProperty("auth.password");
     baseUrl = System.getProperty("service.base.url");
 
     resourceUrl =
@@ -43,11 +34,6 @@ public class TestBasicEndpoints {
             .path(SOAP_REQUEST_ENDPOINT)
             .build()
             .toString();
-
-    encodedBasicAuth = BASIC + Base64.getEncoder().encodeToString(
-            new StringBuffer().append(userName).append(COLON).append(password).toString().getBytes(
-                    UTF_8.name()));
-
   }
 
   @Test
@@ -57,7 +43,7 @@ public class TestBasicEndpoints {
 
   @Test
   public void rejectInvalidSoapRequest() {
-    given().header("x-auth-basic", encodedBasicAuth)
+    given()
         .body("{\"exampleWrong\": \"test\"}")
         .contentType(ContentType.JSON)
         .when()
@@ -131,7 +117,7 @@ public class TestBasicEndpoints {
   }
 
   private Response createSoapRequest(String username, String query) {
-    return given().header("x-auth-basic",encodedBasicAuth)
+    return given()
         .body("{\"username\": \"" + username + "\", \"query\": \"" + query + "\"}")
         .contentType(ContentType.JSON)
         .when()
@@ -139,15 +125,15 @@ public class TestBasicEndpoints {
   }
 
   private Response getSoapRequestById(String id) {
-    return given().header("x-auth-basic",encodedBasicAuth).when().get(baseUrl + id);
+    return given().when().get(baseUrl + id);
   }
 
   private Response deleteSoapRequestById(String id) {
-    return given().header("x-auth-basic",encodedBasicAuth).when().delete(baseUrl + id);
+    return given().when().delete(baseUrl + id);
   }
 
   private Response getSoapRequestByRequestIdAndUsername(Long requestId, String username) {
-    return given().header("x-auth-basic",encodedBasicAuth)
+    return given()
         .when()
         .queryParam("requestId", requestId)
         .queryParam("username", username)
