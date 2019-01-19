@@ -41,9 +41,6 @@ public class PermissionsService {
   @Value("${permissions.service.password}")
   private String permissionsPassword;
 
-  @Value("${service.security.token-feature-switch}")
-  private boolean securityTokenFeatureSwitch;
-
   private final RestTemplate permissionsRestTemplate;
 
   @Autowired
@@ -62,9 +59,8 @@ public class PermissionsService {
 
     final HttpHeaders headers = new HttpHeaders();
     headers.set(X_AUTH_HEADER_BASIC, encodedBasicAuth);
-    if (securityTokenFeatureSwitch && authorisationToken != null) {
-      headers.add(AUTHORIZATION, authorisationToken);
-    }
+    headers.add(AUTHORIZATION, authorisationToken);
+ 
     final HttpEntity<String> entity = new HttpEntity<>(headers);
 
     final List<String> response = getPermissions(builder, entity);

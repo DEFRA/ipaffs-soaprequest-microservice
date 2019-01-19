@@ -66,6 +66,37 @@
       <artifactId>mssql-jdbc</artifactId>
       <version>${mssql.jdbc.version}</version>
     </dependency>
+    <!-- used to decode and validate jwt tokens -->
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-jwt</artifactId>
+      <version>1.0.9.RELEASE</version>
+    </dependency>
+    <!-- used to fetch public signing keys from jwks urls -->
+    <dependency>
+      <groupId>com.auth0</groupId>
+      <artifactId>jwks-rsa</artifactId>
+      <version>0.3.0</version>
+    </dependency>
+    <!-- jjwt is only needed in the test scope to creating tokens used by unit tests -->
+    <dependency>
+      <groupId>io.jsonwebtoken</groupId>
+      <artifactId>jjwt-api</artifactId>
+      <version>${jjwt.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.jsonwebtoken</groupId>
+      <artifactId>jjwt-impl</artifactId>
+      <version>${jjwt.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.jsonwebtoken</groupId>
+      <artifactId>jjwt-jackson</artifactId>
+      <version>${jjwt.version}</version>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
@@ -142,6 +173,7 @@
     <owasp.version>3.3.2</owasp.version>
     <org.antlr.version>3.2</org.antlr.version>
     <mssql.jdbc.version>7.0.0.jre8</mssql.jdbc.version>
+    <jjwt.version>0.10.5</jjwt.version>
   </properties>
   <build>
     <resources>
@@ -234,6 +266,7 @@
           </execution>
         </executions>
       </plugin>
+<!--   
       <plugin>
         <groupId>org.owasp</groupId>
         <artifactId>dependency-check-maven</artifactId>
@@ -253,6 +286,7 @@
           </dependency>
         </dependencies>
       </plugin>
+-->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
