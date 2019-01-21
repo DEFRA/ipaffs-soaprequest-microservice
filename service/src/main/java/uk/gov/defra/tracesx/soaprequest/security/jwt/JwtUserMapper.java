@@ -1,12 +1,9 @@
 package uk.gov.defra.tracesx.soaprequest.security.jwt;
 
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 import uk.gov.defra.tracesx.soaprequest.exceptions.InsSecurityException;
 import uk.gov.defra.tracesx.soaprequest.security.IdTokenUserDetails;
@@ -22,10 +19,9 @@ public class JwtUserMapper {
   public IdTokenUserDetails createUser(Map<String, Object> decoded, String idToken) {
     return IdTokenUserDetails.builder()
         .idToken(idToken)
-        .displayName("SOAP Service")
+        .displayName("SOAP Request Service")
         .username("SOAP")
         .userObjectId(getRequiredClaim(OID, decoded))
-        .authorities(getAuthorities(decoded))
         .build();
   }
 
@@ -36,15 +32,6 @@ public class JwtUserMapper {
       throw new InsSecurityException("User is missing claim: " + claimName);
     }
     return value;
-  }
-
-  private List<SimpleGrantedAuthority> getAuthorities(Map<String, Object> body) {
-    if(!body.containsKey("roles")) {
-      LOGGER.error("The JWT token is missing the claim 'roles'");
-      throw new InsSecurityException("User is missing role claim");
-    }
-    List<String> roles = (List) body.get("roles");
-    return roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
   }
 
 }
