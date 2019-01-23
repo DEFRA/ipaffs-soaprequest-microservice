@@ -36,10 +36,10 @@ public class JwtTokenValidatorTest {
   private static final KeyPair ALT_KEY_PAIR = Keys.keyPairFor(SignatureAlgorithm.RS256);
   private static final String KID = "2759cfa1-6096-4779-b888-983e94e3f6b3";
   private static final String ISS = "http://issuer.com";
-  private static final String CLIENT = "279fb646-b442-4ac0-b42a-1912a4ec5e65";
+  private static final String AUD = "279fb646-b442-4ac0-b42a-1912a4ec5e65";
   private static final KeyAndClaims KEY_AND_CLAIMS =  KeyAndClaims.builder()
       .key(KEY_PAIR.getPublic())
-      .clientId(CLIENT)
+      .aud(AUD)
       .iss(ISS)
       .build();
   @Mock
@@ -69,7 +69,7 @@ public class JwtTokenValidatorTest {
     String token =
         Jwts.builder().setHeader(Collections.singletonMap("kid", KID))
             .setExpiration(exp)
-            .claim("aud", CLIENT)
+            .claim("aud", AUD)
             .claim("iss", ISS)
             .signWith(KEY_PAIR.getPrivate()).compact();
     when(jwksCache.getPublicKey(KID)).thenReturn(KEY_AND_CLAIMS);
@@ -96,7 +96,7 @@ public class JwtTokenValidatorTest {
     String token =
         Jwts.builder().setHeader(Collections.singletonMap("kid", KID))
             .setExpiration(exp)
-            .claim("aud", CLIENT)
+            .claim("aud", AUD)
             .claim("iss", ISS)
             .signWith(KEY_PAIR.getPrivate()).compact();
     when(jwksCache.getPublicKey(KID)).thenReturn(KEY_AND_CLAIMS);
@@ -109,7 +109,7 @@ public class JwtTokenValidatorTest {
   public void validateToken_missingExpiry_throwsException() {
     String token =
         Jwts.builder().setHeader(Collections.singletonMap("kid", KID))
-            .claim("aud", CLIENT)
+            .claim("aud", AUD)
             .claim("iss", ISS)
             .signWith(KEY_PAIR.getPrivate()).compact();
     when(jwksCache.getPublicKey(KID)).thenReturn(KEY_AND_CLAIMS);
@@ -123,7 +123,7 @@ public class JwtTokenValidatorTest {
     String token =
         Jwts.builder().setHeader(Collections.singletonMap("kid", KID))
             .claim("exp", new Date().toString())
-            .claim("aud", CLIENT)
+            .claim("aud", AUD)
             .claim("iss", ISS)
             .signWith(KEY_PAIR.getPrivate()).compact();
     when(jwksCache.getPublicKey(KID)).thenReturn(KEY_AND_CLAIMS);
@@ -138,7 +138,7 @@ public class JwtTokenValidatorTest {
     String token =
         Jwts.builder().setHeader(Collections.singletonMap("kid", KID))
             .setExpiration(exp)
-            .claim("aud", CLIENT)
+            .claim("aud", AUD)
             .claim("iss", ISS)
             .signWith(ALT_KEY_PAIR.getPrivate()).compact();
     when(jwksCache.getPublicKey(KID)).thenReturn(KEY_AND_CLAIMS);
@@ -168,7 +168,7 @@ public class JwtTokenValidatorTest {
     String token =
         Jwts.builder().setHeader(Collections.singletonMap("kid", KID))
             .setExpiration(exp)
-            .claim("aud", CLIENT)
+            .claim("aud", AUD)
             .claim("iss", "invalid_issuer")
             .signWith(KEY_PAIR.getPrivate()).compact();
     when(jwksCache.getPublicKey(KID)).thenReturn(KEY_AND_CLAIMS);

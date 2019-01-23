@@ -18,7 +18,7 @@ public class JwkProviderFactory {
         KEY_CACHE_EXPIRY_MINUTES,
         TimeUnit.MINUTES,
         config.getIssuer(),
-        config.getClientId());
+        config.getAud());
   }
 
 }

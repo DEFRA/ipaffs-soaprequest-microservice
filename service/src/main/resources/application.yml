@@ -21,7 +21,7 @@ spring:
     jwt:
       jwks: ${SECURITY_JWT_JWKS}
       iss: ${SECURITY_JWT_ISS}
-      clientId: ${SECURITY_JWT_CLIENT}
+      aud: ${SECURITY_JWT_AUD}
   datasource:
       driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
       url: jdbc:sqlserver://${DB_HOST}:${DB_PORT};databaseName=${DB_NAME};user=${DB_USER};password=${DB_PASSWORD};trustServerCertificate=${TRUST_SERVER_CERTIFICATE};hostNameInCertificate=*.database.windows.net;encrypt=true;

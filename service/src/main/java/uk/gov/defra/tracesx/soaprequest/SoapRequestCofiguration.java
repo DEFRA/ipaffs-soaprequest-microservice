@@ -39,21 +39,22 @@ public class SoapRequestCofiguration implements WebMvcConfigurer {
   @Value("${spring.security.jwt.iss}")
   private String iss;
 
-  @Value("${spring.security.jwt.clientId}")
-  private String clientId;
+  @Value("${spring.security.jwt.aud}")
+  private String aud;
 
   @Bean
   @Qualifier("jwksConfiguration")
   public List<JwksConfiguration> jwksConfiguration() throws MalformedURLException {
     String[] jwkUrls = jwkUrl.split(",");
     String[] issuers = iss.split(",");
+    String[] auds = aud.split(",");
     List<JwksConfiguration> jwksConfigurations = new ArrayList<>();
     if (jwkUrls.length == issuers.length) {
       for (int i = 0; i < jwkUrls.length; i++) {
         jwksConfigurations.add(JwksConfiguration.builder()
             .jwksUrl(new URL(jwkUrls[i]))
             .issuer(issuers[i])
-            .clientId(clientId).build());
+            .aud(auds[i]).build());
       }
       return Collections.unmodifiableList(jwksConfigurations);
     } else {

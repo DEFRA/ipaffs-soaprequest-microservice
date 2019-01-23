@@ -31,11 +31,11 @@ import uk.gov.defra.tracesx.soaprequest.security.jwks.JwksConfiguration;
 public class JwksCacheTest {
 
   private static final String KID1 = "2d792919-3a36-4edd-9736-edd43b157067";
-  private static final String CLIENT1 = "157f8269-0ca3-435e-83d3-407bfdfd7bb4";
+  private static final String AUD1 = "157f8269-0ca3-435e-83d3-407bfdfd7bb4";
   private static final String ISS1 = "http://first-cert-issuer.com";
 
   private static final String KID2 = "ed7fd587-bcf8-483d-9d8b-9b5d953cdae5";
-  private static final String CLIENT2 = "d75ab74a-4751-4e8c-8ed0-2c54dd40bf4a";
+  private static final String AUD2 = "d75ab74a-4751-4e8c-8ed0-2c54dd40bf4a";
   private static final String ISS2 = "http://first-cert-issuer.com";
 
   @Mock
@@ -57,8 +57,8 @@ public class JwksCacheTest {
 
   @Before
   public void before() {
-    when(jwkProvider1.getClientId()).thenReturn(CLIENT1);
-    when(jwkProvider2.getClientId()).thenReturn(CLIENT2);
+    when(jwkProvider1.getAud()).thenReturn(AUD1);
+    when(jwkProvider2.getAud()).thenReturn(AUD2);
     when(jwkProvider1.getIssuer()).thenReturn(ISS1);
     when(jwkProvider2.getIssuer()).thenReturn(ISS2);
     List<JwksConfiguration> configurationList =
@@ -84,13 +84,13 @@ public class JwksCacheTest {
     when(jwkProvider2.get(anyString())).thenReturn(jwk);
     KeyAndClaims keyAndClaims = jwksCache.getPublicKey(KID2);
     assertThat(keyAndClaims.getKey()).isEqualTo(publicKey);
-    assertThat(keyAndClaims.getClientId()).isEqualTo(CLIENT2);
+    assertThat(keyAndClaims.getAud()).isEqualTo(AUD2);
     assertThat(keyAndClaims.getIss()).isEqualTo(ISS2);
     verify(jwkProvider1).get(KID2);
     verify(jwkProvider1).getIssuer(); // logging
     verify(jwkProvider2, times(2)).get(KID2);
     verify(jwkProvider2).getIssuer();
-    verify(jwkProvider2).getClientId();
+    verify(jwkProvider2).getAud();
   }
 
   @Test
@@ -99,17 +99,17 @@ public class JwksCacheTest {
     when(jwkProvider1.get(anyString())).thenReturn(jwk);
     KeyAndClaims keyAndClaims = jwksCache.getPublicKey(KID1);
     assertThat(keyAndClaims.getKey()).isEqualTo(publicKey);
-    assertThat(keyAndClaims.getClientId()).isEqualTo(CLIENT1);
+    assertThat(keyAndClaims.getAud()).isEqualTo(AUD1);
     assertThat(keyAndClaims.getIss()).isEqualTo(ISS1);
     verify(jwkProvider1, times(2)).get(KID1);
 
     // on second invocation the provider is only called one more time (no scan)
     keyAndClaims = jwksCache.getPublicKey(KID1);
     assertThat(keyAndClaims.getKey()).isEqualTo(publicKey);
-    assertThat(keyAndClaims.getClientId()).isEqualTo(CLIENT1);
+    assertThat(keyAndClaims.getAud()).isEqualTo(AUD1);
     assertThat(keyAndClaims.getIss()).isEqualTo(ISS1);
     verify(jwkProvider1, times(3)).get(KID1);
-    verify(jwkProvider1, times(2)).getClientId();
+    verify(jwkProvider1, times(2)).getAud();
     verify(jwkProvider1, times(2)).getIssuer();
   }
 

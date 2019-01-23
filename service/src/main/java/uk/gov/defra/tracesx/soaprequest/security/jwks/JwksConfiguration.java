@@ -12,6 +12,6 @@ import lombok.Getter;
 @EqualsAndHashCode
 public class JwksConfiguration {
   private URL jwksUrl;
-  private String clientId;
+  private String aud;
   private String issuer;
 }

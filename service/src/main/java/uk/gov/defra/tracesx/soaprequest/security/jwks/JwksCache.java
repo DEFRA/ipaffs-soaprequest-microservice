@@ -41,7 +41,7 @@ public class JwksCache {
       ClaimsAwareJwkProvider jwkProvider = getJwkFromProvider(kid);
       Jwk jwk = jwkProvider.get(kid);
       return KeyAndClaims.builder()
-          .clientId(jwkProvider.getClientId())
+          .aud(jwkProvider.getAud())
           .iss(jwkProvider.getIssuer())
           .key(jwk.getPublicKey())
           .build();
@@ -80,7 +80,7 @@ public class JwksCache {
   @EqualsAndHashCode
   public static class KeyAndClaims {
     private String iss;
-    private String clientId;
+    private String aud;
     private Key key;
   }
 

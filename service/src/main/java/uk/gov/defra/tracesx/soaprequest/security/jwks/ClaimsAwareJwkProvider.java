@@ -7,22 +7,21 @@ import java.util.concurrent.TimeUnit;
 public class ClaimsAwareJwkProvider extends GuavaCachedJwkProvider {
 
   private final String issuer;
-
-  private final String clientId;
+  private final String aud;
 
   public ClaimsAwareJwkProvider(JwkProvider provider, long size, long expiresIn,
-      TimeUnit expiresUnit, String issuer, String clientId) {
+      TimeUnit expiresUnit, String issuer, String aud) {
     super(provider, size, expiresIn, expiresUnit);
     this.issuer = issuer;
-    this.clientId = clientId;
+    this.aud = aud;
   }
 
   public String getIssuer() {
     return issuer;
   }
 
-  public String getClientId() {
-    return clientId;
+  public String getAud() {
+    return aud;
   }
   
 }

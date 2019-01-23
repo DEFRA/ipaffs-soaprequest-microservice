@@ -97,7 +97,7 @@ public class JwtTokenValidator {
 
   private void verifyClaims(Map<String, Object> claims, KeyAndClaims keyAndClaims) throws UnauthorizedException {
     if (!(keyAndClaims.getIss().equals(claims.get(ISS))
-        && keyAndClaims.getClientId().equals(claims.get(AUD)))) {
+        && keyAndClaims.getAud().equals(claims.get(AUD)))) {
       LOGGER.error("The iss and/or aud claims do not match the required claims.");
       throw unauthorizedException();
     }
