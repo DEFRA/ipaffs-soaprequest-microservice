@@ -265,8 +265,7 @@
             </configuration>
           </execution>
         </executions>
-      </plugin>
-<!--   
+      </plugin> 
       <plugin>
         <groupId>org.owasp</groupId>
         <artifactId>dependency-check-maven</artifactId>
@@ -286,7 +285,6 @@
           </dependency>
         </dependencies>
       </plugin>
--->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
