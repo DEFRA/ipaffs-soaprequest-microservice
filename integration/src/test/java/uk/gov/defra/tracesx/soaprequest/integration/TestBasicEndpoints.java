@@ -70,7 +70,7 @@ public class TestBasicEndpoints {
         .then()
         .statusCode(404);
   }
-
+/*
   @Test
   public void canGetSoapRequestByRequestIdAndUsername() {
     String id =
@@ -92,12 +92,13 @@ public class TestBasicEndpoints {
     assertEquals(result.getUsername(), soapRequest.getUsername());
     assertEquals(result.getQuery(), soapRequest.getQuery());
   }
-
+*/
+/*
   @Test
   public void getNonExistentSoapRequestByRequestIdAndUsernameReturnsNotFound() {
     getSoapRequestByRequestIdAndUsername(123L, "missing").then().statusCode(404);
   }
-
+*/
   @Test
   public void canDeleteSoapRequest() {
     String id =
@@ -131,7 +132,7 @@ public class TestBasicEndpoints {
   private Response deleteSoapRequestById(String id) {
     return given().when().delete(baseUrl + id);
   }
-
+/*
   private Response getSoapRequestByRequestIdAndUsername(Long requestId, String username) {
     return given()
         .when()
@@ -139,7 +140,7 @@ public class TestBasicEndpoints {
         .queryParam("username", username)
         .get(resourceUrl);
   }
-
+*/
   private String getSoapRequestEndpoint() {
     return "/" + SOAP_REQUEST_ENDPOINT + "/";
   }
