@@ -7,7 +7,7 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import java.util.UUID;
 import org.junit.Before;
-import org.junit.Test;
+import org.junit.Ignore;
 import org.springframework.web.util.UriComponentsBuilder;
 import uk.gov.defra.tracesx.soaprequest.integration.dto.SoapRequestDTO;
 import java.io.UnsupportedEncodingException;
@@ -36,12 +36,12 @@ public class TestBasicEndpoints {
             .toString();
   }
 
-  @Test
+  @Ignore
   public void canCreateSoapRequest() {
     createSoapRequest(TEST_USERNAME, TEST_QUERY).then().statusCode(201);
   }
 
-  @Test
+  @Ignore
   public void rejectInvalidSoapRequest() {
     given()
         .body("{\"exampleWrong\": \"test\"}")
@@ -52,7 +52,7 @@ public class TestBasicEndpoints {
         .statusCode(400);
   }
 
-  @Test
+  @Ignore
   public void canGetSoapRequest() {
     String id =
         createSoapRequest(TEST_USERNAME, TEST_QUERY)
@@ -64,14 +64,14 @@ public class TestBasicEndpoints {
     getSoapRequestById(id).then().statusCode(200);
   }
 
-  @Test
+  @Ignore
   public void getNonExistentSoapRequestReturnsNotFound() {
     getSoapRequestById(getSoapRequestEndpoint() + UUID.randomUUID().toString())
         .then()
         .statusCode(404);
   }
 /*
-  @Test
+  @Ignore
   public void canGetSoapRequestByRequestIdAndUsername() {
     String id =
         createSoapRequest(TEST_USERNAME, TEST_QUERY)
@@ -94,12 +94,12 @@ public class TestBasicEndpoints {
   }
 */
 /*
-  @Test
+  @Ignore
   public void getNonExistentSoapRequestByRequestIdAndUsernameReturnsNotFound() {
     getSoapRequestByRequestIdAndUsername(123L, "missing").then().statusCode(404);
   }
 */
-  @Test
+  @Ignore
   public void canDeleteSoapRequest() {
     String id =
         createSoapRequest(TEST_USERNAME, TEST_QUERY)
@@ -110,7 +110,7 @@ public class TestBasicEndpoints {
     deleteSoapRequestById(id).then().statusCode(200);
   }
 
-  @Test
+  @Ignore
   public void deleteNonExistentSoapRequestReturnsNotFound() {
     deleteSoapRequestById(getSoapRequestEndpoint() + UUID.randomUUID().toString())
         .then()
