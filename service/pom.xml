@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>uk.gov.defra.tracesx</groupId>
   <artifactId>soaprequest-microservice</artifactId>
@@ -11,7 +13,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.0.5.RELEASE</version>
+    <version>2.1.2.RELEASE</version>
   </parent>
 
   <repositories>
@@ -39,10 +41,6 @@
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-web-services</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-security</artifactId>
     </dependency>
     <dependency>
@@ -51,8 +49,8 @@
       <scope>test</scope>
       <exclusions>
         <exclusion>
-            <groupId>com.vaadin.external.google</groupId>
-            <artifactId>android-json</artifactId>
+          <groupId>com.vaadin.external.google</groupId>
+          <artifactId>android-json</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -70,13 +68,19 @@
     <dependency>
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-jwt</artifactId>
-      <version>1.0.9.RELEASE</version>
+      <version>1.0.10.RELEASE</version>
     </dependency>
     <!-- used to fetch public signing keys from jwks urls -->
     <dependency>
       <groupId>com.auth0</groupId>
       <artifactId>jwks-rsa</artifactId>
       <version>0.3.0</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <!-- jjwt is only needed in the test scope to creating tokens used by unit tests -->
     <dependency>
@@ -130,22 +134,17 @@
     <dependency>
       <groupId>com.microsoft.azure</groupId>
       <artifactId>applicationinsights-web</artifactId>
-      <version>2.0.0</version>
+      <version>${applicationinsights.version}</version>
     </dependency>
     <dependency>
       <groupId>com.microsoft.azure</groupId>
       <artifactId>applicationinsights-core</artifactId>
-      <version>2.0.0</version>
+      <version>${applicationinsights.version}</version>
     </dependency>
     <dependency>
       <groupId>com.microsoft.azure</groupId>
       <artifactId>applicationinsights-logging-logback</artifactId>
-      <version>2.0.0</version>
-    </dependency>
-    <dependency>
-      <groupId>com.github.fge</groupId>
-      <artifactId>json-patch</artifactId>
-      <version>1.9</version>
+      <version>${applicationinsights.version}</version>
     </dependency>
     <dependency>
       <groupId>com.github.everit-org.json-schema</groupId>
@@ -176,10 +175,11 @@
     <neovisionaries.version>1.22</neovisionaries.version>
     <notification.service.api.version>0.1-SNAPSHOT</notification.service.api.version>
     <jackson.datatype.jsr310>2.9.4</jackson.datatype.jsr310>
-    <owasp.version>3.3.2</owasp.version>
+    <owasp.version>4.0.2</owasp.version>
     <org.antlr.version>3.2</org.antlr.version>
     <mssql.jdbc.version>7.0.0.jre8</mssql.jdbc.version>
     <jjwt.version>0.10.5</jjwt.version>
+    <guava.version>27.0.1-jre</guava.version>
   </properties>
   <build>
     <resources>
@@ -191,7 +191,7 @@
     <!-- Keep filename static to avoid updating the Dockerfile -->
     <finalName>TracesX_SoapRequest</finalName>
     <plugins>
-     <plugin>
+      <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
         <configuration>
@@ -271,11 +271,15 @@
             </configuration>
           </execution>
         </executions>
-      </plugin> 
+      </plugin>
       <plugin>
         <groupId>org.owasp</groupId>
         <artifactId>dependency-check-maven</artifactId>
         <version>${owasp.version}</version>
+        <configuration>
+          <failBuildOnCVSS>4</failBuildOnCVSS>
+          <suppressionFiles>src/main/resources/suppressions.xml</suppressionFiles>
+        </configuration>
         <executions>
           <execution>
             <goals>

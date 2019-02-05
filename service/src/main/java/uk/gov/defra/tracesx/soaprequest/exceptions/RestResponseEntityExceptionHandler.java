@@ -1,6 +1,5 @@
 package uk.gov.defra.tracesx.soaprequest.exceptions;
 
-import com.github.fge.jsonpatch.JsonPatchException;
 import java.io.IOException;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -20,65 +19,65 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
   private static final Logger EXCEPTION_LOGGER =
-      LoggerFactory.getLogger(RestResponseEntityExceptionHandler.class);
+    LoggerFactory.getLogger(RestResponseEntityExceptionHandler.class);
 
   @ExceptionHandler(value = {BadRequestBodyException.class})
-  protected ResponseEntity<java.lang.Object> handleBadRequestBody(
-      Exception ex, WebRequest request) {
-    EXCEPTION_LOGGER.info("Bad request body " + ex.getMessage());
+  ResponseEntity<java.lang.Object> handleBadRequestBody(
+    Exception ex, WebRequest request) {
+    EXCEPTION_LOGGER.info("Bad request body {}", ex.getMessage());
     return handleExceptionInternal(
-        ex, ex.getMessage(), new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+      ex, ex.getMessage(), new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
   }
 
   @ExceptionHandler(value = {NotImplementedException.class})
-  protected ResponseEntity<java.lang.Object> handleMethodNotImplemented(
-      Exception ex, WebRequest request) {
+  ResponseEntity<java.lang.Object> handleMethodNotImplemented(
+    Exception ex, WebRequest request) {
     EXCEPTION_LOGGER.info("Method Not Implemented");
     return handleExceptionInternal(ex, "", new HttpHeaders(), HttpStatus.NOT_IMPLEMENTED, request);
   }
 
   @ExceptionHandler(
-      value = {
-        NotFoundException.class,
-        NoSuchElementException.class,
-        EmptyResultDataAccessException.class
-      })
-  protected ResponseEntity<Object> handleNotFound(Exception ex, WebRequest request) {
+    value = {
+      NotFoundException.class,
+      NoSuchElementException.class,
+      EmptyResultDataAccessException.class
+    })
+  ResponseEntity<Object> handleNotFound(Exception ex, WebRequest request) {
     EXCEPTION_LOGGER.info("{} : {}", PAGE_NOT_FOUND_LOG_CATEGORY, request.getDescription(false));
     return handleExceptionInternal(ex, "", new HttpHeaders(), HttpStatus.NOT_FOUND, request);
   }
 
   @ExceptionHandler(value = {JsonPatchException.class, IOException.class})
-  protected ResponseEntity<Object> handleBadJson(Exception ex, WebRequest request) {
+  ResponseEntity<Object> handleBadJson(Exception ex, WebRequest request) {
     EXCEPTION_LOGGER.info("Invalid Json");
     return handleExceptionInternal(ex, "", new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
   }
 
   @ExceptionHandler(value = {ValidationException.class})
-  protected ResponseEntity<Object> handleInvalidSchema(Exception ex, WebRequest request) {
+  ResponseEntity<Object> handleInvalidSchema(Exception ex, WebRequest request) {
     EXCEPTION_LOGGER.info("Schema validation failed");
     return handleExceptionInternal(
-        ex,
-        getSchemaErrors((ValidationException) ex),
-        new HttpHeaders(),
-        HttpStatus.BAD_REQUEST,
-        request);
+      ex,
+      getSchemaErrors((ValidationException) ex),
+      new HttpHeaders(),
+      HttpStatus.BAD_REQUEST,
+      request);
   }
 
   private String getSchemaErrors(ValidationException e) {
     String errorsOutput;
-    if (e.getCausingExceptions().size() > 0) {
+    if (!e.getCausingExceptions().isEmpty()) {
       String errors =
-          e.getCausingExceptions()
-              .stream()
-              .map(i -> (i.getPointerToViolation() + " : " + i.getErrorMessage()))
-              .collect(Collectors.joining(System.lineSeparator()));
+        e.getCausingExceptions()
+          .stream()
+          .map(i -> (i.getPointerToViolation() + " : " + i.getErrorMessage()))
+          .collect(Collectors.joining(System.lineSeparator()));
 
       errorsOutput = String.format("Schema error with model: %s", errors);
     } else {
       errorsOutput =
-          String.format(
-              "Schema or model error: %s : %s", e.getErrorMessage(), e.getPointerToViolation());
+        String.format(
+          "Schema or model error: %s : %s", e.getErrorMessage(), e.getPointerToViolation());
     }
     return errorsOutput;
   }
