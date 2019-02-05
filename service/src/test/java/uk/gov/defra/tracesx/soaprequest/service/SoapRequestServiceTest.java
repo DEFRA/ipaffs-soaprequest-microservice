@@ -2,7 +2,6 @@ package uk.gov.defra.tracesx.soaprequest.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -12,6 +11,7 @@ import java.util.UUID;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import uk.gov.defra.tracesx.soaprequest.audit.AuditServiceWrapper;
 import uk.gov.defra.tracesx.soaprequest.dao.entities.SoapRequest;
@@ -24,11 +24,12 @@ public class SoapRequestServiceTest {
   public static final String TEST_USER = "testUser";
 
   @Mock SoapRequestRepository soapRequestRepository;
-  private SoapRequestService soapRequestService;
-
-  private SoapRequest soapRequest;
-
   @Mock AuditServiceWrapper auditServiceWrapper;
+  @Captor
+  private ArgumentCaptor<SoapRequest> soapRequestCaptor;
+
+  private SoapRequestService soapRequestService;
+  private SoapRequest soapRequest;
 
   @Before
   public void setUp() {
@@ -62,24 +63,22 @@ public class SoapRequestServiceTest {
     UUID entityId = soapRequestService.create(createDefaultSoapRequestDTO());
 
     // Then
-    verify(soapRequestRepository, times(1)).save(any());
+    verify(soapRequestRepository).save(any());
     assertEquals(soapRequest.getId(), entityId);
   }
 
   @Test
   public void createSavesTheCorrectDataToTheRepository() {
     // Given
-
-    ArgumentCaptor<SoapRequest> captor = ArgumentCaptor.forClass(SoapRequest.class);
-    when(soapRequestRepository.save(captor.capture())).thenReturn(soapRequest);
+    when(soapRequestRepository.save(soapRequestCaptor.capture())).thenReturn(soapRequest);
 
     // When
     soapRequestService.create(createDefaultSoapRequestDTO());
 
     // Then
-    assertEquals(null, captor.getValue().getId());
-    assertEquals(soapRequest.getUsername(), captor.getValue().getUsername());
-    assertEquals(soapRequest.getQuery(), captor.getValue().getQuery());
+    assertEquals(null, soapRequestCaptor.getValue().getId());
+    assertEquals(soapRequest.getUsername(), soapRequestCaptor.getValue().getUsername());
+    assertEquals(soapRequest.getQuery(), soapRequestCaptor.getValue().getQuery());
   }
 
   @Test
@@ -91,7 +90,7 @@ public class SoapRequestServiceTest {
     soapRequestService.get(soapRequest.getId());
 
     // Then
-    verify(soapRequestRepository, times(1)).findById(soapRequest.getId());
+    verify(soapRequestRepository).findById(soapRequest.getId());
   }
 
   @Test
@@ -117,7 +116,7 @@ public class SoapRequestServiceTest {
     soapRequestService.getByRequestId(soapRequest.getRequestId());
 
     // Then
-    verify(soapRequestRepository, times(1)).findByRequestId(soapRequest.getRequestId());
+    verify(soapRequestRepository).findByRequestId(soapRequest.getRequestId());
   }
 
   @Test
@@ -144,7 +143,6 @@ public class SoapRequestServiceTest {
     soapRequestService.deleteData(id);
 
     // Then
-    verify(soapRequestRepository, times(1)).deleteById(id);
+    verify(soapRequestRepository).deleteById(id);
   }
-
 }

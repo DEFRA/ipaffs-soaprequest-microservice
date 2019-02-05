@@ -5,4 +5,5 @@
 
     <include file="changelogs/create_schema_1.0.xml"/>
     <include file="changelogs/IMTA-3891-create-audit-table-for-soaprequest-1.0.xml"/>
+    <include file="changelogs/IMTA-4093-additional-columns-in-soap-audit-table.xml"/>
 </databaseChangeLog>

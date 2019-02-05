@@ -1,0 +1,17 @@
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+  <changeSet author="pseepathi" id="additional_columns_in_soaprequest_audit_table">
+    <addColumn tableName="soaprequest_audit">
+      <column name="entity_type" type="varchar(12)" defaultValue="SOAP">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+    <addColumn tableName="soaprequest_audit">
+      <column name="entity_id" type="nvarchar(90)">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+  </changeSet>
+</databaseChangeLog>

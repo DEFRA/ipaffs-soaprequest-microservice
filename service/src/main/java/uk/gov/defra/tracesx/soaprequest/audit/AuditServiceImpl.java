@@ -1,5 +1,10 @@
 package uk.gov.defra.tracesx.soaprequest.audit;
 
+import static org.slf4j.LoggerFactory.getLogger;
+import static uk.gov.defra.tracesx.soaprequest.audit.AuditRequestType.CREATE;
+import static uk.gov.defra.tracesx.soaprequest.audit.AuditRequestType.DELETE;
+import static uk.gov.defra.tracesx.soaprequest.audit.AuditRequestType.READ;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,15 +12,11 @@ import org.springframework.stereotype.Service;
 import uk.gov.defra.tracesx.soaprequest.audit.dao.entities.Audit;
 import uk.gov.defra.tracesx.soaprequest.audit.dao.repositories.AuditRepository;
 
-import static java.time.LocalDateTime.now;
-import static org.slf4j.LoggerFactory.getLogger;
-import static uk.gov.defra.tracesx.soaprequest.audit.AuditRequestType.CREATE;
-import static uk.gov.defra.tracesx.soaprequest.audit.AuditRequestType.DELETE;
-import static uk.gov.defra.tracesx.soaprequest.audit.AuditRequestType.READ;
-
 @Service
 public class AuditServiceImpl <T> implements AuditService<T> {
 
+  private static final String REQUEST_ID = "requestId";
+  private static final String REGEX_REMOVE_QUOTES = "^\"|\"$|\\\\";
   private final AuditRepository auditRepository;
   private final AuditConfig auditConfig;
   private final Logger logger = getLogger(AuditServiceImpl.class);
@@ -35,26 +36,26 @@ public class AuditServiceImpl <T> implements AuditService<T> {
   }
 
   @Override
-  public void read(String user, String id) {
+  public void read(String user, JsonNode current) {
     if (auditConfig.isAuditOnRead()) {
-      processAudit(user, READ, id);
+      processAudit(user, READ, current);
     }
   }
 
   @Override
-  public void delete(String user, String id) {
+  public void delete(String user, JsonNode deleted) {
     if (auditConfig.isAuditOnDelete()) {
-      processAudit(user, DELETE, id);
+      processAudit(user, DELETE, deleted);
     }
   }
 
-  private void processAuditForInsert(String user, JsonNode diff, AuditRequestType type) {
+  private void processAuditForInsert(String user, JsonNode created, AuditRequestType type) {
     Audit audit = Audit.builder()
-            .userId(user)
-            .data(diff.toString().replaceAll("^\"|\"$|\\\\", ""))
-            .type(type)
-            .createdAt(now())
-        .build();
+        .userId(user)
+        .data(created.toString().replaceAll(REGEX_REMOVE_QUOTES, ""))
+        .entityId(created.get(REQUEST_ID).asLong())
+        .type(type)
+          .build();
     try {
       auditRepository.save(audit);
     } catch (Exception e) {
@@ -62,12 +63,12 @@ public class AuditServiceImpl <T> implements AuditService<T> {
     }
   }
 
-  private void processAudit(String user, AuditRequestType type , String id) {
+  private void processAudit(String user, AuditRequestType type , JsonNode jsonNode) {
     Audit audit = Audit.builder()
-            .userId(user)
-            .data(id)
-            .type(type)
-            .createdAt(now())
+        .userId(user)
+        .data(jsonNode.toString().replaceAll(REGEX_REMOVE_QUOTES, ""))
+        .entityId(jsonNode.get(REQUEST_ID).asLong())
+        .type(type)
             .build();
     try {
       auditRepository.save(audit);

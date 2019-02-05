@@ -1,43 +1,53 @@
 package uk.gov.defra.tracesx.soaprequest.audit;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.UUID;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import uk.gov.defra.tracesx.soaprequest.dao.entities.SoapRequest;
+import uk.gov.defra.tracesx.soaprequest.dto.SoapRequestDTO;
 import uk.gov.defra.tracesx.soaprequest.security.IdTokenUserDetails;
-
-import java.util.UUID;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 public class AuditServiceWrapperTest {
 
   private static final String TEST_OBJECT_ID = "123-123-123";
-  @Mock
-  private AuditService auditService;
+  private static final String QUERY = "test";
+  private static final String TEST_USER = "testUser";
+  private Long  REQUEST_ID = new Long("1549469808042");
+  private String QUERY_STRING = "{'reference':'CVEDP.GB.2019.1000002','type':'CVEDP'}";
+
   private ObjectMapper objectMapper = new ObjectMapper();
   private AuditServiceWrapper auditServiceWrapper;
   private SoapRequest soapRequest;
-  private Long  REQUEST_ID = new Long("1549469808042");
-  private String QUERY_STRING = "{'reference':'CVEDP.GB.2019.1000002','type':'CVEDP'}";
+
+  @Mock
+  private AuditService auditService;
+  @Mock
+  private Authentication authentication;
+  @Mock
+  private SecurityContext securityContext;
+  @Captor
+  private ArgumentCaptor<JsonNode> jsonNodeCaptor;
 
   @Before
   public void setUp() {
     initMocks(this);
     auditServiceWrapper = new AuditServiceWrapper(auditService, objectMapper);
     IdTokenUserDetails userDetails = IdTokenUserDetails.builder().userObjectId(TEST_OBJECT_ID).build();
-    Authentication authentication = mock(Authentication.class);
     when(authentication.getDetails()).thenReturn(userDetails);
-    SecurityContext securityContext = mock(SecurityContext.class);
     when(securityContext.getAuthentication()).thenReturn(authentication);
     SecurityContextHolder.setContext(securityContext);
 
@@ -50,27 +60,41 @@ public class AuditServiceWrapperTest {
 
   @Test
   public void create() {
-    JsonNode expectedArgument = objectMapper.valueToTree(soapRequest.getQuery());
+    JsonNode expectedArgument = objectMapper.valueToTree(soapRequest);
 
-    ArgumentCaptor<JsonNode> captor = ArgumentCaptor.forClass(JsonNode.class);
     auditServiceWrapper.create(soapRequest);
 
-    verify(auditService).create(eq(TEST_OBJECT_ID), captor.capture());
+    verify(auditService).create(eq(TEST_OBJECT_ID), jsonNodeCaptor.capture());
 
-    assertThat(captor.getValue()).isEqualTo(expectedArgument);
+    assertThat(jsonNodeCaptor.getValue()).isEqualTo(expectedArgument);
   }
 
   @Test
   public void read() {
-    auditServiceWrapper.read(REQUEST_ID.toString());
+    JsonNode expectedArgument = objectMapper.valueToTree(createDefaultSoapRequestDTO());
 
-    verify(auditService).read(eq(TEST_OBJECT_ID), eq(REQUEST_ID.toString()));
+    auditServiceWrapper.read(createDefaultSoapRequestDTO());
+
+    verify(auditService).read(eq(TEST_OBJECT_ID), jsonNodeCaptor.capture());
+
+    assertThat(jsonNodeCaptor.getValue()).isEqualTo(expectedArgument);
   }
 
   @Test
   public void delete() {
-    auditServiceWrapper.delete(REQUEST_ID.toString());
+    JsonNode expectedArgument = objectMapper.valueToTree(createDefaultSoapRequestDTO());
 
-    verify(auditService).delete(eq(TEST_OBJECT_ID), eq(REQUEST_ID.toString()));
+    auditServiceWrapper.delete(createDefaultSoapRequestDTO());
+
+    verify(auditService).delete(eq(TEST_OBJECT_ID), jsonNodeCaptor.capture());
+
+    assertThat(jsonNodeCaptor.getValue()).isEqualTo(expectedArgument);
+  }
+
+  private SoapRequestDTO createDefaultSoapRequestDTO() {
+    SoapRequestDTO soapRequestDTO = new SoapRequestDTO();
+    soapRequestDTO.setQuery(QUERY);
+    soapRequestDTO.setUsername(TEST_USER);
+    return soapRequestDTO;
   }
 }

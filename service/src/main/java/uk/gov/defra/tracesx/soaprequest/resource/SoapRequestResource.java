@@ -58,7 +58,7 @@ public class SoapRequestResource {
     LOGGER.debug("GET requestId: {}", requestId);
     return ResponseEntity.ok(soapRequestService.getByRequestId(requestId));
   }
-  
+
   @DeleteMapping(value = "/{id}")
   public ResponseEntity delete(@PathVariable("id") UUID id) {
     LOGGER.debug("DELETE id: {}", id);
