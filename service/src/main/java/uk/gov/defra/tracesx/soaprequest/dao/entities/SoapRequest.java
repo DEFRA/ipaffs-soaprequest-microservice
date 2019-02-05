@@ -1,5 +1,7 @@
 package uk.gov.defra.tracesx.soaprequest.dao.entities;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import java.util.UUID;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -8,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
+@Builder
+@AllArgsConstructor
 @Table(name = "soaprequest")
 public class SoapRequest {
 

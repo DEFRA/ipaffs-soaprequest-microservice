@@ -32,3 +32,8 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.SQLServer2008Dialect
+audit:
+  create: true
+  read: true
+  update: false
+  delete: true
