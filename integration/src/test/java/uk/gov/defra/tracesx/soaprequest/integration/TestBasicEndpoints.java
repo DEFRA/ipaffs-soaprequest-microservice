@@ -2,88 +2,90 @@ package uk.gov.defra.tracesx.soaprequest.integration;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.Assert.assertEquals;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static uk.gov.defra.tracesx.soaprequest.integration.helper.JwtConstants.BEARER;
+import static uk.gov.defra.tracesx.soaprequest.integration.properties.Properties.SERVICE_BASE_URL;
 
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import java.util.UUID;
 import org.junit.Before;
-import org.junit.Ignore;
+import org.junit.Test;
 import org.springframework.web.util.UriComponentsBuilder;
 import uk.gov.defra.tracesx.soaprequest.integration.dto.SoapRequestDTO;
-import java.io.UnsupportedEncodingException;
+import uk.gov.defra.tracesx.soaprequest.integration.helper.TokenHelper;
 
 public class TestBasicEndpoints {
 
-  public static final String SOAP_REQUEST_ENDPOINT = "soaprequest";
-  private static String TEST_USERNAME = "testUser";
-  private static String TEST_QUERY = "testQuery";
+  private static final String LOCATION = "Location";
+  private static final String[] READ_ROLES = {"soap"};
+  private static final String SOAP_REQUEST_ENDPOINT = "soaprequest";
+  private static final String TEST_USERNAME = "testUser";
+  private static final String TEST_QUERY = "testQuery";
   private String baseUrl;
   private String resourceUrl;
 
-  private String stripEnvDelims(String src) {
-    return src.substring(2, src.length() - 1);
-  }
-
   @Before
-  public void setup() throws UnsupportedEncodingException{
-    baseUrl = System.getProperty("service.base.url");
+  public void setup() {
+    baseUrl = SERVICE_BASE_URL;
 
     resourceUrl =
-        UriComponentsBuilder.newInstance()
-            .fromHttpUrl(baseUrl)
-            .path(SOAP_REQUEST_ENDPOINT)
-            .build()
-            .toString();
+      UriComponentsBuilder
+        .fromHttpUrl(baseUrl)
+        .path(SOAP_REQUEST_ENDPOINT)
+        .build()
+        .toString();
   }
 
-  @Ignore
+  @Test
   public void canCreateSoapRequest() {
     createSoapRequest(TEST_USERNAME, TEST_QUERY).then().statusCode(201);
   }
 
-  @Ignore
+  @Test
   public void rejectInvalidSoapRequest() {
     given()
-        .body("{\"exampleWrong\": \"test\"}")
-        .contentType(ContentType.JSON)
-        .when()
-        .post(resourceUrl)
-        .then()
-        .statusCode(400);
+      .body("{\"exampleWrong\": \"test\"}")
+      .header(AUTHORIZATION, BEARER + TokenHelper.getValidToken(READ_ROLES))
+      .contentType(ContentType.JSON)
+      .when()
+      .post(resourceUrl)
+      .then()
+      .statusCode(400);
   }
 
-  @Ignore
+  @Test
   public void canGetSoapRequest() {
     String id =
-        createSoapRequest(TEST_USERNAME, TEST_QUERY)
-            .then()
-            .statusCode(201)
-            .extract()
-            .header("Location");
-    ;
+      createSoapRequest(TEST_USERNAME, TEST_QUERY)
+        .then()
+        .statusCode(201)
+        .extract()
+        .header(LOCATION);
+
     getSoapRequestById(id).then().statusCode(200);
   }
 
-  @Ignore
+  @Test
   public void getNonExistentSoapRequestReturnsNotFound() {
     getSoapRequestById(getSoapRequestEndpoint() + UUID.randomUUID().toString())
-        .then()
-        .statusCode(404);
+      .then()
+      .statusCode(404);
   }
-/*
-  @Ignore
+
+  @Test
   public void canGetSoapRequestByRequestIdAndUsername() {
     String id =
-        createSoapRequest(TEST_USERNAME, TEST_QUERY)
-            .then()
-            .statusCode(201)
-            .extract()
-            .header("Location");
+      createSoapRequest(TEST_USERNAME, TEST_QUERY)
+        .then()
+        .statusCode(201)
+        .extract()
+        .header(LOCATION);
     Response soapRequestResponse = getSoapRequestById(id);
     SoapRequestDTO soapRequest = soapRequestResponse.body().as(SoapRequestDTO.class);
 
     Response response =
-        getSoapRequestByRequestIdAndUsername(soapRequest.getRequestId(), soapRequest.getUsername());
+      getSoapRequestByRequestIdAndUsername(soapRequest.getRequestId(), soapRequest.getUsername());
     response.then().statusCode(200);
     SoapRequestDTO result = response.body().as(SoapRequestDTO.class);
 
@@ -92,55 +94,62 @@ public class TestBasicEndpoints {
     assertEquals(result.getUsername(), soapRequest.getUsername());
     assertEquals(result.getQuery(), soapRequest.getQuery());
   }
-*/
-/*
-  @Ignore
+
+  @Test
   public void getNonExistentSoapRequestByRequestIdAndUsernameReturnsNotFound() {
     getSoapRequestByRequestIdAndUsername(123L, "missing").then().statusCode(404);
   }
-*/
-  @Ignore
+
+  @Test
   public void canDeleteSoapRequest() {
     String id =
-        createSoapRequest(TEST_USERNAME, TEST_QUERY)
-            .then()
-            .statusCode(201)
-            .extract()
-            .header("Location");
+      createSoapRequest(TEST_USERNAME, TEST_QUERY)
+        .then()
+        .statusCode(201)
+        .extract()
+        .header(LOCATION);
     deleteSoapRequestById(id).then().statusCode(200);
   }
 
-  @Ignore
+  @Test
   public void deleteNonExistentSoapRequestReturnsNotFound() {
     deleteSoapRequestById(getSoapRequestEndpoint() + UUID.randomUUID().toString())
-        .then()
-        .statusCode(404);
+      .then()
+      .statusCode(404);
   }
 
   private Response createSoapRequest(String username, String query) {
     return given()
-        .body("{\"username\": \"" + username + "\", \"query\": \"" + query + "\"}")
-        .contentType(ContentType.JSON)
-        .when()
-        .post(resourceUrl);
+      .body("{\"username\": \"" + username + "\", \"query\": \"" + query + "\"}")
+      .header(AUTHORIZATION, BEARER + TokenHelper.getValidToken(READ_ROLES))
+      .contentType(ContentType.JSON)
+      .when()
+      .post(resourceUrl);
   }
 
   private Response getSoapRequestById(String id) {
-    return given().when().get(baseUrl + id);
+    return given()
+      .header(AUTHORIZATION, BEARER + TokenHelper.getValidToken(READ_ROLES))
+      .when()
+      .get(baseUrl + id);
   }
 
   private Response deleteSoapRequestById(String id) {
-    return given().when().delete(baseUrl + id);
+    return given()
+      .header(AUTHORIZATION, BEARER + TokenHelper.getValidToken(READ_ROLES))
+      .when()
+      .delete(baseUrl + id);
   }
-/*
+
   private Response getSoapRequestByRequestIdAndUsername(Long requestId, String username) {
     return given()
-        .when()
-        .queryParam("requestId", requestId)
-        .queryParam("username", username)
-        .get(resourceUrl);
+      .header(AUTHORIZATION, BEARER + TokenHelper.getValidToken(READ_ROLES))
+      .when()
+      .queryParam("requestId", requestId)
+      .queryParam("username", username)
+      .get(resourceUrl);
   }
-*/
+
   private String getSoapRequestEndpoint() {
     return "/" + SOAP_REQUEST_ENDPOINT + "/";
   }

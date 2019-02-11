@@ -50,18 +50,15 @@ public class SoapRequestResource {
   @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity get(@PathVariable("id") UUID id) {
     LOGGER.debug("GET id: {}", id);
-    ResponseEntity response = ResponseEntity.ok(soapRequestService.get(id));
-    return response;
+    return ResponseEntity.ok(soapRequestService.get(id));
   }
 
   @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity getByRequestId(@RequestParam("requestId") Long requestId) {
     LOGGER.debug("GET requestId: {}", requestId);
-    ResponseEntity response = ResponseEntity.ok(soapRequestService.getByRequestId(requestId));
-    return response;
+    return ResponseEntity.ok(soapRequestService.getByRequestId(requestId));
   }
-
-
+  
   @DeleteMapping(value = "/{id}")
   public ResponseEntity delete(@PathVariable("id") UUID id) {
     LOGGER.debug("DELETE id: {}", id);

@@ -1,5 +1,7 @@
 package uk.gov.defra.tracesx.soaprequest.security.jwt;
 
+import static uk.gov.defra.tracesx.soaprequest.security.jwt.JwtConstants.BEARER;
+
 import java.io.IOException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -23,7 +25,8 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
   @Override
   protected void doFilterInternal(
-      HttpServletRequest req, HttpServletResponse res, FilterChain filterChain) throws IOException, ServletException {
+    HttpServletRequest req, HttpServletResponse res, FilterChain filterChain)
+    throws IOException, ServletException {
     try {
       String token = resolveToken(req);
       if (null != token) {
@@ -39,7 +42,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
   private String resolveToken(HttpServletRequest req) {
     String bearerToken = req.getHeader("Authorization");
-    if (bearerToken != null && bearerToken.startsWith("Bearer ")) { // TODO: case-insensitive
+    if (bearerToken != null && bearerToken.startsWith(BEARER)) {
       return bearerToken.substring(7);
     }
     return null;
