@@ -13,6 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import uk.gov.defra.tracesx.soaprequest.audit.AuditServiceWrapper;
 import uk.gov.defra.tracesx.soaprequest.dao.entities.SoapRequest;
 import uk.gov.defra.tracesx.soaprequest.dao.repositories.SoapRequestRepository;
 import uk.gov.defra.tracesx.soaprequest.dto.SoapRequestDTO;
@@ -25,10 +26,15 @@ public class SoapRequestServiceTest {
   @Mock SoapRequestRepository soapRequestRepository;
   private SoapRequestService soapRequestService;
 
+  private SoapRequest soapRequest;
+
+  @Mock AuditServiceWrapper auditServiceWrapper;
+
   @Before
   public void setUp() {
     initMocks(this);
-    soapRequestService = new SoapRequestService(soapRequestRepository);
+    soapRequestService = new SoapRequestService(soapRequestRepository,  auditServiceWrapper);
+    soapRequest = createDefaultSoapRequestEntity();
   }
 
   private SoapRequestDTO createDefaultSoapRequestDTO() {
@@ -50,7 +56,6 @@ public class SoapRequestServiceTest {
   @Test
   public void createsSavesAsNewEntity() {
     // Given
-    SoapRequest soapRequest = createDefaultSoapRequestEntity();
     when(soapRequestRepository.save(any())).thenReturn(soapRequest);
 
     // When
@@ -64,7 +69,6 @@ public class SoapRequestServiceTest {
   @Test
   public void createSavesTheCorrectDataToTheRepository() {
     // Given
-    SoapRequest soapRequest = createDefaultSoapRequestEntity();
 
     ArgumentCaptor<SoapRequest> captor = ArgumentCaptor.forClass(SoapRequest.class);
     when(soapRequestRepository.save(captor.capture())).thenReturn(soapRequest);
@@ -81,7 +85,6 @@ public class SoapRequestServiceTest {
   @Test
   public void getCallsRepositoryWithId() {
     // Given
-    SoapRequest soapRequest = createDefaultSoapRequestEntity();
     when(soapRequestRepository.findById(any())).thenReturn(Optional.of(soapRequest));
 
     // When
@@ -94,7 +97,6 @@ public class SoapRequestServiceTest {
   @Test
   public void getReturnsRecordFromRepository() {
     // Given
-    SoapRequest soapRequest = createDefaultSoapRequestEntity();
     when(soapRequestRepository.findById(any())).thenReturn(Optional.of(soapRequest));
 
     // When
@@ -109,7 +111,6 @@ public class SoapRequestServiceTest {
   @Test
   public void getByRequestIdCallsRepositoryWithId() {
     // Given
-    SoapRequest soapRequest = createDefaultSoapRequestEntity();
     when(soapRequestRepository.findByRequestId(any())).thenReturn(Optional.of(soapRequest));
 
     // When
@@ -122,7 +123,6 @@ public class SoapRequestServiceTest {
   @Test
   public void getByRequestIdReturnsRecordFromRepository() {
     // Given
-    SoapRequest soapRequest = createDefaultSoapRequestEntity();
     when(soapRequestRepository.findByRequestId(any())).thenReturn(Optional.of(soapRequest));
 
     // When
@@ -138,6 +138,7 @@ public class SoapRequestServiceTest {
   public void deleteCallsRepositoryOnceWithId() {
     // Given
     UUID id = UUID.randomUUID();
+    when(soapRequestRepository.findById(any())).thenReturn(Optional.of(soapRequest));
 
     // When
     soapRequestService.deleteData(id);
