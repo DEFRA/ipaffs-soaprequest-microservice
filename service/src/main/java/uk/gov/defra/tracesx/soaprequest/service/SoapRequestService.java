@@ -2,59 +2,57 @@ package uk.gov.defra.tracesx.soaprequest.service;
 
 import java.util.Optional;
 import java.util.UUID;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.defra.tracesx.soaprequest.audit.AuditServiceWrapper;
 import uk.gov.defra.tracesx.soaprequest.dao.entities.SoapRequest;
 import uk.gov.defra.tracesx.soaprequest.dao.repositories.SoapRequestRepository;
 import uk.gov.defra.tracesx.soaprequest.dto.SoapRequestDTO;
-import uk.gov.defra.tracesx.soaprequest.util.Constants;
 
 @Service
 public class SoapRequestService {
 
-    private final SoapRequestRepository soapRequestRepository;
+  private final SoapRequestRepository soapRequestRepository;
 
-    private final AuditServiceWrapper auditServiceWrapper;
+  private final AuditServiceWrapper auditServiceWrapper;
 
-    @Autowired
-    public SoapRequestService(SoapRequestRepository soapRequestRepository, AuditServiceWrapper auditServiceWrapper) {
-        this.soapRequestRepository = soapRequestRepository;
-        this.auditServiceWrapper = auditServiceWrapper;
-    }
+  @Autowired
+  public SoapRequestService(SoapRequestRepository soapRequestRepository, AuditServiceWrapper auditServiceWrapper) {
+    this.soapRequestRepository = soapRequestRepository;
+    this.auditServiceWrapper = auditServiceWrapper;
+  }
 
-    public UUID create(SoapRequestDTO soapRequest) {
-        SoapRequest searchCertificateRequest =
-                soapRequestRepository.save(
-                        new SoapRequest(soapRequest.getUsername(), soapRequest.getQuery()));
+  public UUID create(SoapRequestDTO soapRequest) {
+    SoapRequest searchCertificateRequest =
+        soapRequestRepository.save(
+            new SoapRequest(soapRequest.getUsername(), soapRequest.getQuery()));
 
-        auditServiceWrapper.create(searchCertificateRequest);
+    auditServiceWrapper.create(searchCertificateRequest);
 
-        return searchCertificateRequest.getId();
-    }
+    return searchCertificateRequest.getId();
+  }
 
-    public SoapRequestDTO get(UUID id) {
-        Optional<SoapRequest> soapRequest = soapRequestRepository.findById(id);
-        SoapRequestDTO soapRequestDTO = soapRequest.map(SoapRequestDTO::from).get();
+  public SoapRequestDTO get(UUID id) {
+    Optional<SoapRequest> soapRequest = soapRequestRepository.findById(id);
+    SoapRequestDTO soapRequestDTO = soapRequest.map(SoapRequestDTO::from).get();
+    auditServiceWrapper.read(soapRequestDTO);
+    return soapRequestDTO;
+  }
 
-        auditServiceWrapper.read(Constants.SOAP_REQUEST_ID_LABEL.concat(soapRequestDTO.getRequestId().toString()));
-        return soapRequestDTO;
-    }
+  public SoapRequestDTO getByRequestId(Long id) {
+    Optional<SoapRequest> soapRequest =   soapRequestRepository.findByRequestId(id);
+    SoapRequestDTO soapRequestDTO = soapRequest.map(SoapRequestDTO::from).get();
 
-    public SoapRequestDTO getByRequestId(Long id) {
-        SoapRequestDTO soapRequestDTO = soapRequestRepository.findByRequestId(id).map(SoapRequestDTO::from).get();
+    auditServiceWrapper.read(soapRequestDTO);
 
-        auditServiceWrapper.read(Constants.SOAP_REQUEST_ID_LABEL.concat(soapRequestDTO.getRequestId().toString()));
-        return soapRequestDTO;
+    return soapRequestDTO;
+  }
 
-    }
+  public void deleteData(UUID id) {
+    SoapRequestDTO soapRequestDTO = soapRequestRepository.findById(id).map(SoapRequestDTO::from).get();
+    soapRequestRepository.deleteById(id);
 
-    public void deleteData(UUID id) {
-        SoapRequestDTO soapRequestDTO = soapRequestRepository.findById(id).map(SoapRequestDTO::from).get();
-        soapRequestRepository.deleteById(id);
-
-        auditServiceWrapper.delete(Constants.SOAP_REQUEST_ID_LABEL.concat(soapRequestDTO.getRequestId().toString()));
-    }
+    auditServiceWrapper.delete(soapRequestDTO);
+  }
 
 }

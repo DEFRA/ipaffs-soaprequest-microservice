@@ -1,12 +1,11 @@
 package uk.gov.defra.tracesx.soaprequest.audit;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import uk.gov.defra.tracesx.soaprequest.dao.entities.SoapRequest;
+import uk.gov.defra.tracesx.soaprequest.dto.SoapRequestDTO;
 import uk.gov.defra.tracesx.soaprequest.security.IdTokenUserDetails;
 
 @Service
@@ -23,15 +22,15 @@ public class AuditServiceWrapper {
   }
 
   public void create(SoapRequest soapRequest) {
-    auditService.create(getUserObjectId(), objectMapper.valueToTree(soapRequest.getQuery()));
+    auditService.create(getUserObjectId(), objectMapper.valueToTree(soapRequest));
   }
 
-  public void delete(String id) {
-    auditService.delete(getUserObjectId(), id);
+  public void delete(SoapRequestDTO soapRequestDTO) {
+    auditService.delete(getUserObjectId(), objectMapper.valueToTree(soapRequestDTO));
   }
 
-  public void read(String id) {
-    auditService.read(getUserObjectId(), id);
+  public void read(SoapRequestDTO soapRequestDTO) {
+    auditService.read(getUserObjectId(), objectMapper.valueToTree(soapRequestDTO));
   }
 
   private String getUserObjectId() {

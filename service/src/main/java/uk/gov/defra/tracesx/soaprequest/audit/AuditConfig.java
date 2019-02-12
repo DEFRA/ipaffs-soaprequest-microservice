@@ -15,8 +15,8 @@ public class AuditConfig {
   private final boolean auditOnDelete;
 
   public AuditConfig(@Value("${audit.read:false}") boolean auditOnRead,
-                     @Value("${audit.delete:false}") boolean auditOnDelete,
-                     @Value("${audit.create:false}") boolean auditOnCreate
+      @Value("${audit.delete:false}") boolean auditOnDelete,
+      @Value("${audit.create:false}") boolean auditOnCreate
   ) {
     this.auditOnRead = auditOnRead;
     this.auditOnDelete = auditOnDelete;

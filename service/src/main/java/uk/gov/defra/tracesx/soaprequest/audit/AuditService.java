@@ -6,7 +6,7 @@ public interface AuditService <T> {
 
   void create(String user, JsonNode created);
 
-  void read(String user, String id);
+  void read(String user, JsonNode current);
 
-  void delete(String user, String id);
+  void delete(String user, JsonNode deleted);
 }
