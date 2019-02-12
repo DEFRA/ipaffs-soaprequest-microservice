@@ -10,7 +10,7 @@
     </addColumn>
     <addColumn tableName="soaprequest_audit">
       <column name="entity_id" type="nvarchar(90)">
-        <constraints nullable="false"/>
+        <constraints nullable="true"/>
       </column>
     </addColumn>
   </changeSet>
