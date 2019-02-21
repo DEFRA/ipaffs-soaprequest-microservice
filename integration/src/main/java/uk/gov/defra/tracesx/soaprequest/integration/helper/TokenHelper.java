@@ -4,7 +4,7 @@ import static io.restassured.RestAssured.given;
 import static org.apache.http.HttpHeaders.AUTHORIZATION;
 import static uk.gov.defra.tracesx.soaprequest.integration.helper.JwtConstants.EXP;
 import static uk.gov.defra.tracesx.soaprequest.integration.helper.JwtConstants.NAME;
-import static uk.gov.defra.tracesx.soaprequest.integration.helper.JwtConstants.OID;
+import static uk.gov.defra.tracesx.soaprequest.integration.helper.JwtConstants.UNIQUE_NAME;
 import static uk.gov.defra.tracesx.soaprequest.integration.helper.JwtConstants.ROLES;
 import static uk.gov.defra.tracesx.soaprequest.integration.helper.JwtConstants.UPN;
 
@@ -61,7 +61,7 @@ public class TokenHelper {
     body.put(EXP, exp);
     body.put(NAME, "Test User");
     body.put(UPN, "test.user@test-openid.com");
-    body.put(OID, "e48bb725-5fb2-4748-a858-9fabcc454092");
+    body.put(UNIQUE_NAME, "Soap Service");
     body.putAll(additionalClaims);
     try {
       return objectMapper.writeValueAsString(body);

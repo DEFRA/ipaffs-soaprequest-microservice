@@ -6,7 +6,7 @@ public class JwtConstants {
   static final String ROLES = "roles";
   static final String NAME = "name";
   static final String UPN = "upn";
-  static final String OID = "oid";
+  static final String UNIQUE_NAME = "unique_name";
   public static final String BEARER = "Bearer ";
 
   private JwtConstants() {
