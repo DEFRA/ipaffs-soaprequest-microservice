@@ -14,14 +14,14 @@ public class JwtUserMapper {
   private static final Logger LOGGER = LoggerFactory.getLogger(JwtUserMapper.class);
   public static final String NAME = "name";
   public static final String UPN = "upn";
-  public static final String OID = "oid";
+  public static final String UNIQUE_NAME = "unique_name";
 
   public IdTokenUserDetails createUser(Map<String, Object> decoded, String idToken) {
     return IdTokenUserDetails.builder()
         .idToken(idToken)
         .displayName("SOAP Request Service")
         .username("SOAP")
-        .userObjectId(getRequiredClaim(OID, decoded))
+        .userObjectId(getRequiredClaim(UNIQUE_NAME, decoded))
         .build();
   }
 

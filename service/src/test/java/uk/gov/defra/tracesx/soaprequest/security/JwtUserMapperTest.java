@@ -27,7 +27,7 @@ public class JwtUserMapperTest {
   @Before
   public void before() {
     decoded = new HashMap<>();
-    decoded.put("oid", USER_OBJECT_ID);
+    decoded.put("unique_name", USER_OBJECT_ID);
     decoded.put("name", USERNAME);
   }
 
@@ -40,7 +40,7 @@ public class JwtUserMapperTest {
 
   @Test(expected=InsSecurityException.class)
   public void createUser_fromIncompleteClaims_throwsException() {
-    decoded.remove("oid");
+    decoded.remove("unique_name");
     jwtUserMapper.createUser(decoded, ID_TOKEN);
   }
 
