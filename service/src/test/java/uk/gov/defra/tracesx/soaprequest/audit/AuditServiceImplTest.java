@@ -30,7 +30,7 @@ public class AuditServiceImplTest {
   @Captor
   private ArgumentCaptor<Audit> auditCaptor;
 
-  private AuditService<UUID> auditService;
+  private AuditService auditService;
   private ObjectMapper mapper = new ObjectMapper();
   private Long  REQUEST_ID = new Long("1549469808042");
   private static final String TEST_OBJECT_ID = "123-123-123";
@@ -40,7 +40,7 @@ public class AuditServiceImplTest {
   @Before
   public void init() {
     initMocks(this);
-    auditService = new AuditServiceImpl<UUID>(auditConfig, auditRepository);
+    auditService = new AuditServiceImpl(auditConfig, auditRepository);
     jsonNode = mapper.createObjectNode();
   }
 

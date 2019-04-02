@@ -2,7 +2,7 @@ package uk.gov.defra.tracesx.soaprequest.audit;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-public interface AuditService <T> {
+public interface AuditService {
 
   void create(String user, JsonNode created);
 

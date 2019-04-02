@@ -13,7 +13,7 @@ import uk.gov.defra.tracesx.soaprequest.audit.dao.entities.Audit;
 import uk.gov.defra.tracesx.soaprequest.audit.dao.repositories.AuditRepository;
 
 @Service
-public class AuditServiceImpl <T> implements AuditService<T> {
+public class AuditServiceImpl implements AuditService {
 
   private static final String REQUEST_ID = "requestId";
   private static final String REGEX_REMOVE_QUOTES = "^\"|\"$|\\\\";
