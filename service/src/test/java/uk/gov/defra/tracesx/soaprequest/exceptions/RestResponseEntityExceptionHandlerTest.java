@@ -1,6 +1,6 @@
 package uk.gov.defra.tracesx.soaprequest.exceptions;
 
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
@@ -12,8 +12,6 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Appender;
-import java.util.ArrayList;
-import java.util.List;
 import org.everit.json.schema.ValidationException;
 import org.junit.After;
 import org.junit.Before;
@@ -27,11 +25,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.context.request.WebRequest;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class RestResponseEntityExceptionHandlerTest {
 
-  @Mock WebRequest mockWebRequest;
-  @Mock private Appender mockAppender;
-  @Captor private ArgumentCaptor<LoggingEvent> captorLoggingEvent;
+  @Mock
+  WebRequest mockWebRequest;
+  @Mock
+  private Appender mockAppender;
+  @Captor
+  private ArgumentCaptor<LoggingEvent> captorLoggingEvent;
 
   @Before
   public void setUp() {

@@ -3,8 +3,6 @@ package uk.gov.defra.tracesx.soaprequest.security;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.core.context.SecurityContextHolder.setContext;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,6 +12,9 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextImpl;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AuthenticationFacadeTest {

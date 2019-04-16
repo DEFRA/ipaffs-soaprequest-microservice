@@ -8,7 +8,6 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.UUID;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -18,15 +17,17 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import uk.gov.defra.tracesx.soaprequest.dao.entities.SoapRequest;
-import uk.gov.defra.tracesx.soaprequest.dto.SoapRequestDTO;
+import uk.gov.defra.tracesx.soaprequest.dto.SoapRequestDto;
 import uk.gov.defra.tracesx.soaprequest.security.IdTokenUserDetails;
+
+import java.util.UUID;
 
 public class AuditServiceWrapperTest {
 
   private static final String TEST_OBJECT_ID = "123-123-123";
   private static final String QUERY = "test";
   private static final String TEST_USER = "testUser";
-  private Long  REQUEST_ID = new Long("1549469808042");
+  private Long REQUEST_ID = new Long("1549469808042");
   private String QUERY_STRING = "{'reference':'CVEDP.GB.2019.1000002','type':'CVEDP'}";
 
   private ObjectMapper objectMapper = new ObjectMapper();
@@ -52,10 +53,10 @@ public class AuditServiceWrapperTest {
     SecurityContextHolder.setContext(securityContext);
 
     soapRequest = SoapRequest.builder()
-            .query(QUERY_STRING)
-            .id(UUID.randomUUID())
-            .requestId(REQUEST_ID)
-            .build();
+        .query(QUERY_STRING)
+        .id(UUID.randomUUID())
+        .requestId(REQUEST_ID)
+        .build();
   }
 
   @Test
@@ -91,8 +92,8 @@ public class AuditServiceWrapperTest {
     assertThat(jsonNodeCaptor.getValue()).isEqualTo(expectedArgument);
   }
 
-  private SoapRequestDTO createDefaultSoapRequestDTO() {
-    SoapRequestDTO soapRequestDTO = new SoapRequestDTO();
+  private SoapRequestDto createDefaultSoapRequestDTO() {
+    SoapRequestDto soapRequestDTO = new SoapRequestDto();
     soapRequestDTO.setQuery(QUERY);
     soapRequestDTO.setUsername(TEST_USER);
     return soapRequestDTO;

@@ -1,18 +1,17 @@
 package uk.gov.defra.tracesx.soaprequest.security;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static uk.gov.defra.tracesx.soaprequest.fixtures.IdTokenUserDetailsFixture.*;
-import uk.gov.defra.tracesx.soaprequest.exceptions.InsSecurityException;
 
-import java.util.HashMap;
-import java.util.Map;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.theories.Theories;
 import org.junit.runner.RunWith;
+import uk.gov.defra.tracesx.soaprequest.exceptions.InsSecurityException;
 import uk.gov.defra.tracesx.soaprequest.fixtures.IdTokenUserDetailsFixture;
 import uk.gov.defra.tracesx.soaprequest.security.jwt.JwtUserMapper;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RunWith(Theories.class)
 public class JwtUserMapperTest {
@@ -38,7 +37,7 @@ public class JwtUserMapperTest {
     assertThat(user).isEqualTo(expected);
   }
 
-  @Test(expected=InsSecurityException.class)
+  @Test(expected = InsSecurityException.class)
   public void createUser_fromIncompleteClaims_throwsException() {
     decoded.remove("oid");
     jwtUserMapper.createUser(decoded, ID_TOKEN);

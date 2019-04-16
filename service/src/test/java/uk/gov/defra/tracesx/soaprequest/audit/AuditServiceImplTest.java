@@ -10,7 +10,6 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import java.util.UUID;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -22,17 +21,19 @@ import uk.gov.defra.tracesx.soaprequest.audit.dao.repositories.AuditRepository;
 public class AuditServiceImplTest {
 
   private static final String EXPECTED_DATA = "{\"reference\":\"CVEDP.GB.2019.1000002\",\"type\":\"CVEDP\",\"requestId\":1549469808042}";
-  private static final String EXPECTED_READ_DELETE_DATA ="{\"requestId\":1549469808042}";
+  private static final String EXPECTED_READ_DELETE_DATA = "{\"requestId\":1549469808042}";
 
-  @Mock private AuditConfig auditConfig;
-  @Mock private AuditRepository auditRepository;
+  @Mock
+  private AuditConfig auditConfig;
+  @Mock
+  private AuditRepository auditRepository;
 
   @Captor
   private ArgumentCaptor<Audit> auditCaptor;
 
   private AuditService auditService;
   private ObjectMapper mapper = new ObjectMapper();
-  private Long  REQUEST_ID = new Long("1549469808042");
+  private Long REQUEST_ID = new Long("1549469808042");
   private static final String TEST_OBJECT_ID = "123-123-123";
   private JsonNode jsonNode;
 
@@ -82,7 +83,7 @@ public class AuditServiceImplTest {
   @Test
   public void shouldNotCallAuditRepositoryOnReadIfReadFlagIsNotSet() {
     when(auditConfig.isAuditOnRead()).thenReturn(false);
-    auditService.read(TEST_OBJECT_ID,jsonNode );
+    auditService.read(TEST_OBJECT_ID, jsonNode);
 
     verify(auditRepository, never()).save(any(Audit.class));
   }
@@ -91,7 +92,7 @@ public class AuditServiceImplTest {
   public void shouldCallAuditRepositoryOnDeleteIfDeleteFlagIsSet() {
     ((ObjectNode) jsonNode).put("requestId", REQUEST_ID);
     when(auditConfig.isAuditOnDelete()).thenReturn(true);
-    auditService.delete(TEST_OBJECT_ID,jsonNode);
+    auditService.delete(TEST_OBJECT_ID, jsonNode);
 
     verify(auditRepository).save(auditCaptor.capture());
     verify(auditRepository).save(any(Audit.class));
@@ -102,7 +103,7 @@ public class AuditServiceImplTest {
   @Test
   public void shouldNotCallAuditRepositoryOnDeleteIfDeleteFlagIsNotSet() {
     when(auditConfig.isAuditOnDelete()).thenReturn(false);
-    auditService.delete(TEST_OBJECT_ID,jsonNode);
+    auditService.delete(TEST_OBJECT_ID, jsonNode);
 
     verify(auditRepository, never()).save(any(Audit.class));
   }

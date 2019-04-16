@@ -1,6 +1,5 @@
 package uk.gov.defra.tracesx.soaprequest.security;
 
-import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +12,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.context.SecurityContextPersistenceFilter;
 import uk.gov.defra.tracesx.soaprequest.security.jwt.JwtTokenFilter;
+
+import javax.servlet.http.HttpServletResponse;
 
 @Configuration
 @EnableWebSecurity
@@ -32,13 +33,14 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         .authorizeRequests()
         .antMatchers("/admin/**").anonymous()
         .antMatchers("/**").authenticated();
-    
+
     http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
   }
 
   @Bean
   public AuthenticationEntryPoint unauthorizedEntryPoint() {
-    return (request, response, authException) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+    return (request, response, authException) -> response
+        .sendError(HttpServletResponse.SC_UNAUTHORIZED);
   }
 
 }

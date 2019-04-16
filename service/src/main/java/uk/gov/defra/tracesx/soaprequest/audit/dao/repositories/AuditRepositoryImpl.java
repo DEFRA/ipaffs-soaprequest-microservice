@@ -1,4 +1,3 @@
-
 package uk.gov.defra.tracesx.soaprequest.audit.dao.repositories;
 
 import org.springframework.beans.factory.annotation.Autowired;

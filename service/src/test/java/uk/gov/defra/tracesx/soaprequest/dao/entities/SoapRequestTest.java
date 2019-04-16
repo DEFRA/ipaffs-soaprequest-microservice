@@ -13,7 +13,7 @@ public class SoapRequestTest {
   @Before
   public void setUp() {
   }
-  
+
   @Test
   public void verifyProperties() {
     // Given

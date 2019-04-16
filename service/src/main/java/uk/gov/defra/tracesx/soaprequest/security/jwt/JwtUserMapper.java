@@ -1,12 +1,13 @@
 package uk.gov.defra.tracesx.soaprequest.security.jwt;
 
-import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import uk.gov.defra.tracesx.soaprequest.exceptions.InsSecurityException;
 import uk.gov.defra.tracesx.soaprequest.security.IdTokenUserDetails;
+
+import java.util.Map;
 
 @Component
 public class JwtUserMapper {
@@ -27,7 +28,7 @@ public class JwtUserMapper {
 
   private String getRequiredClaim(String claimName, Map<String, Object> body) {
     String value = (String) body.get(claimName);
-    if(StringUtils.isEmpty(value)) {
+    if (StringUtils.isEmpty(value)) {
       LOGGER.error("The JWT token is missing the claim '{}'", claimName);
       throw new InsSecurityException("User is missing claim: " + claimName);
     }

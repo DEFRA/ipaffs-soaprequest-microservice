@@ -8,23 +8,25 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-import java.net.URISyntaxException;
-import java.util.UUID;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import uk.gov.defra.tracesx.soaprequest.dto.SoapRequestDTO;
+import uk.gov.defra.tracesx.soaprequest.dto.SoapRequestDto;
 import uk.gov.defra.tracesx.soaprequest.exceptions.BadRequestBodyException;
 import uk.gov.defra.tracesx.soaprequest.service.SoapRequestService;
+
+import java.net.URISyntaxException;
+import java.util.UUID;
 
 public class SoapRequestResourceTest {
 
   public static final String QUERY = "test";
   public static final String TEST_USER = "testUser";
-  @Mock SoapRequestService soapRequestService;
-  private SoapRequestDTO requestBody;
+  @Mock
+  SoapRequestService soapRequestService;
+  private SoapRequestDto requestBody;
   private UUID id;
   private Long requestId;
 
@@ -36,8 +38,8 @@ public class SoapRequestResourceTest {
     requestId = System.currentTimeMillis();
   }
 
-  private SoapRequestDTO createSoapRequestDTO() {
-    SoapRequestDTO requestBody = new SoapRequestDTO();
+  private SoapRequestDto createSoapRequestDTO() {
+    SoapRequestDto requestBody = new SoapRequestDto();
     requestBody.setQuery(QUERY);
     requestBody.setUsername(TEST_USER);
     requestBody.setRequestId(System.currentTimeMillis());
@@ -64,7 +66,7 @@ public class SoapRequestResourceTest {
     when(soapRequestService.create(any())).thenReturn(id);
 
     // When
-    ResponseEntity responseEntity = resource.insert(new SoapRequestDTO(id, 123L, "user", "query"));
+    ResponseEntity responseEntity = resource.insert(new SoapRequestDto(id, 123L, "user", "query"));
 
     // Then
     assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
@@ -75,7 +77,7 @@ public class SoapRequestResourceTest {
   public void insertThrowsBadRequestOnQueryMissing() throws URISyntaxException {
     // Given
     SoapRequestResource resource = new SoapRequestResource(soapRequestService);
-    SoapRequestDTO requestDTO = new SoapRequestDTO();
+    SoapRequestDto requestDTO = new SoapRequestDto();
     requestDTO.setUsername(TEST_USER);
 
     // When
@@ -89,7 +91,7 @@ public class SoapRequestResourceTest {
   public void insertThrowsBadRequestOnUsernameMissing() throws URISyntaxException {
     // Given
     SoapRequestResource resource = new SoapRequestResource(soapRequestService);
-    SoapRequestDTO requestDTO = new SoapRequestDTO();
+    SoapRequestDto requestDTO = new SoapRequestDto();
     requestDTO.setQuery(QUERY);
 
     // When
