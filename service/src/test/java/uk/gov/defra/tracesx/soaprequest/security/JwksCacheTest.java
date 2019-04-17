@@ -11,9 +11,6 @@ import static org.mockito.Mockito.when;
 
 import com.auth0.jwk.Jwk;
 import com.auth0.jwk.JwkException;
-import java.security.PublicKey;
-import java.util.Arrays;
-import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,6 +23,10 @@ import uk.gov.defra.tracesx.soaprequest.security.jwks.JwkProviderFactory;
 import uk.gov.defra.tracesx.soaprequest.security.jwks.JwksCache;
 import uk.gov.defra.tracesx.soaprequest.security.jwks.JwksCache.KeyAndClaims;
 import uk.gov.defra.tracesx.soaprequest.security.jwks.JwksConfiguration;
+
+import java.security.PublicKey;
+import java.util.Arrays;
+import java.util.List;
 
 @RunWith(MockitoJUnitRunner.class)
 public class JwksCacheTest {

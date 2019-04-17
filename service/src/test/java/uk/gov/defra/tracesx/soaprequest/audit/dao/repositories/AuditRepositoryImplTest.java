@@ -12,7 +12,8 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 public class AuditRepositoryImplTest {
 
-  @Mock private AuditJpaRepository repository;
+  @Mock
+  private AuditJpaRepository repository;
 
   private AuditRepositoryImpl auditRepositoryImpl;
 

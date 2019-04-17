@@ -13,9 +13,9 @@ management:
       path-mapping:
         health: health-check
 info:
-    app:
-        name: soapRequest microservice
-        version: ${API_VERSION}
+  app:
+    name: soapRequest microservice
+    version: ${API_VERSION}
 spring:
   security:
     jwt:
@@ -23,11 +23,11 @@ spring:
       iss: ${SECURITY_JWT_ISS}
       aud: ${SECURITY_JWT_AUD}
   datasource:
-      driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
-      url: jdbc:sqlserver://${DB_HOST}:${DB_PORT};databaseName=${DB_NAME};user=${DB_USER};password=${DB_PASSWORD};trustServerCertificate=${TRUST_SERVER_CERTIFICATE};hostNameInCertificate=*.database.windows.net;encrypt=true;
-      dialect: com.microsoft.sqlserver.jdbc.SQLServerDriver
-      continueOnError: true
-      initialize: false
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    url: jdbc:sqlserver://${DB_HOST}:${DB_PORT};databaseName=${DB_NAME};user=${DB_USER};password=${DB_PASSWORD};trustServerCertificate=${TRUST_SERVER_CERTIFICATE};hostNameInCertificate=*.database.windows.net;encrypt=true;
+    dialect: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    continueOnError: true
+    initialize: false
   jpa:
     properties:
       hibernate:

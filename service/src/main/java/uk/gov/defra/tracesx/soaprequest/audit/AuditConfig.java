@@ -15,8 +15,8 @@ public class AuditConfig {
   private final boolean auditOnDelete;
 
   public AuditConfig(@Value("${audit.read:false}") boolean auditOnRead,
-      @Value("${audit.delete:false}") boolean auditOnDelete,
-      @Value("${audit.create:false}") boolean auditOnCreate
+                     @Value("${audit.delete:false}") boolean auditOnDelete,
+                     @Value("${audit.create:false}") boolean auditOnCreate
   ) {
     this.auditOnRead = auditOnRead;
     this.auditOnDelete = auditOnDelete;
@@ -29,7 +29,8 @@ public class AuditConfig {
     private boolean auditOnCreate;
     private boolean auditOnDelete;
 
-    private Builder() { }
+    private Builder() {
+    }
 
     public static Builder anAuditConfig() {
       return new Builder();
@@ -51,7 +52,7 @@ public class AuditConfig {
     }
 
     public AuditConfig build() {
-      return new AuditConfig(auditOnRead , auditOnDelete, auditOnCreate);
+      return new AuditConfig(auditOnRead, auditOnDelete, auditOnCreate);
     }
   }
 }

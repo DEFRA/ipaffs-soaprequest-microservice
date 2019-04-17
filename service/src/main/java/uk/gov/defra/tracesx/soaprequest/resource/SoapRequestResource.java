@@ -3,9 +3,6 @@ package uk.gov.defra.tracesx.soaprequest.resource;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static uk.gov.defra.tracesx.soaprequest.util.Constants.SOAP_REQUEST_ENDPOINT;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,13 +16,19 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import uk.gov.defra.tracesx.soaprequest.dto.SoapRequestDTO;
+import uk.gov.defra.tracesx.soaprequest.dto.SoapRequestDto;
 import uk.gov.defra.tracesx.soaprequest.exceptions.BadRequestBodyException;
 import uk.gov.defra.tracesx.soaprequest.service.SoapRequestService;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.UUID;
 
 @RestController
 @RequestMapping(SOAP_REQUEST_ENDPOINT)
 public class SoapRequestResource {
+
+  private static final String PATH_DELIMITER = "/";
 
   private static final Logger LOGGER = LoggerFactory.getLogger(SoapRequestResource.class);
 
@@ -39,11 +42,11 @@ public class SoapRequestResource {
   @PostMapping(
       consumes = MediaType.APPLICATION_JSON_VALUE,
       produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity insert(@RequestBody SoapRequestDTO soapRequest) throws URISyntaxException {
+  public ResponseEntity insert(@RequestBody SoapRequestDto soapRequest) throws URISyntaxException {
     validate(soapRequest);
     UUID id = soapRequestService.create(soapRequest);
     LOGGER.debug("POST id: {}", id);
-    URI createdLocation = new URI(SOAP_REQUEST_ENDPOINT + "/" + id.toString());
+    URI createdLocation = new URI(SOAP_REQUEST_ENDPOINT + PATH_DELIMITER + id.toString());
     return ResponseEntity.created(createdLocation).build();
   }
 
@@ -66,7 +69,7 @@ public class SoapRequestResource {
     return ResponseEntity.ok().build();
   }
 
-  private void validate(SoapRequestDTO soapRequest) {
+  private void validate(SoapRequestDto soapRequest) {
     if (soapRequest == null
         || isBlank(soapRequest.getQuery())
         || isBlank(soapRequest.getUsername())) {

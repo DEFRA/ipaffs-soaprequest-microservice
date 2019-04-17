@@ -2,17 +2,18 @@ package uk.gov.defra.tracesx.soaprequest.security.jwt;
 
 import static uk.gov.defra.tracesx.soaprequest.security.jwt.JwtConstants.BEARER;
 
-import java.io.IOException;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import uk.gov.defra.tracesx.soaprequest.exceptions.UnauthorizedException;
 import uk.gov.defra.tracesx.soaprequest.security.IdTokenAuthentication;
 import uk.gov.defra.tracesx.soaprequest.security.IdTokenUserDetails;
+
+import java.io.IOException;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @Component
 public class JwtTokenFilter extends OncePerRequestFilter {
@@ -25,8 +26,8 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
   @Override
   protected void doFilterInternal(
-    HttpServletRequest req, HttpServletResponse res, FilterChain filterChain)
-    throws IOException, ServletException {
+      HttpServletRequest req, HttpServletResponse res, FilterChain filterChain)
+      throws IOException, ServletException {
     try {
       String token = resolveToken(req);
       if (null != token) {
@@ -35,8 +36,8 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         SecurityContextHolder.getContext().setAuthentication(authentication);
       }
       filterChain.doFilter(req, res);
-    } catch (UnauthorizedException e) {
-      res.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
+    } catch (UnauthorizedException exception) {
+      res.sendError(HttpServletResponse.SC_UNAUTHORIZED, exception.getMessage());
     }
   }
 

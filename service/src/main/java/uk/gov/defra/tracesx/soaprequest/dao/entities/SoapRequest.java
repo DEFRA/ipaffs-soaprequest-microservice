@@ -2,6 +2,7 @@ package uk.gov.defra.tracesx.soaprequest.dao.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+
 import java.util.UUID;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -23,7 +24,8 @@ public class SoapRequest {
   private String username;
   private String query;
 
-  public SoapRequest() {}
+  public SoapRequest() {
+  }
 
   public SoapRequest(String username, String query) {
     this.username = username;

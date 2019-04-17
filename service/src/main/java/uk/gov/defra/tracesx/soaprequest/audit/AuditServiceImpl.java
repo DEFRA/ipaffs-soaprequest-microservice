@@ -55,30 +55,30 @@ public class AuditServiceImpl implements AuditService {
         .data(created.toString().replaceAll(REGEX_REMOVE_QUOTES, ""))
         .entityId(created.get(REQUEST_ID).asLong())
         .type(type)
-          .build();
+        .build();
     try {
       auditRepository.save(audit);
-    } catch (Exception e) {
-      handleError(audit, e);
+    } catch (Exception exception) {
+      handleError(audit, exception);
     }
   }
 
-  private void processAudit(String user, AuditRequestType type , JsonNode jsonNode) {
+  private void processAudit(String user, AuditRequestType type, JsonNode jsonNode) {
     Audit audit = Audit.builder()
         .userId(user)
         .data(jsonNode.toString().replaceAll(REGEX_REMOVE_QUOTES, ""))
         .entityId(jsonNode.get(REQUEST_ID).asLong())
         .type(type)
-            .build();
+        .build();
     try {
       auditRepository.save(audit);
-    } catch (Exception e) {
-      handleError(audit, e);
+    } catch (Exception exception) {
+      handleError(audit, exception);
     }
   }
 
-  private void handleError(Audit audit, Exception e) {
+  private void handleError(Audit audit, Exception exception) {
     logger.info("audit: {}", audit.toString());
-    logger.error("Unable to persist audit: {}", e.getMessage());
+    logger.error("Unable to persist audit: {}", exception.getMessage());
   }
 }

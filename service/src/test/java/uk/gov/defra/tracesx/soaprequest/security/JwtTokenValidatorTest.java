@@ -12,11 +12,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import java.security.KeyPair;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.util.Collections;
-import java.util.Date;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,6 +24,12 @@ import uk.gov.defra.tracesx.soaprequest.security.jwks.JwksCache.KeyAndClaims;
 import uk.gov.defra.tracesx.soaprequest.security.jwt.JwtTokenValidator;
 import uk.gov.defra.tracesx.soaprequest.security.jwt.JwtUserMapper;
 
+import java.security.KeyPair;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.Collections;
+import java.util.Date;
+
 @RunWith(MockitoJUnitRunner.class)
 public class JwtTokenValidatorTest {
 
@@ -37,7 +38,7 @@ public class JwtTokenValidatorTest {
   private static final String KID = "2759cfa1-6096-4779-b888-983e94e3f6b3";
   private static final String ISS = "http://issuer.com";
   private static final String AUD = "279fb646-b442-4ac0-b42a-1912a4ec5e65";
-  private static final KeyAndClaims KEY_AND_CLAIMS =  KeyAndClaims.builder()
+  private static final KeyAndClaims KEY_AND_CLAIMS = KeyAndClaims.builder()
       .key(KEY_PAIR.getPublic())
       .aud(AUD)
       .iss(ISS)

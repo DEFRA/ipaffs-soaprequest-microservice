@@ -10,7 +10,7 @@ public class IdTokenUserDetailsFixture {
   public static final String USERNAME = "SOAP";
 
   public static IdTokenUserDetails create() {
-      return IdTokenUserDetails.builder()
+    return IdTokenUserDetails.builder()
         .idToken(ID_TOKEN)
         .userObjectId(USER_OBJECT_ID)
         .displayName(DISPLAY_NAME)

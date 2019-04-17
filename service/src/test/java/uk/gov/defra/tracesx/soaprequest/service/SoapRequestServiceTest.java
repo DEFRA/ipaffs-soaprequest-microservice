@@ -6,8 +6,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-import java.util.Optional;
-import java.util.UUID;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -16,15 +14,20 @@ import org.mockito.Mock;
 import uk.gov.defra.tracesx.soaprequest.audit.AuditServiceWrapper;
 import uk.gov.defra.tracesx.soaprequest.dao.entities.SoapRequest;
 import uk.gov.defra.tracesx.soaprequest.dao.repositories.SoapRequestRepository;
-import uk.gov.defra.tracesx.soaprequest.dto.SoapRequestDTO;
+import uk.gov.defra.tracesx.soaprequest.dto.SoapRequestDto;
+
+import java.util.Optional;
+import java.util.UUID;
 
 public class SoapRequestServiceTest {
 
   public static final String QUERY = "test";
   public static final String TEST_USER = "testUser";
 
-  @Mock SoapRequestRepository soapRequestRepository;
-  @Mock AuditServiceWrapper auditServiceWrapper;
+  @Mock
+  SoapRequestRepository soapRequestRepository;
+  @Mock
+  AuditServiceWrapper auditServiceWrapper;
   @Captor
   private ArgumentCaptor<SoapRequest> soapRequestCaptor;
 
@@ -34,12 +37,12 @@ public class SoapRequestServiceTest {
   @Before
   public void setUp() {
     initMocks(this);
-    soapRequestService = new SoapRequestService(soapRequestRepository,  auditServiceWrapper);
+    soapRequestService = new SoapRequestService(soapRequestRepository, auditServiceWrapper);
     soapRequest = createDefaultSoapRequestEntity();
   }
 
-  private SoapRequestDTO createDefaultSoapRequestDTO() {
-    SoapRequestDTO soapRequestDTO = new SoapRequestDTO();
+  private SoapRequestDto createDefaultSoapRequestDTO() {
+    SoapRequestDto soapRequestDTO = new SoapRequestDto();
     soapRequestDTO.setQuery(QUERY);
     soapRequestDTO.setUsername(TEST_USER);
     return soapRequestDTO;
@@ -99,7 +102,7 @@ public class SoapRequestServiceTest {
     when(soapRequestRepository.findById(any())).thenReturn(Optional.of(soapRequest));
 
     // When
-    SoapRequestDTO result = soapRequestService.get(soapRequest.getId());
+    SoapRequestDto result = soapRequestService.get(soapRequest.getId());
 
     // Then
     assertEquals(soapRequest.getUsername(), result.getUsername());
@@ -125,7 +128,7 @@ public class SoapRequestServiceTest {
     when(soapRequestRepository.findByRequestId(any())).thenReturn(Optional.of(soapRequest));
 
     // When
-    SoapRequestDTO result = soapRequestService.getByRequestId(soapRequest.getRequestId());
+    SoapRequestDto result = soapRequestService.getByRequestId(soapRequest.getRequestId());
 
     // Then
     assertEquals(soapRequest.getUsername(), result.getUsername());

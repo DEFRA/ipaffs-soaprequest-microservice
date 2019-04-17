@@ -8,7 +8,7 @@ public class AuditConfigTest {
 
   @Test
   void isAuditOnCreate() {
-   AuditConfig config = AuditConfig.Builder.anAuditConfig()
+    AuditConfig config = AuditConfig.Builder.anAuditConfig()
         .withAuditOnCreate(true)
         .build();
 
@@ -19,7 +19,7 @@ public class AuditConfigTest {
 
   @Test
   void isAuditOnRead() {
-   AuditConfig config = AuditConfig.Builder.anAuditConfig()
+    AuditConfig config = AuditConfig.Builder.anAuditConfig()
         .withAuditOnRead(true)
         .build();
 
@@ -30,7 +30,7 @@ public class AuditConfigTest {
 
   @Test
   void isAuditOnDelete() {
-   AuditConfig config = AuditConfig.Builder.anAuditConfig()
+    AuditConfig config = AuditConfig.Builder.anAuditConfig()
         .withAuditOnDelete(true)
         .build();
 

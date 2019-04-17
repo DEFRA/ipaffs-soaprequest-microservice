@@ -3,10 +3,6 @@ package uk.gov.defra.tracesx.soaprequest.security.jwt;
 import static uk.gov.defra.tracesx.soaprequest.security.jwt.JwtConstants.EXP;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
-import java.security.interfaces.RSAPublicKey;
-import java.util.Date;
-import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +17,11 @@ import uk.gov.defra.tracesx.soaprequest.security.IdTokenUserDetails;
 import uk.gov.defra.tracesx.soaprequest.security.jwks.JwksCache;
 import uk.gov.defra.tracesx.soaprequest.security.jwks.JwksCache.KeyAndClaims;
 
+import java.io.IOException;
+import java.security.interfaces.RSAPublicKey;
+import java.util.Date;
+import java.util.Map;
+
 @Component
 public class JwtTokenValidator {
 
@@ -33,7 +34,7 @@ public class JwtTokenValidator {
   private final ObjectMapper objectMapper;
 
   public JwtTokenValidator(JwtUserMapper jwtUserMapper,
-      JwksCache jwksCache, ObjectMapper objectMapper) {
+                           JwksCache jwksCache, ObjectMapper objectMapper) {
     this.jwtUserMapper = jwtUserMapper;
     this.jwksCache = jwksCache;
     this.objectMapper = objectMapper;
@@ -46,7 +47,7 @@ public class JwtTokenValidator {
 
   private Map<String, Object> decode(String idToken) throws UnauthorizedException {
     String kid = JwtHelper.headers(idToken).get("kid");
-    if(StringUtils.isEmpty(kid)) {
+    if (StringUtils.isEmpty(kid)) {
       LOGGER.error("Key id (kid) is missing from the id token header.");
       throw unauthorizedException();
     }
@@ -59,8 +60,8 @@ public class JwtTokenValidator {
       verifyExpiry(claims);
       verifyClaims(claims, keyAndClaims);
       return claims;
-    } catch (InvalidSignatureException e) {
-      LOGGER.error("Could not verify signature of id token", e);
+    } catch (InvalidSignatureException exception) {
+      LOGGER.error("Could not verify signature of id token", exception);
       throw unauthorizedException();
     }
   }
@@ -68,20 +69,20 @@ public class JwtTokenValidator {
   private Map<String, Object> parseClaims(Jwt jwt) throws UnauthorizedException {
     try {
       return objectMapper.readValue(jwt.getClaims(), Map.class);
-    } catch (IOException e) {
-      LOGGER.error("Unable to read the id token body", e);
+    } catch (IOException exception) {
+      LOGGER.error("Unable to read the id token body", exception);
       throw unauthorizedException();
     }
   }
 
   private void verifyExpiry(Map claims) throws UnauthorizedException {
-    if(!claims.containsKey(EXP)) {
+    if (!claims.containsKey(EXP)) {
       LOGGER.error("Token does not contain an expiry (exp) claim.");
       throw unauthorizedException();
     }
 
     Object expObj = claims.get(EXP);
-    if(!(expObj instanceof Integer)) {
+    if (!(expObj instanceof Integer)) {
       LOGGER.error("The expiry (exp) claim is not an integer (epoch seconds).");
       throw unauthorizedException();
     }
@@ -95,7 +96,8 @@ public class JwtTokenValidator {
     }
   }
 
-  private void verifyClaims(Map<String, Object> claims, KeyAndClaims keyAndClaims) throws UnauthorizedException {
+  private void verifyClaims(Map<String, Object> claims, KeyAndClaims keyAndClaims)
+      throws UnauthorizedException {
     if (!(keyAndClaims.getIss().equals(claims.get(ISS))
         && keyAndClaims.getAud().equals(claims.get(AUD)))) {
       LOGGER.error("The iss and/or aud claims do not match the required claims.");

@@ -1,10 +1,5 @@
 package uk.gov.defra.tracesx.soaprequest;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,6 +9,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import uk.gov.defra.tracesx.soaprequest.security.jwks.JwksConfiguration;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @Getter
 @Configuration
@@ -49,7 +50,8 @@ public class SoapRequestConfiguration implements WebMvcConfigurer {
       return Collections.unmodifiableList(jwksConfigurations);
     } else {
       throw new IllegalArgumentException(
-          "The comma-separated properties spring.security.jwt.[jwks and iss] must all have the same number of elements.");
+          "The comma-separated properties spring.security.jwt.[jwks and iss] must all "
+              + "have the same number of elements.");
     }
   }
 
