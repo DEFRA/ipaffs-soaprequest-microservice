@@ -16,9 +16,9 @@ import org.mockito.Mock;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import uk.gov.defra.tracesx.common.security.IdTokenUserDetails;
 import uk.gov.defra.tracesx.soaprequest.dao.entities.SoapRequest;
 import uk.gov.defra.tracesx.soaprequest.dto.SoapRequestDto;
-import uk.gov.defra.tracesx.soaprequest.security.IdTokenUserDetails;
 
 import java.util.UUID;
 
