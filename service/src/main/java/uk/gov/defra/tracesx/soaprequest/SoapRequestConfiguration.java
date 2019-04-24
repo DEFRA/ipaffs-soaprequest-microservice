@@ -5,9 +5,12 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import uk.gov.defra.tracesx.common.health.HealthChecker;
+import uk.gov.defra.tracesx.common.health.checks.JdbcHealthCheck;
 import uk.gov.defra.tracesx.soaprequest.security.jwks.JwksConfiguration;
 
 import java.net.MalformedURLException;
@@ -20,6 +23,7 @@ import java.util.List;
 @Configuration
 @EnableConfigurationProperties
 @EnableJpaRepositories("uk.gov.defra.tracesx.soaprequest.dao.repositories")
+@ComponentScan("uk.gov.defra.tracesx.common.*")
 public class SoapRequestConfiguration implements WebMvcConfigurer {
 
   public static final int SOAP_REQUEST_ORDER = 1;
@@ -53,6 +57,12 @@ public class SoapRequestConfiguration implements WebMvcConfigurer {
           "The comma-separated properties spring.security.jwt.[jwks and iss] must all "
               + "have the same number of elements.");
     }
+  }
+
+  @Bean
+  public HealthChecker healthChecks(
+          JdbcHealthCheck jdbcHealthCheck) {
+    return new HealthChecker(Collections.singletonList(jdbcHealthCheck));
   }
 
 }
