@@ -20,6 +20,9 @@ COPY database/src/main/resources/drivers /opt/liquibase/lib
 COPY database/src/main/resources/changelogs /opt/liquibase/changelogs
 COPY database/src/main/resources/migrations.xml /opt/liquibase
 
+# Copy logback.xml and dependencies
+COPY database/src/main/resources/logback /opt/liquibase/lib
+
 RUN chmod +x /opt/liquibase/liquibase && ln -s /opt/liquibase/liquibase /usr/local/bin/ && chmod +x /opt/setup.sh && chmod +x /opt/liquibase/migrate.sh
 
 WORKDIR /opt
