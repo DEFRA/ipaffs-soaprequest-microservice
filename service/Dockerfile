@@ -1,4 +1,4 @@
-FROM baseimagesrepo/java:1.8.0
+FROM sndeuxfesacr001.azurecr.io/java:alpine3.9-java8.212.04-r0
 
 RUN mkdir -p /usr/src/soaprequest-service
 WORKDIR /usr/src/soaprequest-service

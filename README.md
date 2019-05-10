@@ -79,6 +79,9 @@ The service can be installed and run with:
 - See related instructions in `notification-service` for setting up Intellij
 - Ensure that all environment variables are set correctly within the Intellij 'Run/Debug configuration'
 
+### Logging into Azure for building Docker images
+
+- See related instructions in `notification-service` for building docker images and logging into Azure to be able to download base images.
 
 ## How to test
 
