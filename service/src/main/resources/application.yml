@@ -19,6 +19,18 @@ info:
   app:
     name: soapRequest microservice
     version: ${API_VERSION}
+permissions:
+  service:
+    scheme: https
+    host: permissions${ENV_DOMAIN}
+    port: 443
+    url: https://permissions${ENV_DOMAIN}
+    user: importer
+    password: ${PERMISSIONS_SERVICE_PASSWORD}
+    connectionTimeout: 3000
+    readTimeout: 3000
+  security:
+    token-feature-switch: false
 spring:
   security:
     jwt:

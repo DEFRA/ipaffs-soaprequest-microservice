@@ -3,17 +3,20 @@ package uk.gov.defra.tracesx.soaprequest.integration;
 import static io.restassured.RestAssured.given;
 import static org.junit.Assert.assertEquals;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-import static uk.gov.defra.tracesx.soaprequest.integration.helper.JwtConstants.BEARER;
+import static uk.gov.defra.tracesx.common.security.tests.jwt.JwtConstants.BEARER;
 import static uk.gov.defra.tracesx.soaprequest.integration.properties.Properties.SERVICE_BASE_URL;
 
+import uk.gov.defra.tracesx.common.security.tests.jwt.SelfSignedTokenClient;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
+
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.UUID;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.web.util.UriComponentsBuilder;
 import uk.gov.defra.tracesx.soaprequest.integration.dto.SoapRequestDTO;
-import uk.gov.defra.tracesx.soaprequest.integration.helper.TokenHelper;
 
 public class TestBasicEndpoints {
 
@@ -22,8 +25,10 @@ public class TestBasicEndpoints {
   private static final String SOAP_REQUEST_ENDPOINT = "soaprequest";
   private static final String TEST_USERNAME = "testUser";
   private static final String TEST_QUERY = "testQuery";
+  private static final String ROLES_CLAIM = "roles";
   private String baseUrl;
   private String resourceUrl;
+  private SelfSignedTokenClient selfSignedTokenClient;
 
   @Before
   public void setup() {
@@ -35,6 +40,8 @@ public class TestBasicEndpoints {
         .path(SOAP_REQUEST_ENDPOINT)
         .build()
         .toString();
+
+    selfSignedTokenClient = new SelfSignedTokenClient();
   }
 
   @Test
@@ -46,7 +53,7 @@ public class TestBasicEndpoints {
   public void rejectInvalidSoapRequest() {
     given()
       .body("{\"exampleWrong\": \"test\"}")
-      .header(AUTHORIZATION, BEARER + TokenHelper.getValidToken(READ_ROLES))
+      .header(AUTHORIZATION, BEARER + selfSignedTokenClient.getTokenWithClaim(SelfSignedTokenClient.TokenType.AD, ROLES_CLAIM, READ_ROLES))
       .contentType(ContentType.JSON)
       .when()
       .post(resourceUrl)
@@ -121,7 +128,7 @@ public class TestBasicEndpoints {
   private Response createSoapRequest(String username, String query) {
     return given()
       .body("{\"username\": \"" + username + "\", \"query\": \"" + query + "\"}")
-      .header(AUTHORIZATION, BEARER + TokenHelper.getValidToken(READ_ROLES))
+      .header(AUTHORIZATION, BEARER + selfSignedTokenClient.getTokenWithClaim(SelfSignedTokenClient.TokenType.AD, ROLES_CLAIM, READ_ROLES))
       .contentType(ContentType.JSON)
       .when()
       .post(resourceUrl);
@@ -129,21 +136,21 @@ public class TestBasicEndpoints {
 
   private Response getSoapRequestById(String id) {
     return given()
-      .header(AUTHORIZATION, BEARER + TokenHelper.getValidToken(READ_ROLES))
+      .header(AUTHORIZATION, BEARER + selfSignedTokenClient.getTokenWithClaim(SelfSignedTokenClient.TokenType.AD, ROLES_CLAIM, READ_ROLES))
       .when()
       .get(baseUrl + id);
   }
 
   private Response deleteSoapRequestById(String id) {
     return given()
-      .header(AUTHORIZATION, BEARER + TokenHelper.getValidToken(READ_ROLES))
+      .header(AUTHORIZATION, BEARER + selfSignedTokenClient.getTokenWithClaim(SelfSignedTokenClient.TokenType.AD, ROLES_CLAIM, READ_ROLES))
       .when()
       .delete(baseUrl + id);
   }
 
   private Response getSoapRequestByRequestIdAndUsername(Long requestId, String username) {
     return given()
-      .header(AUTHORIZATION, BEARER + TokenHelper.getValidToken(READ_ROLES))
+      .header(AUTHORIZATION, BEARER + selfSignedTokenClient.getTokenWithClaim(SelfSignedTokenClient.TokenType.AD, ROLES_CLAIM, READ_ROLES))
       .when()
       .queryParam("requestId", requestId)
       .queryParam("username", username)
