@@ -48,7 +48,6 @@
       <artifactId>TracesX-SpringBoot-CommonSecurity-Tests</artifactId>
       <version>${common.security.version}</version>
     </dependency>
-
     <dependency>
       <groupId>uk.gov.defra.tracesx</groupId>
       <artifactId>TracesX-SpringBoot-CommonSecurity-Config</artifactId>

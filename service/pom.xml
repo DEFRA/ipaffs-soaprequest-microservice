@@ -13,7 +13,7 @@
     <parent>
         <groupId>uk.gov.defra.tracesx</groupId>
         <artifactId>spring-boot-parent</artifactId>
-        <version>1.0.5</version>
+        <version>1.0.7</version>
     </parent>
 
     <repositories>
@@ -83,7 +83,7 @@
     <properties>
         <jjwt.version>0.10.5</jjwt.version>
         <maven.checkstyle.version>3.0.0</maven.checkstyle.version>
-        <common.health.version>1.0.2</common.health.version>
+      <common.health.version>1.0.3</common.health.version>
     </properties>
     <build>
         <resources>
