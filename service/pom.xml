@@ -43,6 +43,11 @@
             <artifactId>spring-security-jwt</artifactId>
             <version>1.0.10.RELEASE</version>
         </dependency>
+        <dependency>
+            <groupId>uk.gov.defra.tracesx</groupId>
+            <artifactId>TracesX-SpringBoot-CommonSecurity-Config</artifactId>
+            <version>1.0.6</version>
+        </dependency>
         <!-- used to fetch public signing keys from jwks urls -->
         <dependency>
             <groupId>com.auth0</groupId>
