@@ -8,6 +8,6 @@ class AuditTest {
 
   @Test
   void equals() {
-    EqualsVerifier.forClass(Audit.class).usingGetClass().suppress(Warning.NONFINAL_FIELDS).verify();
+    EqualsVerifier.forClass(Audit.class).usingGetClass().suppress(Warning.NONFINAL_FIELDS).suppress(Warning.ANNOTATION).verify();
   }
 }
