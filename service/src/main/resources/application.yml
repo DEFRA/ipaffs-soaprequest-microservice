@@ -35,6 +35,8 @@ permissions:
   security:
     token-feature-switch: false
 spring:
+  main:
+    allow-bean-definition-overriding: true
   security:
     jwt:
       jwks: ${SECURITY_JWT_JWKS}
