@@ -1,4 +1,6 @@
-FROM sndeuxfesacr001.azurecr.io/java-20191011:alpine3.10.2-javaJRE11
+ARG BASE_IMAGE
+
+FROM sndeuxfesacr001.azurecr.io/$BASE_IMAGE
 
 RUN mkdir -p /usr/src/soaprequest-service
 WORKDIR /usr/src/soaprequest-service
