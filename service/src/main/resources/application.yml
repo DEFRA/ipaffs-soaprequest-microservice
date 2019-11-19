@@ -44,7 +44,7 @@ spring:
       aud: ${SECURITY_JWT_AUD}
   datasource:
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
-    url: jdbc:sqlserver://${DB_HOST}:${DB_PORT};databaseName=${DB_NAME};user=${DB_USER};password=${DB_PASSWORD};trustServerCertificate=${TRUST_SERVER_CERTIFICATE};hostNameInCertificate=*.database.windows.net;encrypt=true;
+    url: jdbc:sqlserver://${DB_HOST}:${DB_PORT};databaseName=${DB_NAME};user=${DB_USER_AD};password=${DB_PASSWORD_AD};trustServerCertificate=${TRUST_SERVER_CERTIFICATE};hostNameInCertificate=*.database.windows.net;encrypt=true;authentication=ActiveDirectoryPassword
     dialect: com.microsoft.sqlserver.jdbc.SQLServerDriver
     continueOnError: true
     initialize: false
