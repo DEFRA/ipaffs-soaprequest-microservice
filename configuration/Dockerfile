@@ -1,11 +1,10 @@
-FROM ubuntu:16.04
+FROM baseimagesrepo/java:alpine3.8-java11
 
 # Needed for running sqlcmd and bcp
 RUN echo 'en_US.UTF-8 UTF-8' > /etc/locale.gen
-RUN apt-get update && apt-get install -y locales openjdk-8-jre
 
 # Copy and unpack Liquibase
-ADD database/lib/liquibase-3.6.2-bin.tar.gz opt/liquibase
+ADD database/lib/liquibase-3.7.0-bin.tar.gz opt/liquibase
 
 # Copy setup script
 COPY setup.sh /opt
@@ -15,6 +14,7 @@ COPY database/scripts/migrate.sh /opt/liquibase
 
 # Copy database drivers
 COPY database/src/main/resources/drivers /opt/liquibase/lib
+COPY database/src/main/resources/libs    /opt/liquibase/lib
 
 # Copy changelogs
 COPY database/src/main/resources/changelogs /opt/liquibase/changelogs
@@ -23,7 +23,7 @@ COPY database/src/main/resources/migrations.xml /opt/liquibase
 # Copy logback.xml and dependencies
 COPY database/src/main/resources/logback /opt/liquibase/lib
 
-RUN chmod +x /opt/liquibase/liquibase && ln -s /opt/liquibase/liquibase /usr/local/bin/ && chmod +x /opt/setup.sh && chmod +x /opt/liquibase/migrate.sh
+RUN chmod +x /opt/liquibase/liquibase && ln -s /opt/liquibase/liquibase /usr/local/bin/ && sed -i 's/bash/sh/' /opt/liquibase/liquibase && chmod +x /opt/setup.sh && chmod +x /opt/liquibase/migrate.sh
 
 WORKDIR /opt
 
