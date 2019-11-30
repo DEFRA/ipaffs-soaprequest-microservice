@@ -1,4 +1,6 @@
-FROM baseimagesrepo/java:alpine3.8-java11
+ARG BASE_IMAGE
+
+FROM sndeuxfesacr001.azurecr.io/$BASE_IMAGE
 
 # Needed for running sqlcmd and bcp
 RUN echo 'en_US.UTF-8 UTF-8' > /etc/locale.gen
