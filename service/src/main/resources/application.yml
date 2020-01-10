@@ -48,6 +48,8 @@ spring:
     dialect: com.microsoft.sqlserver.jdbc.SQLServerDriver
     continueOnError: true
     initialize: false
+    hikari:
+      leakDetectionThreshold: ${HIKARI_LEAK_DETECTION_THRESHOLD:2000}
   jpa:
     properties:
       hibernate:
@@ -57,3 +59,6 @@ audit:
   read: true
   update: false
   delete: true
+logging:
+  level:
+    com.zaxxer.hikari: ${HIKARI_DEBUG_LEVEL:DEBUG}
