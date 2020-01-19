@@ -1,2 +1,4 @@
 server:
   port: 5260
+networking:
+  dnsCacheTtl: ${DNS_CACHE_TTL:20}
