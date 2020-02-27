@@ -7,4 +7,5 @@
     <include file="changelogs/IMTA-3891-create-audit-table-for-soaprequest-1.0.xml"/>
     <include file="changelogs/IMTA-4093-additional-columns-in-soap-audit-table.xml"/>
     <include file="changelogs/IMTA-6156-enable-ad-account-access.xml"/>
+    <include file="changelogs/IMTA-6701-update_user_password.xml"/>
 </databaseChangeLog>

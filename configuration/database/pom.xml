@@ -43,6 +43,7 @@
                     <url>${DATABASE_DB_CONNECTION_STRING}</url>
                     <systemProperties>
                         <serviceDbPassword>${BASE_SERVICE_DB_PASSWORD}</serviceDbPassword>
+                        <serviceDbPasswordNew>${NEW_BASE_SERVICE_DB_PASSWORD}</serviceDbPasswordNew>
                         <serviceDbUserAd>${BASE_SERVICE_DB_USER_AD}</serviceDbUserAd>
                     </systemProperties>
                     <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>

@@ -7,4 +7,5 @@ liquibase --driver="com.microsoft.sqlserver.jdbc.SQLServerDriver" \
     --password="${DATABASE_DB_PASSWORD}" \
     migrate \
     -DserviceDbPassword="${BASE_SERVICE_DB_PASSWORD}" \
+    -DserviceDbPasswordNew="${NEW_BASE_SERVICE_DB_PASSWORD}" \
     -DserviceDbUserAd="${BASE_SERVICE_DB_USER_AD}"
