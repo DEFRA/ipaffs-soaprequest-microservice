@@ -44,7 +44,7 @@ spring:
       aud: ${SECURITY_JWT_AUD}
   datasource:
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
-    url: ${DB_URL}
+    url: ${JDBC_URL}
     dialect: com.microsoft.sqlserver.jdbc.SQLServerDriver
     continueOnError: true
     initialize: false
