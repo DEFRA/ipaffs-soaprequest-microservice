@@ -77,6 +77,7 @@ The following properties are used by the application (see required values in the
      API_VERSION
      ENV_DOMAIN
      PERMISSIONS_SERVICE_PASSWORD
+     PROTOCOL
      SECURITY_JWT_JWKS
      SECURITY_JWT_ISS
      SECURITY_JWT_AUD
