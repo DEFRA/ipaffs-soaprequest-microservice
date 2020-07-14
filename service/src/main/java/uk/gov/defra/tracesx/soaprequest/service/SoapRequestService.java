@@ -35,28 +35,26 @@ public class SoapRequestService {
     return searchCertificateRequest.getId();
   }
 
-  public SoapRequestDto get(UUID id) {
-    Optional<SoapRequest> soapRequest = soapRequestRepository.findById(id);
-    SoapRequestDto soapRequestDto = soapRequest.map(SoapRequestDto::from).get();
-    auditServiceWrapper.read(soapRequestDto);
-    return soapRequestDto;
+  public Optional<SoapRequestDto> get(UUID id) {
+    Optional<SoapRequestDto> optionalSoapRequestDto = soapRequestRepository.findById(id)
+        .map(SoapRequestDto::from);
+    optionalSoapRequestDto.ifPresent(auditServiceWrapper::read);
+    return optionalSoapRequestDto;
   }
 
-  public SoapRequestDto getByRequestId(Long id) {
-    Optional<SoapRequest> soapRequest = soapRequestRepository.findByRequestId(id);
-    SoapRequestDto soapRequestDto = soapRequest.map(SoapRequestDto::from).get();
-
-    auditServiceWrapper.read(soapRequestDto);
-
-    return soapRequestDto;
+  public Optional<SoapRequestDto> getByRequestId(Long id) {
+    Optional<SoapRequestDto> optionalSoapRequestDto = soapRequestRepository.findByRequestId(id)
+        .map(SoapRequestDto::from);
+    optionalSoapRequestDto.ifPresent(auditServiceWrapper::read);
+    return optionalSoapRequestDto;
   }
 
   public void deleteData(UUID id) {
-    SoapRequestDto soapRequestDto = soapRequestRepository.findById(id)
-        .map(SoapRequestDto::from).get();
     soapRequestRepository.deleteById(id);
-
-    auditServiceWrapper.delete(soapRequestDto);
+    soapRequestRepository
+        .findById(id)
+        .map(SoapRequestDto::from)
+        .ifPresent(auditServiceWrapper::delete);
   }
 
 }
