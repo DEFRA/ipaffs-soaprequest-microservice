@@ -102,7 +102,7 @@ public class SoapRequestServiceTest {
     when(soapRequestRepository.findById(any())).thenReturn(Optional.of(soapRequest));
 
     // When
-    SoapRequestDto result = soapRequestService.get(soapRequest.getId());
+    SoapRequestDto result = soapRequestService.get(soapRequest.getId()).get();
 
     // Then
     assertEquals(soapRequest.getUsername(), result.getUsername());
@@ -128,7 +128,7 @@ public class SoapRequestServiceTest {
     when(soapRequestRepository.findByRequestId(any())).thenReturn(Optional.of(soapRequest));
 
     // When
-    SoapRequestDto result = soapRequestService.getByRequestId(soapRequest.getRequestId());
+    SoapRequestDto result = soapRequestService.getByRequestId(soapRequest.getRequestId()).get();
 
     // Then
     assertEquals(soapRequest.getUsername(), result.getUsername());

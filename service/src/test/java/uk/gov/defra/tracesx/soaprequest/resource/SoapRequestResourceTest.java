@@ -15,9 +15,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.defra.tracesx.soaprequest.dto.SoapRequestDto;
 import uk.gov.defra.tracesx.soaprequest.exceptions.BadRequestBodyException;
+import uk.gov.defra.tracesx.soaprequest.exceptions.NotFoundException;
 import uk.gov.defra.tracesx.soaprequest.service.SoapRequestService;
 
 import java.net.URISyntaxException;
+import java.util.Optional;
 import java.util.UUID;
 
 public class SoapRequestResourceTest {
@@ -106,7 +108,7 @@ public class SoapRequestResourceTest {
     // Given
     SoapRequestResource resource = new SoapRequestResource(soapRequestService);
 
-    when(soapRequestService.get(any())).thenReturn(requestBody);
+    when(soapRequestService.get(any())).thenReturn(Optional.ofNullable(requestBody));
 
     // When
     ResponseEntity entity = resource.get(id);
@@ -116,12 +118,23 @@ public class SoapRequestResourceTest {
     assertEquals(requestBody, entity.getBody());
   }
 
+  @Test(expected = NotFoundException.class)
+  public void getThrowsNotFoundOnNonExistingId() {
+    // Given
+    SoapRequestResource resource = new SoapRequestResource(soapRequestService);
+
+    when(soapRequestService.get(any())).thenReturn(Optional.ofNullable(null));
+
+    // When
+    ResponseEntity entity = resource.get(id);
+  }
+
   @Test
   public void getByRequestIdReturnsEntityFromService() {
     // Given
     SoapRequestResource resource = new SoapRequestResource(soapRequestService);
 
-    when(soapRequestService.getByRequestId(any())).thenReturn(requestBody);
+    when(soapRequestService.getByRequestId(any())).thenReturn(Optional.ofNullable(requestBody));
 
     // When
     ResponseEntity entity = resource.getByRequestId(requestId);
@@ -129,6 +142,17 @@ public class SoapRequestResourceTest {
     // Then
     assertEquals(HttpStatus.OK, entity.getStatusCode());
     assertEquals(requestBody, entity.getBody());
+  }
+
+  @Test(expected = NotFoundException.class)
+  public void getByRequestIdThrowsNotFoundOnNonExistentRequestId() {
+    // Given
+    SoapRequestResource resource = new SoapRequestResource(soapRequestService);
+
+    when(soapRequestService.getByRequestId(any())).thenReturn(Optional.ofNullable(null));
+
+    // When
+    ResponseEntity entity = resource.getByRequestId(requestId);
   }
 
   @Test

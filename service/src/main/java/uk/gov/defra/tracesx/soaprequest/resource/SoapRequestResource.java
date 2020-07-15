@@ -19,10 +19,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.defra.tracesx.soaprequest.dto.SoapRequestDto;
 import uk.gov.defra.tracesx.soaprequest.exceptions.BadRequestBodyException;
+import uk.gov.defra.tracesx.soaprequest.exceptions.NotFoundException;
 import uk.gov.defra.tracesx.soaprequest.service.SoapRequestService;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -56,14 +58,16 @@ public class SoapRequestResource {
   @PreAuthorize("hasAuthority('soaprequest.read')")
   public ResponseEntity get(@PathVariable("id") UUID id) {
     LOGGER.debug("GET id: {}", id);
-    return ResponseEntity.ok(soapRequestService.get(id));
+    Optional<SoapRequestDto> soapRequestDto = soapRequestService.get(id);
+    return ResponseEntity.ok(soapRequestDto.orElseThrow(NotFoundException::new));
   }
 
   @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('soaprequest.read')")
   public ResponseEntity getByRequestId(@RequestParam("requestId") Long requestId) {
     LOGGER.debug("GET requestId: {}", requestId);
-    return ResponseEntity.ok(soapRequestService.getByRequestId(requestId));
+    Optional<SoapRequestDto> soapRequestDto = soapRequestService.getByRequestId(requestId);
+    return ResponseEntity.ok(soapRequestDto.orElseThrow(NotFoundException::new));
   }
 
   @DeleteMapping(value = "/{id}")
