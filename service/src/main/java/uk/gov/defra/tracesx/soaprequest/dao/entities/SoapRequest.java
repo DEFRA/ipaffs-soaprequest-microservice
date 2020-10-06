@@ -20,7 +20,7 @@ public class SoapRequest {
   @GeneratedValue(strategy = GenerationType.AUTO)
   private UUID id;
 
-  private Long requestId = System.currentTimeMillis();
+  private Long requestId = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
   private String username;
   private String query;
 
