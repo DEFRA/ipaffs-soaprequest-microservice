@@ -3,6 +3,8 @@ package uk.gov.defra.tracesx.soaprequest.dao.entities;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -20,9 +22,11 @@ public class SoapRequest {
   @GeneratedValue(strategy = GenerationType.AUTO)
   private UUID id;
 
-  private Long requestId = System.currentTimeMillis();
+  private Long requestId = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
   private String username;
   private String query;
+  private String lastUpdated = LocalDateTime.now()
+      .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
 
   public SoapRequest() {
   }
@@ -62,5 +66,9 @@ public class SoapRequest {
 
   public void setQuery(String query) {
     this.query = query;
+  }
+
+  public String getLastUpdated() {
+    return lastUpdated;
   }
 }

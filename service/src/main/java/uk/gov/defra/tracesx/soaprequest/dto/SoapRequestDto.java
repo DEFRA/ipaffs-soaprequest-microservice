@@ -17,9 +17,11 @@ public class SoapRequestDto {
   private Long requestId;
   private String username;
   private String query;
+  private String lastUpdated;
 
   public static SoapRequestDto from(SoapRequest request) {
     return new SoapRequestDto(
-        request.getId(), request.getRequestId(), request.getUsername(), request.getQuery());
+        request.getId(), request.getRequestId(), request.getUsername(), request.getQuery(),
+        request.getLastUpdated());
   }
 }

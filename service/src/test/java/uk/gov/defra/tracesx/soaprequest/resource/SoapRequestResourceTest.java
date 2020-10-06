@@ -68,7 +68,7 @@ public class SoapRequestResourceTest {
     when(soapRequestService.create(any())).thenReturn(id);
 
     // When
-    ResponseEntity responseEntity = resource.insert(new SoapRequestDto(id, 123L, "user", "query"));
+    ResponseEntity responseEntity = resource.insert(new SoapRequestDto(id, 123L, "user", "query", "2020-10-09 20:00"));
 
     // Then
     assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
