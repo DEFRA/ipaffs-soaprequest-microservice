@@ -52,6 +52,9 @@ spring:
     initialize: false
     hikari:
       leakDetectionThreshold: ${HIKARI_LEAK_DETECTION_THRESHOLD:2000}
+      connectionTimeout: ${HIKARI_CONNECTION_TIMEOUT:15000}
+      maxLifetime: ${HIKARI_MAX_LIFETIME:30000}
+      validationTimeout: ${HIKARI_VALIDATION_TIMEOUT:5000}
   jpa:
     properties:
       hibernate:
