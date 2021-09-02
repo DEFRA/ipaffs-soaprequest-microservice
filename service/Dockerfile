@@ -7,7 +7,7 @@ WORKDIR /usr/src/soaprequest-service
 
 COPY target/TracesX_SoapRequest.jar /usr/src/soaprequest-service/
 COPY lib/applicationinsights-agent.jar /usr/src/soaprequest-service/
-COPY lib/AI-Agent.xml /usr/src/soaprequest-service/
+COPY lib/applicationinsights.json /usr/src/soaprequest-service/
 
 RUN chown jreuser /usr/src/soaprequest-service
 USER jreuser
