@@ -18,8 +18,12 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class ApplicationInsightsConfigTest {
 
-  private static final String APPLICATION_INSIGHTS_IKEY = "APPLICATION_INSIGHTS_IKEY";
-  private static final String APPLICATION_INSIGHTS_VALUE = "APPLICATION_INSIGHTS_VALUE";
+  private static final String APPLICATIONINSIGHTS_CONNECTION_STRING =
+          "APPLICATIONINSIGHTS_CONNECTION_STRING";
+  private static final String APPLICATIONINSIGHTS_CONNECTION_STRING_VALUE =
+          "InstrumentationKey=00000000-0000-0000-0000-000000000000";
+  private static final String APPLICATION_NAME = "soaprequest-microservice";
+
   private static final String BLANK = "";
   @Mock
   private Environment environment;
@@ -29,15 +33,16 @@ public class ApplicationInsightsConfigTest {
   @Test
   public void whenEnvHasVariableSetThenTheResultContainsValue() {
 
-    when(environment.getProperty(APPLICATION_INSIGHTS_IKEY)).thenReturn(APPLICATION_INSIGHTS_VALUE);
+    when(environment.getProperty(APPLICATIONINSIGHTS_CONNECTION_STRING))
+            .thenReturn(APPLICATIONINSIGHTS_CONNECTION_STRING_VALUE);
     String result = underTest.telemetryConfig();
-    assertThat(result, is(APPLICATION_INSIGHTS_VALUE));
+    assertThat(result, is(APPLICATIONINSIGHTS_CONNECTION_STRING_VALUE));
   }
 
   @Test
   public void whenEnvHasVariableSetToBlankThenTheResultDoesntContainValue() {
 
-    when(environment.getProperty(APPLICATION_INSIGHTS_IKEY)).thenReturn(BLANK);
+    when(environment.getProperty(APPLICATIONINSIGHTS_CONNECTION_STRING)).thenReturn(BLANK);
     String result = underTest.telemetryConfig();
     assertThat(result, is(BLANK));
   }
@@ -45,7 +50,7 @@ public class ApplicationInsightsConfigTest {
   @Test
   public void whenEnvHasVariableNotSetThenTheResultDoesntContainValue() {
 
-    when(environment.getProperty(APPLICATION_INSIGHTS_IKEY)).thenReturn(null);
+    when(environment.getProperty(APPLICATIONINSIGHTS_CONNECTION_STRING)).thenReturn(null);
     String result = underTest.telemetryConfig();
     assertThat(result, is(nullValue()));
   }
@@ -56,7 +61,7 @@ public class ApplicationInsightsConfigTest {
     ApplicationInsightsConfig aiConfig = new ApplicationInsightsConfig();
 
     //When
-    FilterRegistrationBean filterRegistration = aiConfig.aiFilterRegistration(APPLICATION_INSIGHTS_IKEY);
+    FilterRegistrationBean filterRegistration = aiConfig.aiFilterRegistration(APPLICATION_NAME);
 
     //Then
     assertEquals(1, filterRegistration.getUrlPatterns().size());
@@ -69,7 +74,7 @@ public class ApplicationInsightsConfigTest {
     ApplicationInsightsConfig aiConfig = new ApplicationInsightsConfig();
 
     //When
-    FilterRegistrationBean filterRegistration = aiConfig.aiFilterRegistration(APPLICATION_INSIGHTS_IKEY);
+    FilterRegistrationBean filterRegistration = aiConfig.aiFilterRegistration(APPLICATION_NAME);
 
     //Then
     assertEquals(Ordered.HIGHEST_PRECEDENCE + 10, filterRegistration.getOrder());
