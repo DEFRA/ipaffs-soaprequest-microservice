@@ -73,7 +73,7 @@ Use IntelliJ to debug the SoapRequestApplication.java application, specifying "l
 The following properties are used by the application (see required values in the .env file)
 
      SERVICE_PORT
-     APPLICATION_INSIGHTS_IKEY
+     APPLICATIONINSIGHTS_CONNECTION_STRING
      API_VERSION
      ENV_DOMAIN
      PERMISSIONS_SERVICE_PASSWORD
