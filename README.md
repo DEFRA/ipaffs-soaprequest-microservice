@@ -4,6 +4,20 @@
 
 SpringBoot REST service to provide soap requests data for SoapSearch Microservice.
 
+## Secret scanning
+Secret scanning is setup using [truffleHog](https://github.com/trufflesecurity/truffleHog).
+It is used as a pre-push hook and will scan any local commits being pushed
+
+### Pre-push hook setup
+1. Install [truffleHog](https://github.com/trufflesecurity/truffleHog)
+    - `brew install go`
+    - `git clone https://github.com/trufflesecurity/trufflehog.git`
+    - `cd trufflehog; go install`
+2. Set DEFRA_WORKSPACE env var (`export DEFRA_WORKSPACE=/path/to/workspace`)
+3. Potentially there's an older version of Trufflehog located at: `/usr/local/bin/trufflehog`. If so, remove this.
+4. Create a symlink: `ln -s ~/go/bin/truffleHog /usr/local/bin/trufflehog`
+5. From this project root directory copy the pre-push hook: `cp hooks/pre-push .git/hooks/pre-push`
+
 ## Set up
 
 Ensure that you have the necessary configuration to resolve dependencies from Artifactory: https://eaflood.atlassian.net/wiki/spaces/IT/pages/1047823027/Artifactory
