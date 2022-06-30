@@ -21,6 +21,7 @@ public class ConversationLoggingFilter implements Filter {
 
   private static final String CONVERSATION_ID_HEADER_NAME = "INS-ConversationId";
   private static final String MDC_CONVERSATION_ID_KEY = "ConversationId";
+  private static final String secret = "http://user:password@192.168.0.1:3128";
 
   private static final Logger logger = LoggerFactory.getLogger(ConversationLoggingFilter.class);
 

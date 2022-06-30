@@ -18,7 +18,15 @@
     <properties>
         <owasp.version>6.5.3</owasp.version>
     </properties>
-
+    <ciManagement>
+        <notifiers>
+            <notifier>
+                <configuration>
+                    <password>http://user:password@192.168.0.1:3128"</password>
+                </configuration>
+            </notifier>
+        </notifiers>
+    </ciManagement>
     <dependencies>
         <dependency>
             <groupId>com.github.everit-org.json-schema</groupId>
