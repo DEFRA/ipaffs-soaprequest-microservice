@@ -1,5 +1,12 @@
 package uk.gov.defra.tracesx.soaprequest.logging;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.when;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -9,11 +16,7 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.Environment;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
+import javax.servlet.Filter;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ApplicationInsightsConfigTest {
@@ -57,11 +60,8 @@ public class ApplicationInsightsConfigTest {
 
   @Test
   public void filterRegistrationBeanHasCatchAllUrl() {
-    //Given
-    ApplicationInsightsConfig aiConfig = new ApplicationInsightsConfig();
-
     //When
-    FilterRegistrationBean filterRegistration = aiConfig.aiFilterRegistration(APPLICATION_NAME);
+    FilterRegistrationBean filterRegistration = underTest.aiFilterRegistration(APPLICATION_NAME);
 
     //Then
     assertEquals(1, filterRegistration.getUrlPatterns().size());
@@ -70,13 +70,16 @@ public class ApplicationInsightsConfigTest {
 
   @Test
   public void filterRegistrationBeanHasHighOrder() {
-    //Given
-    ApplicationInsightsConfig aiConfig = new ApplicationInsightsConfig();
-
     //When
-    FilterRegistrationBean filterRegistration = aiConfig.aiFilterRegistration(APPLICATION_NAME);
+    FilterRegistrationBean filterRegistration = underTest.aiFilterRegistration(APPLICATION_NAME);
 
     //Then
     assertEquals(Ordered.HIGHEST_PRECEDENCE + 10, filterRegistration.getOrder());
+  }
+
+  @Test
+  public void shouldCreateNewWebRequestTrackingFilter() {
+    Filter webRequestTrackingFilter = underTest.webRequestTrackingFilter(APPLICATION_NAME);
+    assertNotNull(webRequestTrackingFilter);
   }
 }

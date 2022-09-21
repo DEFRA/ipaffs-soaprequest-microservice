@@ -5,6 +5,7 @@ import static ch.qos.logback.classic.Level.WARN;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -19,8 +20,11 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -32,6 +36,7 @@ public class ConversationLoggingFilterTest {
 
   private static final String CONVERSATION_ID_HEADER_NAME = "INS-ConversationId";
   private static final String CONVERSATION_ID = "ConversationId";
+  private static final String CONVERSATION_ID_KEY = "ConversationIdKey";
 
   @Mock
   private HttpServletRequest request;
@@ -91,5 +96,16 @@ public class ConversationLoggingFilterTest {
     assertThat(loggingEvent.getLevel(), is(WARN));
     assertThat(loggingEvent.getFormattedMessage(),
         containsString("Destroying filter"));
+  }
+
+  @Test
+  public void conversationIdIsNotRegisteredWithMDCWhenIdIsNull()
+      throws Exception {
+    when(request.getHeader(CONVERSATION_ID_HEADER_NAME)).thenReturn(null);
+    try(MockedStatic<MDC> staticMock = Mockito.mockStatic(MDC.class)) {
+      conversationLoggingFilter.doFilter(request, response, filterChain);
+      staticMock.verify(() -> MDC.put(CONVERSATION_ID_KEY, CONVERSATION_ID), never());
+      staticMock.verify(() -> MDC.remove(CONVERSATION_ID_KEY), never());
+    }
   }
 }

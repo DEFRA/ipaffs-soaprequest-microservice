@@ -28,4 +28,18 @@ public class SoapRequestTest {
     assertEquals(USERNAME, instance.getUsername());
     assertEquals(QUERY, instance.getQuery());
   }
+
+  @Test
+  public void verifySetUsernameAndQuery() {
+    // Given
+    SoapRequest instance = new SoapRequest();
+
+    //When
+    instance.setUsername(USERNAME);
+    instance.setQuery(QUERY);
+
+    //Then
+    assertEquals(USERNAME, instance.getUsername());
+    assertEquals(QUERY, instance.getQuery());
+  }
 }
