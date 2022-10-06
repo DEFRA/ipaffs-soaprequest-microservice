@@ -1,6 +1,6 @@
 #https://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
 server:
-  port: ${SERVICE_PORT}
+  port: ${SOAP_REQUEST_SERVICE_PORT}
 management:
   endpoint:
     health:
@@ -41,14 +41,13 @@ spring:
     allow-bean-definition-overriding: true
   security:
     jwt:
-      jwks: ${SECURITY_JWT_JWKS}
-      iss: ${SECURITY_JWT_ISS}
-      aud: ${SECURITY_JWT_AUD}
+      jwks: https://imports-proxy.azurewebsites.net/common/discovery/keys
+      iss: https://imports-proxy-static.azurewebsites.net
+      aud: a2617985-5645-47ec-8912-7a943b3895ba
   datasource:
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
     url: ${JDBC_URL}
     dialect: com.microsoft.sqlserver.jdbc.SQLServerDriver
-    continueOnError: true
     initialize: false
     hikari:
       leakDetectionThreshold: ${HIKARI_LEAK_DETECTION_THRESHOLD:2000}
