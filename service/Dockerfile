@@ -13,6 +13,6 @@ COPY lib/applicationinsights.json /usr/src/soaprequest-service/
 RUN chown jreuser /usr/src/soaprequest-service
 USER jreuser
 
-EXPOSE 4000
+EXPOSE 8080
 
 CMD ["java", "-javaagent:/usr/src/soaprequest-service/applicationinsights-agent.jar", "-jar", "TracesX_SoapRequest.jar"]
