@@ -1,4 +1,4 @@
-@Library('pipeline-library@feature/IMTA-12897-default-port-p3') _
+@Library('pipeline-library') _
 
 javaPipeline {
     SERVICE_NAME = "soaprequest-microservice"
