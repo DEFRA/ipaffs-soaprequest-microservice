@@ -1,0 +1,36 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet id="create_initial_schema_soaprequest" author="anon">
+        <createTable tableName="soaprequest">
+            <column name="id" type="uniqueidentifier">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="request_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="username" type="nvarchar(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="query" type="nvarchar(max)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_updated" type="datetime" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addUniqueConstraint
+          columnNames="request_id, username"
+          tableName="soaprequest"/>
+        <sql>
+            CREATE USER soapRequestServiceUser WITH PASSWORD = '${serviceDbPassword}';
+            REVOKE SELECT, INSERT, UPDATE, DELETE, EXECUTE, REFERENCES ON SCHEMA::DBO TO soapRequestServiceUser;
+            GRANT SELECT ON dbo.soaprequest TO soapRequestServiceUser;
+            GRANT INSERT ON dbo.soaprequest TO soapRequestServiceUser;
+            GRANT UPDATE ON dbo.soaprequest TO soapRequestServiceUser;
+            GRANT DELETE ON dbo.soaprequest TO soapRequestServiceUser;
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

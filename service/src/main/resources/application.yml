@@ -1,0 +1,70 @@
+#https://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
+server:
+  port: ${SERVICE_PORT}
+management:
+  endpoint:
+    health:
+      show-details: "NEVER"
+  endpoints:
+    web:
+      exposure:
+        include: health, info
+      base-path: /admin
+      path-mapping:
+        health: health-check
+  health:
+    defaults:
+      enabled: false
+  info:
+    env:
+      enabled: true
+info:
+  app:
+    name: soapRequest microservice
+    version: ${API_VERSION}
+permissions:
+  service:
+    scheme: https
+    host: permissions${ENV_DOMAIN}
+    port: 443
+    url: ${PROTOCOL}://permissions${ENV_DOMAIN}
+    user: importer
+    password: ${PERMISSIONS_SERVICE_PASSWORD}
+    connectionTimeout: 3000
+    readTimeout: 3000
+  security:
+    token-feature-switch: false
+spring:
+  application:
+    name: soaprequest-microservice
+  main:
+    allow-bean-definition-overriding: true
+  security:
+    jwt:
+      jwks: ${SECURITY_JWT_JWKS}
+      iss: ${SECURITY_JWT_ISS}
+      aud: ${SECURITY_JWT_AUD}
+  datasource:
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    url: ${JDBC_URL}
+    dialect: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    continueOnError: true
+    initialize: false
+    hikari:
+      leakDetectionThreshold: ${HIKARI_LEAK_DETECTION_THRESHOLD:2000}
+      connectionTimeout: ${HIKARI_CONNECTION_TIMEOUT:15000}
+      validationTimeout: ${HIKARI_VALIDATION_TIMEOUT:5000}
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.SQLServer2008Dialect
+audit:
+  create: true
+  read: true
+  update: false
+  delete: true
+logging:
+  level:
+    com.zaxxer.hikari: ${HIKARI_DEBUG_LEVEL:DEBUG}
+networking:
+  dnsCacheTtl: ${DNS_CACHE_TTL:20}
