@@ -1,14 +1,13 @@
 package uk.gov.defra.tracesx.soaprequest.service;
 
+import java.util.Optional;
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.defra.tracesx.soaprequest.audit.AuditServiceWrapper;
 import uk.gov.defra.tracesx.soaprequest.dao.entities.SoapRequest;
 import uk.gov.defra.tracesx.soaprequest.dao.repositories.SoapRequestRepository;
 import uk.gov.defra.tracesx.soaprequest.dto.SoapRequestDto;
-
-import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class SoapRequestService {
@@ -56,5 +55,4 @@ public class SoapRequestService {
         .map(SoapRequestDto::from)
         .ifPresent(auditServiceWrapper::delete);
   }
-
 }
