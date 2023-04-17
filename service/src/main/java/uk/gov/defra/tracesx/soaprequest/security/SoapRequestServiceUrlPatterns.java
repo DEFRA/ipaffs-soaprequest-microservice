@@ -1,10 +1,9 @@
 package uk.gov.defra.tracesx.soaprequest.security;
 
-import org.springframework.stereotype.Component;
-import uk.gov.defra.tracesx.common.security.ServiceUrlPatterns;
-
 import java.util.Collections;
 import java.util.List;
+import org.springframework.stereotype.Component;
+import uk.gov.defra.tracesx.common.security.ServiceUrlPatterns;
 
 @Component
 public class SoapRequestServiceUrlPatterns implements ServiceUrlPatterns {

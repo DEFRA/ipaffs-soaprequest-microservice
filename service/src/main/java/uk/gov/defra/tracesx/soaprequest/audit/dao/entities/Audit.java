@@ -1,13 +1,5 @@
 package uk.gov.defra.tracesx.soaprequest.audit.dao.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
-import org.hibernate.annotations.GenericGenerator;
-import uk.gov.defra.tracesx.soaprequest.audit.AuditRequestType;
-
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
@@ -18,6 +10,13 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+import org.hibernate.annotations.GenericGenerator;
+import uk.gov.defra.tracesx.soaprequest.audit.AuditRequestType;
 
 @Entity
 @Builder
