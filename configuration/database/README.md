@@ -20,6 +20,7 @@ Required environment variables:
 - DATABASE_DB_CONNECTION_STRING
 - BASE_SERVICE_DB_PASSWORD
 - BASE_SERVICE_DB_USER_AD
+- MANAGED_IDENTITY_USER
 
 ### Running migrations
 
