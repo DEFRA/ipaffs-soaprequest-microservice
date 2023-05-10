@@ -12,5 +12,5 @@ public final class Properties {
   }
 
   public static final String SERVICE_BASE_URL = System
-    .getProperty("service.base.url", "http://localhost:5260");
+      .getProperty("service.base.url", "http://localhost:5260");
 }

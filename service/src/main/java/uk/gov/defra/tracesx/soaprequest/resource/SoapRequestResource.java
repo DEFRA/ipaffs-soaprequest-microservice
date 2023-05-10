@@ -3,6 +3,10 @@ package uk.gov.defra.tracesx.soaprequest.resource;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static uk.gov.defra.tracesx.soaprequest.util.Constants.SOAP_REQUEST_ENDPOINT;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Optional;
+import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +25,6 @@ import uk.gov.defra.tracesx.soaprequest.dto.SoapRequestDto;
 import uk.gov.defra.tracesx.soaprequest.exceptions.BadRequestBodyException;
 import uk.gov.defra.tracesx.soaprequest.exceptions.NotFoundException;
 import uk.gov.defra.tracesx.soaprequest.service.SoapRequestService;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Optional;
-import java.util.UUID;
 
 @RestController
 @RequestMapping(SOAP_REQUEST_ENDPOINT)

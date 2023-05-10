@@ -4,6 +4,7 @@ import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 import com.microsoft.applicationinsights.TelemetryConfiguration;
 import com.microsoft.applicationinsights.web.internal.WebRequestTrackingFilter;
+import javax.servlet.Filter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -12,13 +13,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.Environment;
 
-import javax.servlet.Filter;
-
 @Configuration
 public class ApplicationInsightsConfig {
 
   private static final String APPLICATIONINSIGHTS_CONNECTION_STRING =
-          "APPLICATIONINSIGHTS_CONNECTION_STRING";
+      "APPLICATIONINSIGHTS_CONNECTION_STRING";
   @Autowired
   Environment environment;
 
