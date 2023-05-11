@@ -45,6 +45,7 @@
                         <serviceDbPassword>${BASE_SERVICE_DB_PASSWORD}</serviceDbPassword>
                         <serviceDbPasswordNew>${NEW_BASE_SERVICE_DB_PASSWORD}</serviceDbPasswordNew>
                         <serviceDbUserAd>${BASE_SERVICE_DB_USER_AD}</serviceDbUserAd>
+                        <managedIdentityUser>${MANAGED_IDENTITY_USER}</managedIdentityUser>
                     </systemProperties>
                     <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
                 </configuration>

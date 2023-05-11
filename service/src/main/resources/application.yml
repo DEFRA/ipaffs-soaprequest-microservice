@@ -47,6 +47,7 @@ spring:
   datasource:
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
     url: ${JDBC_URL}
+    managed-identity-url: ${MANAGED_IDENTITY_JDBC_URL}
     dialect: com.microsoft.sqlserver.jdbc.SQLServerDriver
     continueOnError: true
     initialize: false
@@ -68,3 +69,5 @@ logging:
     com.zaxxer.hikari: ${HIKARI_DEBUG_LEVEL:DEBUG}
 networking:
   dnsCacheTtl: ${DNS_CACHE_TTL:20}
+features:
+  enable-managed-identity-auth: ${ENABLE_MANAGED_IDENTITY_AUTH:false}
