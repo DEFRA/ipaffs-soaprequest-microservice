@@ -49,7 +49,6 @@ spring:
     url: ${JDBC_URL}
     managed-identity-url: ${MANAGED_IDENTITY_JDBC_URL}
     dialect: com.microsoft.sqlserver.jdbc.SQLServerDriver
-    continueOnError: true
     initialize: false
     hikari:
       leakDetectionThreshold: ${HIKARI_LEAK_DETECTION_THRESHOLD:2000}
@@ -59,6 +58,9 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.SQLServer2008Dialect
+  sql:
+    init:
+      continue-on-error: true
 audit:
   create: true
   read: true
