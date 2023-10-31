@@ -2,45 +2,44 @@ package uk.gov.defra.tracesx.soaprequest.resource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Optional;
 import java.util.UUID;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import uk.gov.defra.tracesx.soaprequest.audit.AuditServiceImpl;
 import uk.gov.defra.tracesx.soaprequest.dto.SoapRequestDto;
 import uk.gov.defra.tracesx.soaprequest.exceptions.BadRequestBodyException;
 import uk.gov.defra.tracesx.soaprequest.exceptions.NotFoundException;
 import uk.gov.defra.tracesx.soaprequest.service.SoapRequestService;
 
-@RunWith(MockitoJUnitRunner.class)
-public class SoapRequestResourceTest {
+@ExtendWith(MockitoExtension.class)
+class SoapRequestResourceTest {
 
-  public static final String QUERY = "test";
-  public static final String TEST_USER = "testUser";
-  private AuditServiceImpl auditService;
-  private SoapRequestDto requestBody;
-  private UUID id;
-  private Long requestId;
-
+  private static final String QUERY = "test";
+  private static final String TEST_USER = "testUser";
   @Mock
   SoapRequestService soapRequestService;
   @InjectMocks
   SoapRequestResource soapRequestResource;
+  private SoapRequestDto requestBody;
+  private UUID id;
+  private Long requestId;
 
-  @Before
-  public void setUp() {
+  @BeforeEach
+  void setUp() {
     requestBody = createSoapRequestDTO();
     id = UUID.randomUUID();
     requestId = System.currentTimeMillis();
@@ -55,7 +54,7 @@ public class SoapRequestResourceTest {
   }
 
   @Test
-  public void insertCallsServiceWithPostedJson() throws URISyntaxException {
+  void insertCallsServiceWithPostedJson() throws URISyntaxException {
     // Given
     when(soapRequestService.create(any())).thenReturn(id);
 
@@ -67,89 +66,94 @@ public class SoapRequestResourceTest {
   }
 
   @Test
-  public void insertReturnsCreatedLocation() throws URISyntaxException {
+  void insertReturnsCreatedLocation() throws URISyntaxException {
     // Given
     when(soapRequestService.create(any())).thenReturn(id);
 
     // When
-    ResponseEntity responseEntity = soapRequestResource.insert(new SoapRequestDto(id, 123L, "user", "query"));
+    ResponseEntity<URI> responseEntity = soapRequestResource.insert(
+        new SoapRequestDto(id, 123L, "user", "query"));
 
     // Then
     assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-    assertThat(responseEntity.getHeaders().getLocation().toString()).isEqualTo("/soaprequest/" + id);
+    assertThat(responseEntity.getHeaders().getLocation().toString()).hasToString(
+        "/soaprequest/" + id);
   }
 
   @Test
-  public void insertThrowsBadRequestOnQueryMissing() {
+  void insertThrowsBadRequestOnQueryMissing() {
     // Given
     SoapRequestDto requestDTO = new SoapRequestDto();
     requestDTO.setUsername(TEST_USER);
 
-    assertThatThrownBy(() -> soapRequestResource.insert(requestDTO)).isInstanceOf(BadRequestBodyException.class)
+    assertThatThrownBy(() -> soapRequestResource.insert(requestDTO)).isInstanceOf(
+            BadRequestBodyException.class)
         .hasMessageContaining("The query and username fields are required");
   }
 
   @Test
-  public void insertThrowsBadRequestOnUsernameMissing() {
+  void insertThrowsBadRequestOnUsernameMissing() {
     SoapRequestDto requestDTO = new SoapRequestDto();
     requestDTO.setQuery(QUERY);
 
-    assertThatThrownBy(() -> soapRequestResource.insert(requestDTO)).isInstanceOf(BadRequestBodyException.class)
+    assertThatThrownBy(() -> soapRequestResource.insert(requestDTO)).isInstanceOf(
+            BadRequestBodyException.class)
         .hasMessageContaining("The query and username fields are required");
   }
 
   @Test
-  public void insertThrowsBadRequestOnSoapRequestBeingNull() {
-    assertThatThrownBy(() -> soapRequestResource.insert(null)).isInstanceOf(BadRequestBodyException.class)
+  void insertThrowsBadRequestOnSoapRequestBeingNull() {
+    assertThatThrownBy(() -> soapRequestResource.insert(null)).isInstanceOf(
+            BadRequestBodyException.class)
         .hasMessageContaining("The query and username fields are required");
   }
 
   @Test
-  public void getReturnsEntityFromService() {
+  void getReturnsEntityFromService() {
     // Given
     when(soapRequestService.get(any())).thenReturn(Optional.ofNullable(requestBody));
 
     // When
-    ResponseEntity entity = soapRequestResource.get(id);
+    ResponseEntity<SoapRequestDto> entity = soapRequestResource.get(id);
 
     // Then
     assertThat(entity.getStatusCode()).isEqualTo(HttpStatus.OK);
     assertThat(entity.getBody()).isEqualTo(requestBody);
   }
 
-  @Test(expected = NotFoundException.class)
-  public void getThrowsNotFoundOnNonExistingId() {
+  @Test
+  void getThrowsNotFoundOnNonExistingId() {
     // Given
-    when(soapRequestService.get(any())).thenReturn(Optional.ofNullable(null));
+    when(soapRequestService.get(any())).thenReturn(Optional.empty());
 
     // When
-    soapRequestResource.get(id);
+    assertThrows(NotFoundException.class, () -> soapRequestResource.get(id));
   }
 
   @Test
-  public void getByRequestIdReturnsEntityFromService() {
+  void getByRequestIdReturnsEntityFromService() {
     // Given
     when(soapRequestService.getByRequestId(any())).thenReturn(Optional.ofNullable(requestBody));
 
     // When
-    ResponseEntity entity = soapRequestResource.getByRequestId(requestId);
+    ResponseEntity<SoapRequestDto> entity = soapRequestResource.getByRequestId(requestId);
 
     // Then
     assertThat(entity.getStatusCode()).isEqualTo(HttpStatus.OK);
     assertThat(entity.getBody()).isEqualTo(requestBody);
   }
 
-  @Test(expected = NotFoundException.class)
-  public void getByRequestIdThrowsNotFoundOnNonExistentRequestId() {
+  @Test
+  void getByRequestIdThrowsNotFoundOnNonExistentRequestId() {
     // Given
-    when(soapRequestService.getByRequestId(any())).thenReturn(Optional.ofNullable(null));
+    when(soapRequestService.getByRequestId(any())).thenReturn(Optional.empty());
 
     // When
-    soapRequestResource.getByRequestId(requestId);
+    assertThrows(NotFoundException.class, () -> soapRequestResource.getByRequestId(requestId));
   }
 
   @Test
-  public void deleteCallsServiceWithId() {
+  void deleteCallsServiceWithId() {
     // When
     soapRequestResource.delete(id);
 
@@ -158,12 +162,11 @@ public class SoapRequestResourceTest {
   }
 
   @Test
-  public void deleteReturnsHttpStatusOkay() {
+  void deleteReturnsHttpStatusOkay() {
     // When
-    ResponseEntity entity = soapRequestResource.delete(id);
+    ResponseEntity<HttpStatus> entity = soapRequestResource.delete(id);
 
     // Then
     assertThat(entity.getStatusCode()).isEqualTo(HttpStatus.OK);
   }
-
 }

@@ -4,12 +4,11 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.Test;
 
-public class SoapRequestConfigurationTest {
+class SoapRequestConfigurationTest {
 
   @Test
-  public void instanceShouldNotBeNullWhenCreated() {
+  void instanceShouldNotBeNullWhenCreated() {
     SoapRequestConfiguration instance = new SoapRequestConfiguration();
     assertNotNull(instance);
   }
-
 }

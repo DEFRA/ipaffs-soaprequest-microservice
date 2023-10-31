@@ -1,16 +1,15 @@
 package uk.gov.defra.tracesx.soaprequest.security;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Collections;
 import java.util.List;
+import org.junit.jupiter.api.Test;
 
-public class SoapRequestServiceUrlPatternsTest {
+class SoapRequestServiceUrlPatternsTest {
 
   @Test
-  public void shouldReturnURLPatternWhenCalled() {
+  void shouldReturnURLPatternWhenCalled() {
     // Given
     SoapRequestServiceUrlPatterns instance = new SoapRequestServiceUrlPatterns();
 
@@ -19,7 +18,6 @@ public class SoapRequestServiceUrlPatternsTest {
     List<String> expected = Collections.singletonList("/soaprequest/**");
 
     //Then
-    assertEquals(actual, expected);
+    assertThat(actual).isEqualTo(expected);
   }
-
 }
