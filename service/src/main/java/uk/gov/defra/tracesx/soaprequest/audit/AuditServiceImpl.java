@@ -1,7 +1,6 @@
 package uk.gov.defra.tracesx.soaprequest.audit;
 
 import static org.slf4j.LoggerFactory.getLogger;
-import static uk.gov.defra.tracesx.soaprequest.audit.AuditRequestType.CREATE;
 import static uk.gov.defra.tracesx.soaprequest.audit.AuditRequestType.DELETE;
 import static uk.gov.defra.tracesx.soaprequest.audit.AuditRequestType.READ;
 
@@ -17,13 +16,13 @@ public class AuditServiceImpl implements AuditService {
 
   private static final String REQUEST_ID = "requestId";
   private static final String REGEX_REMOVE_QUOTES = "^\"|\"$|\\\\";
-  private final AuditRepository auditRepository;
+  private final AuditRepository<Audit> auditRepository;
   private final AuditConfig auditConfig;
   private final Logger logger = getLogger(AuditServiceImpl.class);
 
   @Autowired
   public AuditServiceImpl(
-      AuditConfig auditConfig, AuditRepository auditRepository) {
+      AuditConfig auditConfig, AuditRepository<Audit> auditRepository) {
     this.auditConfig = auditConfig;
     this.auditRepository = auditRepository;
   }
@@ -31,7 +30,7 @@ public class AuditServiceImpl implements AuditService {
   @Override
   public void create(String user, JsonNode created) {
     if (auditConfig.isAuditOnCreate()) {
-      processAuditForInsert(user, created, CREATE);
+      processAuditForInsert(user, created);
     }
   }
 
@@ -49,12 +48,12 @@ public class AuditServiceImpl implements AuditService {
     }
   }
 
-  private void processAuditForInsert(String user, JsonNode created, AuditRequestType type) {
+  private void processAuditForInsert(String user, JsonNode created) {
     Audit audit = Audit.builder()
         .userId(user)
         .data(created.toString().replaceAll(REGEX_REMOVE_QUOTES, ""))
         .entityId(created.get(REQUEST_ID).asLong())
-        .type(type)
+        .type(AuditRequestType.CREATE)
         .build();
     try {
       auditRepository.save(audit);
@@ -78,7 +77,6 @@ public class AuditServiceImpl implements AuditService {
   }
 
   private void handleError(Audit audit, Exception exception) {
-    logger.info("audit: {}", audit.toString());
-    logger.error("Unable to persist audit: {}", exception.getMessage());
+    logger.error("Unable to persist audit: {} {}", audit, exception.getMessage());
   }
 }

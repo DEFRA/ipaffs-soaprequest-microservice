@@ -1,57 +1,56 @@
 package uk.gov.defra.tracesx.soaprequest.exceptions;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Appender;
+import java.util.ArrayList;
+import java.util.List;
 import org.everit.json.schema.ValidationException;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.context.request.WebRequest;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class RestResponseEntityExceptionHandlerTest {
+@ExtendWith(MockitoExtension.class)
+class RestResponseEntityExceptionHandlerTest {
 
   @Mock
-  WebRequest mockWebRequest;
+  private WebRequest mockWebRequest;
   @Mock
-  private Appender mockAppender;
+  private Appender<ILoggingEvent> mockAppender;
   @Captor
   private ArgumentCaptor<LoggingEvent> captorLoggingEvent;
 
-  @Before
-  public void setUp() {
-    initMocks(this);
+  @BeforeEach
+  void setUp() {
     final Logger logger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
     logger.addAppender(mockAppender);
   }
 
-  @After
-  public void teardown() {
+  @AfterEach
+  void teardown() {
     final Logger logger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
     logger.detachAppender(mockAppender);
   }
 
   @Test
-  public void logsNotFoundException() {
+  void logsNotFoundException() {
     // Given
     RestResponseEntityExceptionHandler exceptionHandler = new RestResponseEntityExceptionHandler();
     Exception ex = new Exception();
@@ -63,14 +62,13 @@ public class RestResponseEntityExceptionHandlerTest {
     // Then
     verify(mockAppender).doAppend(captorLoggingEvent.capture());
     final LoggingEvent loggingEvent = captorLoggingEvent.getValue();
-    assertThat(loggingEvent.getLevel(), is(Level.INFO));
-    assertThat(
-        loggingEvent.getFormattedMessage(),
-        is("org.springframework.web.servlet.PageNotFound : some description"));
+    assertThat(loggingEvent.getLevel()).isEqualTo(Level.INFO);
+    assertThat(loggingEvent.getFormattedMessage())
+        .isEqualTo("org.springframework.web.servlet.PageNotFound : some description");
   }
 
   @Test
-  public void notFoundExceptionReturnsCorrectHttpResponse() {
+  void notFoundExceptionReturnsCorrectHttpResponse() {
     // Given
     RestResponseEntityExceptionHandler exceptionHandler = new RestResponseEntityExceptionHandler();
     Exception ex = new Exception();
@@ -79,12 +77,12 @@ public class RestResponseEntityExceptionHandlerTest {
     ResponseEntity<Object> response = exceptionHandler.handleNotFound(ex, mockWebRequest);
 
     // Then
-    assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-    assertEquals("", response.getBody());
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    assertThat(response.getBody()).isEqualTo("");
   }
 
   @Test
-  public void logsNotImplementedException() {
+  void logsNotImplementedException() {
     // Given
     RestResponseEntityExceptionHandler exceptionHandler = new RestResponseEntityExceptionHandler();
     Exception ex = new Exception();
@@ -95,12 +93,12 @@ public class RestResponseEntityExceptionHandlerTest {
     // Then
     verify(mockAppender).doAppend(captorLoggingEvent.capture());
     final LoggingEvent loggingEvent = captorLoggingEvent.getValue();
-    assertThat(loggingEvent.getLevel(), is(Level.INFO));
-    assertThat(loggingEvent.getFormattedMessage(), is("Method Not Implemented"));
+    assertThat(loggingEvent.getLevel()).isEqualTo(Level.INFO);
+    assertThat(loggingEvent.getFormattedMessage()).isEqualTo("Method Not Implemented");
   }
 
   @Test
-  public void handleNotImplementedReturnsCorrectHttpResponse() {
+  void handleNotImplementedReturnsCorrectHttpResponse() {
     // Given
     RestResponseEntityExceptionHandler exceptionHandler = new RestResponseEntityExceptionHandler();
     Exception ex = new Exception();
@@ -110,12 +108,12 @@ public class RestResponseEntityExceptionHandlerTest {
         exceptionHandler.handleMethodNotImplemented(ex, mockWebRequest);
 
     // Then
-    assertEquals(HttpStatus.NOT_IMPLEMENTED, response.getStatusCode());
-    assertEquals("", response.getBody());
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_IMPLEMENTED);
+    assertThat(response.getBody()).isEqualTo((""));
   }
 
   @Test
-  public void logsBadJson() {
+  void logsBadJson() {
     // Given
     RestResponseEntityExceptionHandler exceptionHandler = new RestResponseEntityExceptionHandler();
     Exception ex = new Exception();
@@ -126,12 +124,12 @@ public class RestResponseEntityExceptionHandlerTest {
     // Then
     verify(mockAppender).doAppend(captorLoggingEvent.capture());
     final LoggingEvent loggingEvent = captorLoggingEvent.getValue();
-    assertThat(loggingEvent.getLevel(), is(Level.INFO));
-    assertThat(loggingEvent.getFormattedMessage(), is("Invalid Json"));
+    assertThat(loggingEvent.getLevel()).isEqualTo(Level.INFO);
+    assertThat(loggingEvent.getFormattedMessage()).isEqualTo("Invalid Json");
   }
 
   @Test
-  public void handleBadJsonReturnsCorrectHttpResponse() {
+  void handleBadJsonReturnsCorrectHttpResponse() {
     // Given
     RestResponseEntityExceptionHandler exceptionHandler = new RestResponseEntityExceptionHandler();
     Exception ex = new Exception();
@@ -140,19 +138,19 @@ public class RestResponseEntityExceptionHandlerTest {
     ResponseEntity<Object> response = exceptionHandler.handleBadJson(ex, mockWebRequest);
 
     // Then
-    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-    assertEquals("", response.getBody());
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    assertThat(response.getBody()).isEqualTo("");
   }
 
   @Test
-  public void logsNestedSchemaValidationFailure() {
+  void logsNestedSchemaValidationFailure() {
     // Given
     RestResponseEntityExceptionHandler exceptionHandler = new RestResponseEntityExceptionHandler();
     ValidationException exception = mock(ValidationException.class);
     ValidationException exceptionNested = mock(ValidationException.class);
     when(exceptionNested.getPointerToViolation()).thenReturn("pointer");
     when(exceptionNested.getErrorMessage()).thenReturn("error message");
-    List<ValidationException> nestedExceptions = new ArrayList();
+    List<ValidationException> nestedExceptions = new ArrayList<>();
     nestedExceptions.add(exceptionNested);
     when(exception.getCausingExceptions()).thenReturn(nestedExceptions);
 
@@ -162,18 +160,18 @@ public class RestResponseEntityExceptionHandlerTest {
     // Then
     verify(mockAppender).doAppend(captorLoggingEvent.capture());
     final LoggingEvent loggingEvent = captorLoggingEvent.getValue();
-    assertThat(loggingEvent.getLevel(), is(Level.INFO));
-    assertThat(loggingEvent.getFormattedMessage(), is("Schema validation failed"));
+    assertThat(loggingEvent.getLevel()).isEqualTo(Level.INFO);
+    assertThat(loggingEvent.getFormattedMessage()).isEqualTo("Schema validation failed");
   }
 
   @Test
-  public void logsSchemaValidationFailure() {
+  void logsSchemaValidationFailure() {
     // Given
     RestResponseEntityExceptionHandler exceptionHandler = new RestResponseEntityExceptionHandler();
     ValidationException exception = mock(ValidationException.class);
     when(exception.getPointerToViolation()).thenReturn("pointer");
     when(exception.getErrorMessage()).thenReturn("error message");
-    List<ValidationException> nestedExceptions = new ArrayList();
+    List<ValidationException> nestedExceptions = new ArrayList<>();
     when(exception.getCausingExceptions()).thenReturn(nestedExceptions);
 
     // When
@@ -182,12 +180,12 @@ public class RestResponseEntityExceptionHandlerTest {
     // Then
     verify(mockAppender).doAppend(captorLoggingEvent.capture());
     final LoggingEvent loggingEvent = captorLoggingEvent.getValue();
-    assertThat(loggingEvent.getLevel(), is(Level.INFO));
-    assertThat(loggingEvent.getFormattedMessage(), is("Schema validation failed"));
+    assertThat(loggingEvent.getLevel()).isEqualTo(Level.INFO);
+    assertThat(loggingEvent.getFormattedMessage()).isEqualTo("Schema validation failed");
   }
 
   @Test
-  public void handleInvalidSchemaCorrectHttpResponse() {
+  void handleInvalidSchemaCorrectHttpResponse() {
     // Given
     RestResponseEntityExceptionHandler exceptionHandler = new RestResponseEntityExceptionHandler();
     ValidationException exception = mock(ValidationException.class);
@@ -197,12 +195,12 @@ public class RestResponseEntityExceptionHandlerTest {
         exceptionHandler.handleInvalidSchema(exception, mockWebRequest);
 
     // Then
-    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-    assertEquals("Schema or model error: null : null", response.getBody());
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    assertThat(response.getBody()).isEqualTo("Schema or model error: null : null");
   }
 
   @Test
-  public void handleUnimplementedCorrectHttpResponse() {
+  void handleUnimplementedCorrectHttpResponse() {
     // Given
     RestResponseEntityExceptionHandler exceptionHandler = new RestResponseEntityExceptionHandler();
     ValidationException exception = mock(ValidationException.class);
@@ -212,12 +210,12 @@ public class RestResponseEntityExceptionHandlerTest {
         exceptionHandler.handleInvalidSchema(exception, mockWebRequest);
 
     // Then
-    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-    assertEquals("Schema or model error: null : null", response.getBody());
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    assertThat(response.getBody()).isEqualTo("Schema or model error: null : null");
   }
 
   @Test
-  public void handleBadRequestBodyExceptionToBadRequestHttpResponse() {
+  void handleBadRequestBodyExceptionToBadRequestHttpResponse() {
     // Given
     RestResponseEntityExceptionHandler exceptionHandler = new RestResponseEntityExceptionHandler();
     BadRequestBodyException exception = mock(BadRequestBodyException.class);
@@ -227,11 +225,11 @@ public class RestResponseEntityExceptionHandlerTest {
         exceptionHandler.handleBadRequestBody(exception, mockWebRequest);
 
     // Then
-    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
   }
 
   @Test
-  public void handleEmptyResultDataAccessExceptionToNotFoundHttpResponse() {
+  void handleEmptyResultDataAccessExceptionToNotFoundHttpResponse() {
     // Given
     RestResponseEntityExceptionHandler exceptionHandler = new RestResponseEntityExceptionHandler();
     EmptyResultDataAccessException exception = mock(EmptyResultDataAccessException.class);
@@ -240,6 +238,6 @@ public class RestResponseEntityExceptionHandlerTest {
     ResponseEntity<Object> response = exceptionHandler.handleNotFound(exception, mockWebRequest);
 
     // Then
-    assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
   }
 }

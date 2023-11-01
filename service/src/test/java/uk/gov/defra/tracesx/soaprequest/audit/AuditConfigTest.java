@@ -1,10 +1,10 @@
 package uk.gov.defra.tracesx.soaprequest.audit;
 
-import org.junit.jupiter.api.Test;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class AuditConfigTest {
+import org.junit.jupiter.api.Test;
+
+class AuditConfigTest {
 
   @Test
   void isAuditOnCreate() {
@@ -49,7 +49,6 @@ public class AuditConfigTest {
     assertThat(config.isAuditOnRead()).isTrue();
     assertThat(config.isAuditOnDelete()).isFalse();
     assertThat(config.isAuditOnCreate()).isTrue();
-
   }
 
   @Test

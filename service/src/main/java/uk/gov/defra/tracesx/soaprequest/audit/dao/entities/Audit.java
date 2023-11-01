@@ -52,12 +52,10 @@ public final class Audit {
     if (this == obj) {
       return true;
     }
-    if (!(obj instanceof Audit)) {
+    if (!(obj instanceof Audit audit)) {
       return false;
     }
-    Audit audit = (Audit) obj;
-    return Objects.equals(id, audit.id)
-        && Objects.equals(userId, audit.userId)
+    return Objects.equals(userId, audit.userId)
         && Objects.equals(data, audit.data)
         && Objects.equals(createdAt, audit.createdAt)
         && Objects.equals(type, audit.type)
@@ -66,6 +64,6 @@ public final class Audit {
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, userId, data, createdAt, type, entityId);
+    return Objects.hash(userId, data, createdAt, type, entityId);
   }
 }

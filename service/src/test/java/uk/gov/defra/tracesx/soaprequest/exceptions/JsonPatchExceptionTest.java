@@ -1,23 +1,22 @@
 package uk.gov.defra.tracesx.soaprequest.exceptions;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 
-public class JsonPatchExceptionTest {
+class JsonPatchExceptionTest {
 
   @Test
-  public void instanceShouldContainExceptionMessageWhenCreated() {
+  void instanceShouldContainExceptionMessageWhenCreated() {
     JsonPatchException instance = new JsonPatchException("test_message");
-    assertEquals(instance.getMessage(), "test_message");
+    assertThat(instance.getMessage()).isEqualTo("test_message");
   }
 
   @Test
-  public void instanceShouldContainExceptionMessageAndCauseWhenCreated() {
+  void instanceShouldContainExceptionMessageAndCauseWhenCreated() {
     Throwable cause = new Throwable();
     JsonPatchException instance = new JsonPatchException("test_message", cause);
-    assertEquals(instance.getMessage(), "test_message");
-    assertEquals(instance.getCause(), cause);
+    assertThat(instance.getMessage()).isEqualTo("test_message");
+    assertThat(instance.getCause()).isEqualTo(cause);
   }
-
 }

@@ -1,42 +1,42 @@
 package uk.gov.defra.tracesx.soaprequest.service;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
 
-import org.junit.Before;
-import org.junit.Test;
+import java.util.Optional;
+import java.util.UUID;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.defra.tracesx.soaprequest.audit.AuditServiceWrapper;
 import uk.gov.defra.tracesx.soaprequest.dao.entities.SoapRequest;
 import uk.gov.defra.tracesx.soaprequest.dao.repositories.SoapRequestRepository;
 import uk.gov.defra.tracesx.soaprequest.dto.SoapRequestDto;
 
-import java.util.Optional;
-import java.util.UUID;
+@ExtendWith(MockitoExtension.class)
+class SoapRequestServiceTest {
 
-public class SoapRequestServiceTest {
-
-  public static final String QUERY = "test";
-  public static final String TEST_USER = "testUser";
+  private static final String QUERY = "test";
+  private static final String TEST_USER = "testUser";
 
   @Mock
-  SoapRequestRepository soapRequestRepository;
+  private SoapRequestRepository soapRequestRepository;
   @Mock
-  AuditServiceWrapper auditServiceWrapper;
+  private AuditServiceWrapper auditServiceWrapper;
   @Captor
   private ArgumentCaptor<SoapRequest> soapRequestCaptor;
 
   private SoapRequestService soapRequestService;
   private SoapRequest soapRequest;
 
-  @Before
-  public void setUp() {
-    initMocks(this);
+  @BeforeEach
+  void setUp() {
     soapRequestService = new SoapRequestService(soapRequestRepository, auditServiceWrapper);
     soapRequest = createDefaultSoapRequestEntity();
   }
@@ -50,7 +50,7 @@ public class SoapRequestServiceTest {
 
   private SoapRequest createDefaultSoapRequestEntity() {
     UUID idSavedWith = UUID.randomUUID();
-    Long requestId = System.currentTimeMillis();
+    long requestId = System.currentTimeMillis();
     SoapRequest soapRequest = new SoapRequest(TEST_USER, QUERY);
     soapRequest.setId(idSavedWith);
     soapRequest.setRequestId(requestId);
@@ -58,7 +58,7 @@ public class SoapRequestServiceTest {
   }
 
   @Test
-  public void createsSavesAsNewEntity() {
+  void createsSavesAsNewEntity() {
     // Given
     when(soapRequestRepository.save(any())).thenReturn(soapRequest);
 
@@ -67,11 +67,11 @@ public class SoapRequestServiceTest {
 
     // Then
     verify(soapRequestRepository).save(any());
-    assertEquals(soapRequest.getId(), entityId);
+    assertThat(soapRequest.getId()).isEqualTo(entityId);
   }
 
   @Test
-  public void createSavesTheCorrectDataToTheRepository() {
+  void createSavesTheCorrectDataToTheRepository() {
     // Given
     when(soapRequestRepository.save(soapRequestCaptor.capture())).thenReturn(soapRequest);
 
@@ -79,13 +79,13 @@ public class SoapRequestServiceTest {
     soapRequestService.create(createDefaultSoapRequestDTO());
 
     // Then
-    assertEquals(null, soapRequestCaptor.getValue().getId());
-    assertEquals(soapRequest.getUsername(), soapRequestCaptor.getValue().getUsername());
-    assertEquals(soapRequest.getQuery(), soapRequestCaptor.getValue().getQuery());
+    assertThat(soapRequestCaptor.getValue().getId()).isNull();
+    assertThat(soapRequest.getUsername()).isEqualTo(soapRequestCaptor.getValue().getUsername());
+    assertThat(soapRequest.getQuery()).isEqualTo(soapRequestCaptor.getValue().getQuery());
   }
 
   @Test
-  public void getCallsRepositoryWithId() {
+  void getCallsRepositoryWithId() {
     // Given
     when(soapRequestRepository.findById(any())).thenReturn(Optional.of(soapRequest));
 
@@ -97,7 +97,7 @@ public class SoapRequestServiceTest {
   }
 
   @Test
-  public void getReturnsRecordFromRepository() {
+  void getReturnsRecordFromRepository() {
     // Given
     when(soapRequestRepository.findById(any())).thenReturn(Optional.of(soapRequest));
 
@@ -105,13 +105,13 @@ public class SoapRequestServiceTest {
     SoapRequestDto result = soapRequestService.get(soapRequest.getId()).get();
 
     // Then
-    assertEquals(soapRequest.getUsername(), result.getUsername());
-    assertEquals(soapRequest.getQuery(), result.getQuery());
-    assertEquals(soapRequest.getId(), result.getId());
+    assertThat(soapRequest.getUsername()).isEqualTo(result.getUsername());
+    assertThat(soapRequest.getQuery()).isEqualTo(result.getQuery());
+    assertThat(soapRequest.getId()).isEqualTo(result.getId());
   }
 
   @Test
-  public void getByRequestIdCallsRepositoryWithId() {
+  void getByRequestIdCallsRepositoryWithId() {
     // Given
     when(soapRequestRepository.findByRequestId(any())).thenReturn(Optional.of(soapRequest));
 
@@ -123,7 +123,7 @@ public class SoapRequestServiceTest {
   }
 
   @Test
-  public void getByRequestIdReturnsRecordFromRepository() {
+  void getByRequestIdReturnsRecordFromRepository() {
     // Given
     when(soapRequestRepository.findByRequestId(any())).thenReturn(Optional.of(soapRequest));
 
@@ -131,13 +131,13 @@ public class SoapRequestServiceTest {
     SoapRequestDto result = soapRequestService.getByRequestId(soapRequest.getRequestId()).get();
 
     // Then
-    assertEquals(soapRequest.getUsername(), result.getUsername());
-    assertEquals(soapRequest.getQuery(), result.getQuery());
-    assertEquals(soapRequest.getId(), result.getId());
+    assertThat(soapRequest.getUsername()).isEqualTo(result.getUsername());
+    assertThat(soapRequest.getQuery()).isEqualTo(result.getQuery());
+    assertThat(soapRequest.getId()).isEqualTo(result.getId());
   }
 
   @Test
-  public void deleteCallsRepositoryOnceWithId() {
+  void deleteCallsRepositoryOnceWithId() {
     // Given
     UUID id = UUID.randomUUID();
     when(soapRequestRepository.findById(any())).thenReturn(Optional.of(soapRequest));
