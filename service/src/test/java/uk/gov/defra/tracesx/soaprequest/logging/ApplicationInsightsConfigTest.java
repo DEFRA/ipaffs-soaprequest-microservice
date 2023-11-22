@@ -1,30 +1,25 @@
 package uk.gov.defra.tracesx.soaprequest.logging;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import javax.servlet.Filter;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.Environment;
 
-import javax.servlet.Filter;
-
-@RunWith(MockitoJUnitRunner.class)
-public class ApplicationInsightsConfigTest {
+@ExtendWith(MockitoExtension.class)
+class ApplicationInsightsConfigTest {
 
   private static final String APPLICATIONINSIGHTS_CONNECTION_STRING =
-          "APPLICATIONINSIGHTS_CONNECTION_STRING";
+      "APPLICATIONINSIGHTS_CONNECTION_STRING";
   private static final String APPLICATIONINSIGHTS_CONNECTION_STRING_VALUE =
-          "InstrumentationKey=00000000-0000-0000-0000-000000000000";
+      "InstrumentationKey=00000000-0000-0000-0000-000000000000";
   private static final String APPLICATION_NAME = "soaprequest-microservice";
 
   private static final String BLANK = "";
@@ -34,52 +29,54 @@ public class ApplicationInsightsConfigTest {
   private ApplicationInsightsConfig underTest;
 
   @Test
-  public void whenEnvHasVariableSetThenTheResultContainsValue() {
+  void whenEnvHasVariableSetThenTheResultContainsValue() {
 
     when(environment.getProperty(APPLICATIONINSIGHTS_CONNECTION_STRING))
-            .thenReturn(APPLICATIONINSIGHTS_CONNECTION_STRING_VALUE);
-    String result = underTest.telemetryConfig();
-    assertThat(result, is(APPLICATIONINSIGHTS_CONNECTION_STRING_VALUE));
+        .thenReturn(APPLICATIONINSIGHTS_CONNECTION_STRING_VALUE);
+    String result = underTest.telemetryConfig(environment);
+    assertThat(result).isEqualTo(APPLICATIONINSIGHTS_CONNECTION_STRING_VALUE);
   }
 
   @Test
-  public void whenEnvHasVariableSetToBlankThenTheResultDoesntContainValue() {
+  void whenEnvHasVariableSetToBlankThenTheResultDoesntContainValue() {
 
     when(environment.getProperty(APPLICATIONINSIGHTS_CONNECTION_STRING)).thenReturn(BLANK);
-    String result = underTest.telemetryConfig();
-    assertThat(result, is(BLANK));
+    String result = underTest.telemetryConfig(environment);
+    assertThat(result).isEqualTo(BLANK);
   }
 
   @Test
-  public void whenEnvHasVariableNotSetThenTheResultDoesntContainValue() {
+  void whenEnvHasVariableNotSetThenTheResultDoesntContainValue() {
 
     when(environment.getProperty(APPLICATIONINSIGHTS_CONNECTION_STRING)).thenReturn(null);
-    String result = underTest.telemetryConfig();
-    assertThat(result, is(nullValue()));
+    String result = underTest.telemetryConfig(environment);
+    assertThat(result).isNull();
   }
 
   @Test
-  public void filterRegistrationBeanHasCatchAllUrl() {
+  void filterRegistrationBeanHasCatchAllUrl() {
     //When
-    FilterRegistrationBean filterRegistration = underTest.aiFilterRegistration(APPLICATION_NAME);
+    FilterRegistrationBean<Filter> filterRegistration = underTest.aiFilterRegistration(
+        APPLICATION_NAME);
 
     //Then
-    assertEquals(1, filterRegistration.getUrlPatterns().size());
-    assertEquals("/*", filterRegistration.getUrlPatterns().iterator().next());
+    assertThat(filterRegistration.getUrlPatterns()).hasSize(1);
+    assertThat(filterRegistration.getUrlPatterns().iterator().next()).isEqualTo("/*");
   }
 
   @Test
-  public void filterRegistrationBeanHasHighOrder() {
+  void filterRegistrationBeanHasHighOrder() {
     //When
-    FilterRegistrationBean filterRegistration = underTest.aiFilterRegistration(APPLICATION_NAME);
+    FilterRegistrationBean<Filter> filterRegistration = underTest.aiFilterRegistration(
+        APPLICATION_NAME);
 
     //Then
-    assertEquals(Ordered.HIGHEST_PRECEDENCE + 10, filterRegistration.getOrder());
+    assertThat(filterRegistration.getOrder()).isEqualTo(Ordered.HIGHEST_PRECEDENCE + 10);
   }
 
   @Test
-  public void shouldCreateNewWebRequestTrackingFilter() {
+  void shouldCreateNewWebRequestTrackingFilter() {
     Filter webRequestTrackingFilter = underTest.webRequestTrackingFilter(APPLICATION_NAME);
-    assertNotNull(webRequestTrackingFilter);
+    assertThat(webRequestTrackingFilter).isNotNull();
   }
 }

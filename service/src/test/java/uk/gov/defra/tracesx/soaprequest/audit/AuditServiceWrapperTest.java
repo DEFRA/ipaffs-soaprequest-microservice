@@ -4,15 +4,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Before;
-import org.junit.Test;
+import java.util.UUID;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,17 +22,15 @@ import uk.gov.defra.tracesx.common.security.IdTokenUserDetails;
 import uk.gov.defra.tracesx.soaprequest.dao.entities.SoapRequest;
 import uk.gov.defra.tracesx.soaprequest.dto.SoapRequestDto;
 
-import java.util.UUID;
-
-public class AuditServiceWrapperTest {
+@ExtendWith(MockitoExtension.class)
+class AuditServiceWrapperTest {
 
   private static final String TEST_OBJECT_ID = "123-123-123";
   private static final String QUERY = "test";
   private static final String TEST_USER = "testUser";
-  private Long REQUEST_ID = new Long("1549469808042");
-  private String QUERY_STRING = "{'reference':'CVEDP.GB.2019.1000002','type':'CVEDP'}";
+  private final Long REQUEST_ID = Long.valueOf("1549469808042");
 
-  private ObjectMapper objectMapper = new ObjectMapper();
+  private final ObjectMapper objectMapper = new ObjectMapper();
   private AuditServiceWrapper auditServiceWrapper;
   private SoapRequest soapRequest;
 
@@ -43,24 +43,25 @@ public class AuditServiceWrapperTest {
   @Captor
   private ArgumentCaptor<JsonNode> jsonNodeCaptor;
 
-  @Before
-  public void setUp() {
-    initMocks(this);
+  @BeforeEach
+  void setUp() {
     auditServiceWrapper = new AuditServiceWrapper(auditService, objectMapper);
-    IdTokenUserDetails userDetails = IdTokenUserDetails.builder().userObjectId(TEST_OBJECT_ID).build();
+    IdTokenUserDetails userDetails = IdTokenUserDetails.builder().userObjectId(TEST_OBJECT_ID)
+        .build();
     when(authentication.getDetails()).thenReturn(userDetails);
     when(securityContext.getAuthentication()).thenReturn(authentication);
     SecurityContextHolder.setContext(securityContext);
 
+    String queryString = "{'reference':'CVEDP.GB.2019.1000002','type':'CVEDP'}";
     soapRequest = SoapRequest.builder()
-        .query(QUERY_STRING)
+        .query(queryString)
         .id(UUID.randomUUID())
         .requestId(REQUEST_ID)
         .build();
   }
 
   @Test
-  public void create() {
+  void create() {
     JsonNode expectedArgument = objectMapper.valueToTree(soapRequest);
 
     auditServiceWrapper.create(soapRequest);
@@ -71,7 +72,7 @@ public class AuditServiceWrapperTest {
   }
 
   @Test
-  public void read() {
+  void read() {
     JsonNode expectedArgument = objectMapper.valueToTree(createDefaultSoapRequestDTO());
 
     auditServiceWrapper.read(createDefaultSoapRequestDTO());
@@ -82,7 +83,7 @@ public class AuditServiceWrapperTest {
   }
 
   @Test
-  public void delete() {
+  void delete() {
     JsonNode expectedArgument = objectMapper.valueToTree(createDefaultSoapRequestDTO());
 
     auditServiceWrapper.delete(createDefaultSoapRequestDTO());

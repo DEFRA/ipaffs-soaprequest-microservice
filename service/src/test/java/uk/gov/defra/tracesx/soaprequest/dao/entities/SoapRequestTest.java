@@ -1,21 +1,16 @@
 package uk.gov.defra.tracesx.soaprequest.dao.entities;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class SoapRequestTest {
+class SoapRequestTest {
 
-  public static final String USERNAME = "username";
-  public static final String QUERY = "test";
-
-  @Before
-  public void setUp() {
-  }
+  private static final String USERNAME = "username";
+  private static final String QUERY = "test";
 
   @Test
-  public void verifyProperties() {
+  void verifyProperties() {
     // Given
     SoapRequest instance = new SoapRequest(USERNAME, QUERY);
     Long requestId = 123L;
@@ -24,13 +19,13 @@ public class SoapRequestTest {
     instance.setRequestId(requestId);
 
     //Then
-    assertEquals(requestId, instance.getRequestId());
-    assertEquals(USERNAME, instance.getUsername());
-    assertEquals(QUERY, instance.getQuery());
+    assertThat(instance.getRequestId()).isEqualTo(requestId);
+    assertThat(instance.getUsername()).isEqualTo(USERNAME);
+    assertThat(instance.getQuery()).isEqualTo(QUERY);
   }
 
   @Test
-  public void verifySetUsernameAndQuery() {
+  void verifySetUsernameAndQuery() {
     // Given
     SoapRequest instance = new SoapRequest();
 
@@ -39,7 +34,7 @@ public class SoapRequestTest {
     instance.setQuery(QUERY);
 
     //Then
-    assertEquals(USERNAME, instance.getUsername());
-    assertEquals(QUERY, instance.getQuery());
+    assertThat(instance.getUsername()).isEqualTo(USERNAME);
+    assertThat(instance.getQuery()).isEqualTo(QUERY);
   }
 }

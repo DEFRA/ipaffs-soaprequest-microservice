@@ -10,6 +10,7 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -45,7 +46,8 @@ public class SoapRequestResource {
       consumes = MediaType.APPLICATION_JSON_VALUE,
       produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('soaprequest.create')")
-  public ResponseEntity insert(@RequestBody SoapRequestDto soapRequest) throws URISyntaxException {
+  public ResponseEntity<URI> insert(@RequestBody SoapRequestDto soapRequest)
+      throws URISyntaxException {
     validate(soapRequest);
     UUID id = soapRequestService.create(soapRequest);
     LOGGER.debug("POST id: {}", id);
@@ -55,7 +57,7 @@ public class SoapRequestResource {
 
   @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('soaprequest.read')")
-  public ResponseEntity get(@PathVariable("id") UUID id) {
+  public ResponseEntity<SoapRequestDto> get(@PathVariable("id") UUID id) {
     LOGGER.debug("GET id: {}", id);
     Optional<SoapRequestDto> soapRequestDto = soapRequestService.get(id);
     return ResponseEntity.ok(soapRequestDto.orElseThrow(NotFoundException::new));
@@ -63,7 +65,7 @@ public class SoapRequestResource {
 
   @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('soaprequest.read')")
-  public ResponseEntity getByRequestId(@RequestParam("requestId") Long requestId) {
+  public ResponseEntity<SoapRequestDto> getByRequestId(@RequestParam("requestId") Long requestId) {
     LOGGER.debug("GET requestId: {}", requestId);
     Optional<SoapRequestDto> soapRequestDto = soapRequestService.getByRequestId(requestId);
     return ResponseEntity.ok(soapRequestDto.orElseThrow(NotFoundException::new));
@@ -71,7 +73,7 @@ public class SoapRequestResource {
 
   @DeleteMapping(value = "/{id}")
   @PreAuthorize("hasAuthority('soaprequest.delete')")
-  public ResponseEntity delete(@PathVariable("id") UUID id) {
+  public ResponseEntity<HttpStatus> delete(@PathVariable("id") UUID id) {
     LOGGER.debug("DELETE id: {}", id);
     soapRequestService.deleteData(id);
     return ResponseEntity.ok().build();

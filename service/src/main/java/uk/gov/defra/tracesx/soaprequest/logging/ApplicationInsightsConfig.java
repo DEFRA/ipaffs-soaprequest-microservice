@@ -5,7 +5,6 @@ import static org.apache.commons.lang3.StringUtils.isEmpty;
 import com.microsoft.applicationinsights.TelemetryConfiguration;
 import com.microsoft.applicationinsights.web.internal.WebRequestTrackingFilter;
 import javax.servlet.Filter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -18,11 +17,9 @@ public class ApplicationInsightsConfig {
 
   private static final String APPLICATIONINSIGHTS_CONNECTION_STRING =
       "APPLICATIONINSIGHTS_CONNECTION_STRING";
-  @Autowired
-  Environment environment;
 
   @Bean
-  public String telemetryConfig() {
+  public String telemetryConfig(Environment environment) {
 
     String connectionString = environment.getProperty(APPLICATIONINSIGHTS_CONNECTION_STRING);
     if (!isEmpty(connectionString)) {
@@ -33,9 +30,9 @@ public class ApplicationInsightsConfig {
 
   // Set AI Web Request Tracking Filter
   @Bean
-  public FilterRegistrationBean aiFilterRegistration(
+  public FilterRegistrationBean<Filter> aiFilterRegistration(
       @Value("${spring.application.name:application}") String applicationName) {
-    FilterRegistrationBean registration = new FilterRegistrationBean();
+    FilterRegistrationBean<Filter> registration = new FilterRegistrationBean<>();
     registration.setFilter(new WebRequestTrackingFilter(applicationName));
     registration.setName("webRequestTrackingFilter");
     registration.addUrlPatterns("/*");

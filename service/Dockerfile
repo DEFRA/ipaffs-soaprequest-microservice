@@ -1,5 +1,6 @@
-ARG BASE_VERSION=jre-11
-FROM defradigital/java:$BASE_VERSION AS base
+ARG BASE_VERSION=jre-17
+FROM sndeuxfesacr001.azurecr.io/$BASE_VERSION AS base
+
 
 USER root
 
@@ -9,9 +10,6 @@ WORKDIR /usr/src/soaprequest-service
 COPY target/TracesX_SoapRequest.jar /usr/src/soaprequest-service/
 COPY lib/applicationinsights-agent.jar /usr/src/soaprequest-service/
 COPY lib/applicationinsights.json /usr/src/soaprequest-service/
-
-RUN chown jreuser /usr/src/soaprequest-service
-USER jreuser
 
 EXPOSE 8080
 

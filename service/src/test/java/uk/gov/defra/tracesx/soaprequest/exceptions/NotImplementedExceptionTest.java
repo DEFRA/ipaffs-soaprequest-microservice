@@ -1,15 +1,14 @@
 package uk.gov.defra.tracesx.soaprequest.exceptions;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 
-public class NotImplementedExceptionTest {
+class NotImplementedExceptionTest {
 
   @Test
-  public void instanceShouldContainExceptionMessageWhenCreated() {
+  void instanceShouldContainExceptionMessageWhenCreated() {
     NotImplementedException instance = new NotImplementedException("test_message");
-    assertEquals(instance.getMessage(), "test_message");
+    assertThat(instance.getMessage()).isEqualTo("test_message");
   }
-
 }
