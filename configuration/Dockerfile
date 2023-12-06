@@ -5,9 +5,6 @@ FROM sndeuxfesacr001.azurecr.io/$LINUX_BASE_IMAGE
 # Needed for running sqlcmd and bcp
 RUN echo 'en_US.UTF-8 UTF-8' > /etc/locale.gen
 
-# Copy and unpack Liquibase
-ADD database/lib/liquibase-3.7.0-bin.tar.gz opt/liquibase
-
 # Copy setup script
 COPY setup.sh /opt
 
