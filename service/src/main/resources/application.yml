@@ -54,10 +54,6 @@ spring:
       leakDetectionThreshold: ${HIKARI_LEAK_DETECTION_THRESHOLD:2000}
       connectionTimeout: ${HIKARI_CONNECTION_TIMEOUT:15000}
       validationTimeout: ${HIKARI_VALIDATION_TIMEOUT:5000}
-  jpa:
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.SQLServer2008Dialect
   sql:
     init:
       continue-on-error: true
