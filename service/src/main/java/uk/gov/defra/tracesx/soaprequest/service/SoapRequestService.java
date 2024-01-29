@@ -8,6 +8,7 @@ import uk.gov.defra.tracesx.soaprequest.audit.AuditServiceWrapper;
 import uk.gov.defra.tracesx.soaprequest.dao.entities.SoapRequest;
 import uk.gov.defra.tracesx.soaprequest.dao.repositories.SoapRequestRepository;
 import uk.gov.defra.tracesx.soaprequest.dto.SoapRequestDto;
+import uk.gov.defra.tracesx.soaprequest.exceptions.NotFoundException;
 
 @Service
 public class SoapRequestService {
@@ -49,10 +50,9 @@ public class SoapRequestService {
   }
 
   public void deleteData(UUID id) {
-    soapRequestRepository.deleteById(id);
-    soapRequestRepository
-        .findById(id)
-        .map(SoapRequestDto::from)
-        .ifPresent(auditServiceWrapper::delete);
+    SoapRequest request = soapRequestRepository.findById(id)
+        .orElseThrow(NotFoundException::new);
+    soapRequestRepository.delete(request);
+    auditServiceWrapper.delete(SoapRequestDto.from(request));
   }
 }

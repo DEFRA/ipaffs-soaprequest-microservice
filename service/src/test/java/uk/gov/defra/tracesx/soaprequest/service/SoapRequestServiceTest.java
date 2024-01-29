@@ -146,6 +146,6 @@ class SoapRequestServiceTest {
     soapRequestService.deleteData(id);
 
     // Then
-    verify(soapRequestRepository).deleteById(id);
+    verify(soapRequestRepository).delete(soapRequest);
   }
 }

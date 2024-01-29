@@ -1,7 +1,7 @@
 package uk.gov.defra.tracesx.soaprequest.integration;
 
 import static io.restassured.RestAssured.given;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static uk.gov.defra.tracesx.common.security.tests.jwt.JwtConstants.BEARER;
 import static uk.gov.defra.tracesx.soaprequest.integration.properties.Properties.SERVICE_BASE_URL;
@@ -9,13 +9,13 @@ import static uk.gov.defra.tracesx.soaprequest.integration.properties.Properties
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import java.util.UUID;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.web.util.UriComponentsBuilder;
 import uk.gov.defra.tracesx.common.security.tests.jwt.SelfSignedTokenClient;
 import uk.gov.defra.tracesx.soaprequest.integration.dto.SoapRequestDTO;
 
-public class TestBasicEndpoints {
+class TestBasicEndpoints {
 
   private static final String LOCATION = "Location";
   private static final String[] READ_ROLES = {"soap"};
@@ -27,7 +27,7 @@ public class TestBasicEndpoints {
   private String resourceUrl;
   private SelfSignedTokenClient selfSignedTokenClient;
 
-  @Before
+  @BeforeEach
   public void setup() {
     baseUrl = SERVICE_BASE_URL;
 
@@ -42,12 +42,12 @@ public class TestBasicEndpoints {
   }
 
   @Test
-  public void canCreateSoapRequest() {
+  void canCreateSoapRequest() {
     createSoapRequest().then().statusCode(201);
   }
 
   @Test
-  public void rejectInvalidSoapRequest() {
+  void rejectInvalidSoapRequest() {
     given()
         .body("{\"exampleWrong\": \"test\"}")
         .header(AUTHORIZATION,
@@ -61,7 +61,7 @@ public class TestBasicEndpoints {
   }
 
   @Test
-  public void canGetSoapRequest() {
+  void canGetSoapRequest() {
     String id =
         createSoapRequest()
             .then()
@@ -73,14 +73,14 @@ public class TestBasicEndpoints {
   }
 
   @Test
-  public void getNonExistentSoapRequestReturnsNotFound() {
+  void getNonExistentSoapRequestReturnsNotFound() {
     getSoapRequestById(getSoapRequestEndpoint() + UUID.randomUUID())
         .then()
         .statusCode(404);
   }
 
   @Test
-  public void canGetSoapRequestByRequestIdAndUsername() {
+  void canGetSoapRequestByRequestIdAndUsername() {
     String id =
         createSoapRequest()
             .then()
@@ -102,12 +102,12 @@ public class TestBasicEndpoints {
   }
 
   @Test
-  public void getNonExistentSoapRequestByRequestIdAndUsernameReturnsNotFound() {
+  void getNonExistentSoapRequestByRequestIdAndUsernameReturnsNotFound() {
     getSoapRequestByRequestIdAndUsername(123L, "missing").then().statusCode(404);
   }
 
   @Test
-  public void canDeleteSoapRequest() {
+  void canDeleteSoapRequest() {
     String id =
         createSoapRequest()
             .then()
@@ -118,7 +118,7 @@ public class TestBasicEndpoints {
   }
 
   @Test
-  public void deleteNonExistentSoapRequestReturnsNotFound() {
+  void deleteNonExistentSoapRequestReturnsNotFound() {
     deleteSoapRequestById(getSoapRequestEndpoint() + UUID.randomUUID())
         .then()
         .statusCode(404);
