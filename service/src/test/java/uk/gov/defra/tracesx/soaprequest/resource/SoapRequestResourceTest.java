@@ -30,6 +30,8 @@ class SoapRequestResourceTest {
 
   private static final String QUERY = "test";
   private static final String TEST_USER = "testUser";
+  private static final String USERNAME = "username";
+
   @Mock
   SoapRequestService soapRequestService;
   @InjectMocks
@@ -131,12 +133,12 @@ class SoapRequestResourceTest {
   }
 
   @Test
-  void getByRequestIdReturnsEntityFromService() {
+  void getByRequestIdAndUsernameReturnsEntityFromService() {
     // Given
-    when(soapRequestService.getByRequestId(any())).thenReturn(Optional.ofNullable(requestBody));
+    when(soapRequestService.getByRequestIdAndUsername(any(), any())).thenReturn(Optional.ofNullable(requestBody));
 
     // When
-    ResponseEntity<SoapRequestDto> entity = soapRequestResource.getByRequestId(requestId);
+    ResponseEntity<SoapRequestDto> entity = soapRequestResource.getByRequestIdAndUsername(requestId, USERNAME);
 
     // Then
     assertThat(entity.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -144,12 +146,12 @@ class SoapRequestResourceTest {
   }
 
   @Test
-  void getByRequestIdThrowsNotFoundOnNonExistentRequestId() {
+  void getByRequestIdAndUsernameThrowsNotFoundOnNonExistentRequestId() {
     // Given
-    when(soapRequestService.getByRequestId(any())).thenReturn(Optional.empty());
+    when(soapRequestService.getByRequestIdAndUsername(any(), any())).thenReturn(Optional.empty());
 
     // When
-    assertThrows(NotFoundException.class, () -> soapRequestResource.getByRequestId(requestId));
+    assertThrows(NotFoundException.class, () -> soapRequestResource.getByRequestIdAndUsername(requestId, USERNAME));
   }
 
   @Test

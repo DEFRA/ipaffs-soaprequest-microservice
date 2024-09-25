@@ -42,8 +42,9 @@ public class SoapRequestService {
     return optionalSoapRequestDto;
   }
 
-  public Optional<SoapRequestDto> getByRequestId(Long id) {
-    Optional<SoapRequestDto> optionalSoapRequestDto = soapRequestRepository.findByRequestId(id)
+  public Optional<SoapRequestDto> getByRequestIdAndUsername(Long id, String username) {
+    Optional<SoapRequestDto> optionalSoapRequestDto = soapRequestRepository
+        .findByRequestIdAndUsername(id, username)
         .map(SoapRequestDto::from);
     optionalSoapRequestDto.ifPresent(auditServiceWrapper::read);
     return optionalSoapRequestDto;

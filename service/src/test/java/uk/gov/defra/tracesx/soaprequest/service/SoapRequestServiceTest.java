@@ -111,24 +111,24 @@ class SoapRequestServiceTest {
   }
 
   @Test
-  void getByRequestIdCallsRepositoryWithId() {
+  void getByRequestIdAndUsernameCallsRepositoryWithIdAndUsername() {
     // Given
-    when(soapRequestRepository.findByRequestId(any())).thenReturn(Optional.of(soapRequest));
+    when(soapRequestRepository.findByRequestIdAndUsername(any(), any())).thenReturn(Optional.of(soapRequest));
 
     // When
-    soapRequestService.getByRequestId(soapRequest.getRequestId());
+    soapRequestService.getByRequestIdAndUsername(soapRequest.getRequestId(), soapRequest.getUsername());
 
     // Then
-    verify(soapRequestRepository).findByRequestId(soapRequest.getRequestId());
+    verify(soapRequestRepository).findByRequestIdAndUsername(soapRequest.getRequestId(), soapRequest.getUsername());
   }
 
   @Test
-  void getByRequestIdReturnsRecordFromRepository() {
+  void getByRequestIdAndUsernameReturnsRecordFromRepository() {
     // Given
-    when(soapRequestRepository.findByRequestId(any())).thenReturn(Optional.of(soapRequest));
+    when(soapRequestRepository.findByRequestIdAndUsername(any(), any())).thenReturn(Optional.of(soapRequest));
 
     // When
-    SoapRequestDto result = soapRequestService.getByRequestId(soapRequest.getRequestId()).get();
+    SoapRequestDto result = soapRequestService.getByRequestIdAndUsername(soapRequest.getRequestId(), soapRequest.getUsername()).get();
 
     // Then
     assertThat(soapRequest.getUsername()).isEqualTo(result.getUsername());

@@ -65,9 +65,12 @@ public class SoapRequestResource {
 
   @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('soaprequest.read')")
-  public ResponseEntity<SoapRequestDto> getByRequestId(@RequestParam("requestId") Long requestId) {
+  public ResponseEntity<SoapRequestDto> getByRequestIdAndUsername(
+      @RequestParam("requestId") Long requestId,
+      @RequestParam("username") String username) {
     LOGGER.debug("GET requestId: {}", requestId);
-    Optional<SoapRequestDto> soapRequestDto = soapRequestService.getByRequestId(requestId);
+    Optional<SoapRequestDto> soapRequestDto = soapRequestService
+        .getByRequestIdAndUsername(requestId, username);
     return ResponseEntity.ok(soapRequestDto.orElseThrow(NotFoundException::new));
   }
 
