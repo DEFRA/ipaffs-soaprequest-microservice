@@ -1,5 +1,8 @@
 package uk.gov.defra.tracesx.soaprequest.service;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,11 +45,14 @@ public class SoapRequestService {
     return optionalSoapRequestDto;
   }
 
-  public Optional<SoapRequestDto> getByRequestId(Long id) {
-    Optional<SoapRequestDto> optionalSoapRequestDto = soapRequestRepository.findByRequestId(id)
-        .map(SoapRequestDto::from);
-    optionalSoapRequestDto.ifPresent(auditServiceWrapper::read);
-    return optionalSoapRequestDto;
+  public List<SoapRequestDto> getAllByRequestId(Long id) {
+    List<SoapRequestDto> soapRequestDtoList = new ArrayList<>();
+    for (SoapRequest soapRequest : soapRequestRepository.findAllByRequestId(id)) {
+      SoapRequestDto mapped = SoapRequestDto.from(soapRequest);
+      auditServiceWrapper.read(mapped);
+      soapRequestDtoList.add(mapped);
+    }
+    return Collections.unmodifiableList(soapRequestDtoList);
   }
 
   public void deleteData(UUID id) {

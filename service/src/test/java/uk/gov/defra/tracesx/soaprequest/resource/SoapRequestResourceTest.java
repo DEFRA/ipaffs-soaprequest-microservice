@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
@@ -131,25 +132,25 @@ class SoapRequestResourceTest {
   }
 
   @Test
-  void getByRequestIdReturnsEntityFromService() {
+  void getAllByRequestIdReturnsEntityFromService() {
     // Given
-    when(soapRequestService.getByRequestId(any())).thenReturn(Optional.ofNullable(requestBody));
+    when(soapRequestService.getAllByRequestId(any())).thenReturn(List.of(requestBody));
 
     // When
-    ResponseEntity<SoapRequestDto> entity = soapRequestResource.getByRequestId(requestId);
+    ResponseEntity<List<SoapRequestDto>> entity = soapRequestResource.getAllByRequestId(requestId);
 
     // Then
     assertThat(entity.getStatusCode()).isEqualTo(HttpStatus.OK);
-    assertThat(entity.getBody()).isEqualTo(requestBody);
+    assertThat(entity.getBody()).isEqualTo(List.of(requestBody));
   }
 
   @Test
-  void getByRequestIdThrowsNotFoundOnNonExistentRequestId() {
+  void getAllByRequestIdThrowsNotFoundOnNonExistentRequestId() {
     // Given
-    when(soapRequestService.getByRequestId(any())).thenReturn(Optional.empty());
+    when(soapRequestService.getAllByRequestId(any())).thenReturn(List.of());
 
     // When
-    assertThrows(NotFoundException.class, () -> soapRequestResource.getByRequestId(requestId));
+    assertThrows(NotFoundException.class, () -> soapRequestResource.getAllByRequestId(requestId));
   }
 
   @Test

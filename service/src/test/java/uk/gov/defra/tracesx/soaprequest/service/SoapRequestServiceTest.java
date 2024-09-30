@@ -2,9 +2,11 @@ package uk.gov.defra.tracesx.soaprequest.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,6 +26,7 @@ class SoapRequestServiceTest {
 
   private static final String QUERY = "test";
   private static final String TEST_USER = "testUser";
+  private static final String SECOND_TEST_USER = "secondTestUser";
 
   @Mock
   private SoapRequestRepository soapRequestRepository;
@@ -38,7 +41,7 @@ class SoapRequestServiceTest {
   @BeforeEach
   void setUp() {
     soapRequestService = new SoapRequestService(soapRequestRepository, auditServiceWrapper);
-    soapRequest = createDefaultSoapRequestEntity();
+    soapRequest = createDefaultSoapRequestEntity(TEST_USER);
   }
 
   private SoapRequestDto createDefaultSoapRequestDTO() {
@@ -48,10 +51,10 @@ class SoapRequestServiceTest {
     return soapRequestDTO;
   }
 
-  private SoapRequest createDefaultSoapRequestEntity() {
+  private SoapRequest createDefaultSoapRequestEntity(String username) {
     UUID idSavedWith = UUID.randomUUID();
     long requestId = System.currentTimeMillis();
-    SoapRequest soapRequest = new SoapRequest(TEST_USER, QUERY);
+    SoapRequest soapRequest = new SoapRequest(username, QUERY);
     soapRequest.setId(idSavedWith);
     soapRequest.setRequestId(requestId);
     return soapRequest;
@@ -111,29 +114,68 @@ class SoapRequestServiceTest {
   }
 
   @Test
-  void getByRequestIdCallsRepositoryWithId() {
+  void getAllByRequestIdCallsRepositoryWithId() {
     // Given
-    when(soapRequestRepository.findByRequestId(any())).thenReturn(Optional.of(soapRequest));
+    when(soapRequestRepository.findAllByRequestId(any())).thenReturn(List.of(soapRequest));
 
     // When
-    soapRequestService.getByRequestId(soapRequest.getRequestId());
+    soapRequestService.getAllByRequestId(soapRequest.getRequestId());
 
     // Then
-    verify(soapRequestRepository).findByRequestId(soapRequest.getRequestId());
+    verify(soapRequestRepository).findAllByRequestId(soapRequest.getRequestId());
   }
 
   @Test
-  void getByRequestIdReturnsRecordFromRepository() {
+  void getAllByRequestIdReturnsEntityFromRepository() {
     // Given
-    when(soapRequestRepository.findByRequestId(any())).thenReturn(Optional.of(soapRequest));
+    when(soapRequestRepository.findAllByRequestId(any())).thenReturn(List.of());
 
     // When
-    SoapRequestDto result = soapRequestService.getByRequestId(soapRequest.getRequestId()).get();
+    soapRequestService.getAllByRequestId(soapRequest.getRequestId());
 
     // Then
-    assertThat(soapRequest.getUsername()).isEqualTo(result.getUsername());
-    assertThat(soapRequest.getQuery()).isEqualTo(result.getQuery());
-    assertThat(soapRequest.getId()).isEqualTo(result.getId());
+    verify(soapRequestRepository).findAllByRequestId(soapRequest.getRequestId());
+  }
+
+  @Test
+  void getAllByRequestIdReturnsRecordFromRepository() {
+    // Given
+    List<SoapRequest> expectedSoapRequests = List.of(soapRequest);
+    when(soapRequestRepository.findAllByRequestId(any())).thenReturn(expectedSoapRequests);
+
+    // When
+    List<SoapRequestDto> result = soapRequestService.getAllByRequestId(soapRequest.getRequestId());
+
+    // Then
+    assertThat(result).hasSameSizeAs(expectedSoapRequests)
+      .zipSatisfy(expectedSoapRequests, (actual, expected) -> {
+        assertThat(actual.getUsername()).isEqualTo(expected.getUsername());
+        assertThat(actual.getQuery()).isEqualTo(expected.getQuery());
+        assertThat(actual.getId()).isEqualTo(expected.getId());
+      });
+
+    verify(soapRequestRepository, times(1)).findAllByRequestId(soapRequest.getRequestId());
+  }
+
+  @Test
+  void getAllByRequestIdReturnsMultipleRecordsFromRepository() {
+    // Given
+    SoapRequest soapRequestSecond = createDefaultSoapRequestEntity(SECOND_TEST_USER);
+    List<SoapRequest> expectedSoapRequests = List.of(soapRequest, soapRequestSecond);
+    when(soapRequestRepository.findAllByRequestId(any())).thenReturn(expectedSoapRequests);
+
+    // When
+    List<SoapRequestDto> result = soapRequestService.getAllByRequestId(soapRequest.getRequestId());
+
+    // Then
+    assertThat(result).hasSameSizeAs(expectedSoapRequests)
+      .zipSatisfy(expectedSoapRequests, (actual, expected) -> {
+        assertThat(actual.getUsername()).isEqualTo(expected.getUsername());
+        assertThat(actual.getQuery()).isEqualTo(expected.getQuery());
+        assertThat(actual.getId()).isEqualTo(expected.getId());
+      });
+
+    verify(soapRequestRepository, times(1)).findAllByRequestId(soapRequest.getRequestId());
   }
 
   @Test
