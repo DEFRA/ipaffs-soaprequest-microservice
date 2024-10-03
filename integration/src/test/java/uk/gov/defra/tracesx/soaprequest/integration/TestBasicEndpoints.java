@@ -1,13 +1,20 @@
 package uk.gov.defra.tracesx.soaprequest.integration;
 
 import static io.restassured.RestAssured.given;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static uk.gov.defra.tracesx.common.security.tests.jwt.JwtConstants.BEARER;
 import static uk.gov.defra.tracesx.soaprequest.integration.properties.Properties.SERVICE_BASE_URL;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.restassured.common.mapper.TypeRef;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
+
+import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,6 +30,7 @@ class TestBasicEndpoints {
   private static final String TEST_USERNAME = "testUser";
   private static final String TEST_QUERY = "testQuery";
   private static final String ROLES_CLAIM = "roles";
+
   private String baseUrl;
   private String resourceUrl;
   private SelfSignedTokenClient selfSignedTokenClient;
@@ -93,12 +101,10 @@ class TestBasicEndpoints {
     Response response =
         getSoapRequestByRequestIdAndUsername(soapRequest.getRequestId(), soapRequest.getUsername());
     response.then().statusCode(200);
-    SoapRequestDTO result = response.body().as(SoapRequestDTO.class);
 
-    assertEquals(result.getId(), soapRequest.getId());
-    assertEquals(result.getRequestId(), soapRequest.getRequestId());
-    assertEquals(result.getUsername(), soapRequest.getUsername());
-    assertEquals(result.getQuery(), soapRequest.getQuery());
+    List<SoapRequestDTO> result = response.as(new TypeRef<>() {});
+
+    assertThat(result).singleElement().isEqualTo(soapRequest);
   }
 
   @Test
