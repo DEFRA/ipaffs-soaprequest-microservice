@@ -1,0 +1,11 @@
+spring:
+  liquibase:
+    change-log: migrations.xml
+    enabled: true
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: none

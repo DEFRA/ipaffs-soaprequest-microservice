@@ -1,0 +1,23 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet id="create_cacherequest_table" author="anon">
+        <createTable tableName="cacherequest">
+            <column name="id" type="varchar(128)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="value" type="nvarchar(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="datetime" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <sql>
+            GRANT SELECT, INSERT, DELETE, UPDATE ON dbo.cacherequest TO [${managedIdentityUser}], [${serviceDbUserAd}];
+            GRANT SELECT, INSERT, UPDATE ON dbo.cacherequest TO soapRequestServiceUser;
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>
