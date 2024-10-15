@@ -9,5 +9,6 @@
     <include file="changelogs/IMTA-6156-enable-ad-account-access.xml"/>
     <include file="changelogs/IMTA-6701-update_user_password.xml"/>
     <include file="changelogs/IMTA-14159-enable_managed_identity_access.xml"/>
+    <include file="changelogs/IMTA-18879-create_cache_table.xml"/>
 
 </databaseChangeLog>

@@ -2,18 +2,13 @@ package uk.gov.defra.tracesx.soaprequest.integration;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static uk.gov.defra.tracesx.common.security.tests.jwt.JwtConstants.BEARER;
 import static uk.gov.defra.tracesx.soaprequest.integration.properties.Properties.SERVICE_BASE_URL;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.common.mapper.TypeRef;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
-
 import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,6 +22,7 @@ class TestBasicEndpoints {
   private static final String LOCATION = "Location";
   private static final String[] READ_ROLES = {"soap"};
   private static final String SOAP_REQUEST_ENDPOINT = "soaprequest";
+  private static final String CACHE_REQUEST_ENDPOINT = "cache";
   private static final String TEST_USERNAME = "testUser";
   private static final String TEST_QUERY = "testQuery";
   private static final String ROLES_CLAIM = "roles";
@@ -102,7 +98,8 @@ class TestBasicEndpoints {
         getSoapRequestByRequestIdAndUsername(soapRequest.getRequestId(), soapRequest.getUsername());
     response.then().statusCode(200);
 
-    List<SoapRequestDTO> result = response.as(new TypeRef<>() {});
+    List<SoapRequestDTO> result = response.as(new TypeRef<>() {
+    });
 
     assertThat(result).singleElement().isEqualTo(soapRequest);
   }
@@ -132,7 +129,8 @@ class TestBasicEndpoints {
 
   private Response createSoapRequest() {
     return given()
-        .body("{\"username\": \"" + TestBasicEndpoints.TEST_USERNAME + "\", \"query\": \"" + TestBasicEndpoints.TEST_QUERY
+        .body("{\"username\": \"" + TestBasicEndpoints.TEST_USERNAME + "\", \"query\": \""
+            + TestBasicEndpoints.TEST_QUERY
             + "\"}")
         .header(AUTHORIZATION,
             BEARER + selfSignedTokenClient.getTokenWithClaim(SelfSignedTokenClient.TokenType.AD,
