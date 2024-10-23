@@ -1,6 +1,7 @@
 package uk.gov.defra.tracesx.soaprequest.resource;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
@@ -17,6 +18,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import uk.gov.defra.tracesx.soaprequest.exceptions.BadRequestBodyException;
 import uk.gov.defra.tracesx.soaprequest.resource.CacheRequestResource.CacheResponse;
 import uk.gov.defra.tracesx.soaprequest.resource.CacheRequestResource.CacheRequestDto;
 import uk.gov.defra.tracesx.soaprequest.service.CacheRequestService;
@@ -82,5 +84,18 @@ class CacheRequestResourceTest {
     assertThat(entity.getStatusCode()).isEqualTo(HttpStatus.OK);
     assertThat(Objects.requireNonNull(entity.getBody()).ids()).hasSize(1);
     assertThat(entity.getBody().ids().get(0)).isEqualTo(result.get(0));
+  }
+
+  @Test
+  void givenInvalidCacheRecords_thenExceptionIsThrown() {
+    assertThatThrownBy(() -> cacheRequestResource.insert(
+        List.of(new CacheRequestDto(null, VALUE)))).isInstanceOf(
+            BadRequestBodyException.class)
+        .hasMessageContaining("The id and value fields are required");
+
+    assertThatThrownBy(() -> cacheRequestResource.insert(
+        List.of(new CacheRequestDto(ID, null)))).isInstanceOf(
+            BadRequestBodyException.class)
+        .hasMessageContaining("The id and value fields are required");
   }
 }
