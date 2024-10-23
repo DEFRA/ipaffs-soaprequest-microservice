@@ -1,8 +1,8 @@
 package uk.gov.defra.tracesx.soaprequest.resource;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
-import static uk.gov.defra.tracesx.soaprequest.util.Constants.CACHE_REQUEST_ENDPOINT;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -13,13 +13,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.defra.tracesx.soaprequest.dao.entities.CacheRequest;
-import uk.gov.defra.tracesx.soaprequest.dto.CacheRequestDto;
-import uk.gov.defra.tracesx.soaprequest.dto.CacheResponse;
+import uk.gov.defra.tracesx.soaprequest.dao.entities.CacheRequest.ChedReference;
 import uk.gov.defra.tracesx.soaprequest.exceptions.BadRequestBodyException;
 import uk.gov.defra.tracesx.soaprequest.service.CacheRequestService;
 
 @RestController
-@RequestMapping(CACHE_REQUEST_ENDPOINT)
+@RequestMapping("/cache")
 public class CacheRequestResource {
 
   private final CacheRequestService cacheRequestService;
@@ -56,14 +55,29 @@ public class CacheRequestResource {
   private void validate(List<CacheRequestDto> cacheRequests) {
     cacheRequests.forEach(cacheRequestDto -> {
       if (cacheRequestDto == null
-          || cacheRequestDto.getId() == null
-          || isBlank(cacheRequestDto.getValue())) {
+          || cacheRequestDto.id() == null
+          || isBlank(cacheRequestDto.value())) {
         throw new BadRequestBodyException("The id and value fields are required");
       }
     });
   }
 
   private List<CacheRequest> mapToEntity(List<CacheRequestDto> cacheRequestDtos) {
-    return cacheRequestDtos.stream().map(CacheRequest::from).toList();
+    return cacheRequestDtos.stream().map(CacheRequestDto::mapToEntity).toList();
+  }
+
+  public record CacheRequestDto(String id, String value) {
+
+    private static CacheRequest mapToEntity(CacheRequestDto cacheRequestDtos) {
+      return CacheRequest.builder()
+          .id(cacheRequestDtos.id())
+          .chedReference(new ChedReference(cacheRequestDtos.value()))
+          .createdDate(LocalDateTime.now())
+          .build();
+    }
+  }
+
+  public record CacheResponse(List<String> ids) {
+
   }
 }

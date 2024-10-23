@@ -1,10 +1,6 @@
-package uk.gov.defra.tracesx.soaprequest.Integration;
+package uk.gov.defra.tracesx.soaprequest.integration;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -18,6 +14,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.defra.tracesx.soaprequest.TestContainerConfig;
 import uk.gov.defra.tracesx.soaprequest.dao.entities.CacheRequest;
+import uk.gov.defra.tracesx.soaprequest.dao.entities.CacheRequest.ChedReference;
 import uk.gov.defra.tracesx.soaprequest.dao.repositories.CacheRequestRepository;
 import uk.gov.defra.tracesx.soaprequest.service.CacheRequestService;
 
@@ -30,14 +27,13 @@ class CacheRequestServiceIT {
   private static final String VALUE = "TEST_VALUE";
   private static final LocalDateTime CREATED_DATE = LocalDateTime.now();
 
-  CacheRequest cacheRequest = new CacheRequest(ID, VALUE, CREATED_DATE);
+  CacheRequest cacheRequest = new CacheRequest(ID, new ChedReference(VALUE), CREATED_DATE);
   List<CacheRequest> cacheRequestList = List.of(cacheRequest);
 
   @Autowired
   private CacheRequestService cacheRequestService;
 
-  @Autowired
-  private CacheRequestRepository cacheRequestRepository;
+  @Autowired  private CacheRequestRepository cacheRequestRepository;
 
   @BeforeEach
   void setUp() {
@@ -53,10 +49,10 @@ class CacheRequestServiceIT {
     List<CacheRequest> expectedCacheRequests = new ArrayList<>();
     cacheRequestRepository.findAll().forEach(expectedCacheRequests::add);
 
-    assertEquals(1, expectedCacheRequests.size());
+    assertThat(expectedCacheRequests).hasSize(1);
     assertThat(expectedCacheRequests.get(0).getId()).isEqualToIgnoringCase(ID);
-    assertEquals(VALUE, expectedCacheRequests.get(0).getValue());
-    assertNotNull(expectedCacheRequests.get(0).getCreatedDate());
+    assertThat(expectedCacheRequests.get(0).getChedReference().value()).isEqualTo(VALUE);
+    assertThat(expectedCacheRequests.get(0).getCreatedDate()).isNotNull();
   }
 
   @Test
@@ -65,7 +61,7 @@ class CacheRequestServiceIT {
     cacheRequestRepository.save(cacheRequest);
 
     //When
-    cacheRequest.setValue("New_Test_Value");
+    cacheRequest.setChedReference(new ChedReference("New_Test_Value"));
     cacheRequest.setCreatedDate(LocalDateTime.now().plusDays(1L));
     cacheRequestService.create(cacheRequestList);
 
@@ -73,7 +69,7 @@ class CacheRequestServiceIT {
     List<CacheRequest> resultList = new ArrayList<>();
     cacheRequestRepository.findAll().forEach(resultList::add);
 
-    assertEquals(1, resultList.size());
+    assertThat(resultList).hasSize(1);
     assertThat(resultList.get(0).getId()).isEqualToIgnoringCase(ID);
     assertThat(resultList.get(0).getCreatedDate()).isAfter(CREATED_DATE);
   }
@@ -81,29 +77,29 @@ class CacheRequestServiceIT {
   @Test
   void givenGetMatchedCacheRequestsCalledWithNoMatches_thenEmptyRecordsReturned() {
     //Given
-    assertFalse(cacheRequestRepository.findAll().iterator().hasNext());
+    assertThat(cacheRequestRepository.findAll().iterator().hasNext()).isFalse();
 
     //When cache stored
     List<String> retrievedCacheRecord = cacheRequestService
         .getMatchedCacheRequests(cacheRequestList);
 
     //Then
-    assertEquals(0, retrievedCacheRecord.size());
+    assertThat(retrievedCacheRecord).isEmpty();
   }
 
   @Test
   void givenGetMatchedCacheRequestsCalled_thenExistingRecordsReturned() {
     //Given existing record
     cacheRequestRepository.save(cacheRequest);
-    assertTrue(cacheRequestRepository.findAll().iterator().hasNext());
+    assertThat(cacheRequestRepository.findAll().iterator().hasNext()).isTrue();
 
     //When cache stored
     List<String> retrievedCacheRecord = cacheRequestService
         .getMatchedCacheRequests(cacheRequestList);
 
     //Then
-    assertEquals(1, retrievedCacheRecord.size());
-    assertEquals(ID, retrievedCacheRecord.get(0));
+    assertThat(retrievedCacheRecord).hasSize(1);
+    assertThat(retrievedCacheRecord.get(0)).isEqualTo(ID);
   }
 }
 

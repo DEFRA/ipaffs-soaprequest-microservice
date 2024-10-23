@@ -6,5 +6,4 @@ public class Constants {
   }
 
   public static final String SOAP_REQUEST_ENDPOINT = "/soaprequest";
-  public static final String CACHE_REQUEST_ENDPOINT = "/cache";
 }

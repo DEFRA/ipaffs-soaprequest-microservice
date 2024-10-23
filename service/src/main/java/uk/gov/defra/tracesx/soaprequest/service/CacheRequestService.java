@@ -23,11 +23,7 @@ public class CacheRequestService {
   public List<String> getMatchedCacheRequests(List<CacheRequest> cacheRequests) {
     List<String> ids = cacheRequests.stream().map(CacheRequest::getId).toList();
     return cacheRequestRepository.findAllByIdIn(ids).stream()
-        .filter(retrievedCacheRequest ->
-            cacheRequests.stream().anyMatch(cacheRequest ->
-                retrievedCacheRequest.getId()
-                    .equals(cacheRequest.getId()) && retrievedCacheRequest.getValue()
-                    .equals(cacheRequest.getValue())))
+        .filter(cacheRequests::contains)
         .map(CacheRequest::getId).toList();
   }
 }

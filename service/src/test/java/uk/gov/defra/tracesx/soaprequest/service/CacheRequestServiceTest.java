@@ -1,7 +1,6 @@
 package uk.gov.defra.tracesx.soaprequest.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -13,9 +12,11 @@ import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.defra.tracesx.soaprequest.dao.entities.CacheRequest;
+import uk.gov.defra.tracesx.soaprequest.dao.entities.CacheRequest.ChedReference;
 import uk.gov.defra.tracesx.soaprequest.dao.repositories.CacheRequestRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -27,17 +28,18 @@ class CacheRequestServiceTest {
 
   @Mock
   private CacheRequestRepository cacheRequestRepository;
+  @InjectMocks
   private CacheRequestService cacheRequestService;
+
   private List<CacheRequest> cacheRequests;
 
   @BeforeEach
   void setUp() {
-    cacheRequestService = new CacheRequestService(cacheRequestRepository);
     cacheRequests = createDefaultCacheRequestEntity();
   }
 
   private List<CacheRequest> createDefaultCacheRequestEntity() {
-    return List.of(CacheRequest.builder().id(ID).value(VALUE).createdDate(CREATED_DATE).build());
+    return List.of(CacheRequest.builder().id(ID).chedReference( new ChedReference(VALUE)).createdDate(CREATED_DATE).build());
   }
 
   @Test
@@ -63,7 +65,7 @@ class CacheRequestServiceTest {
     // Then
     verify(cacheRequestRepository, times(1))
         .findAllByIdIn(any());
-    assertEquals(1, matchedIds.size());
+    assertThat(matchedIds).hasSize(1);
     assertThat(matchedIds.get(0)).isEqualTo(ID);
   }
 }
