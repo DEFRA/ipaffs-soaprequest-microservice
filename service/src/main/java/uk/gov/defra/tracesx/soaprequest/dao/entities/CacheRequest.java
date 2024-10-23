@@ -22,10 +22,10 @@ public class CacheRequest {
   @Id
   private String id;
   @Embedded
-  private ChedReference chedReference;
+  private ChedCertificateHash chedCertificateHash;
   private LocalDateTime createdDate;
 
-  public record ChedReference(String value) {}
+  public record ChedCertificateHash(String value) {}
 
   @Override
   public boolean equals(Object obj) {
@@ -37,11 +37,11 @@ public class CacheRequest {
       return false;
     }
     return Objects.equals(this.id, cacheRequest.id)
-        && Objects.equals(chedReference.value, cacheRequest.chedReference.value);
+        && Objects.equals(this.chedCertificateHash, cacheRequest.chedCertificateHash);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.id, this.chedReference);
+    return Objects.hash(this.id, this.chedCertificateHash);
   }
 }

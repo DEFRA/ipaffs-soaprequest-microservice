@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.Test;
-import uk.gov.defra.tracesx.soaprequest.dao.entities.CacheRequest.ChedReference;
+import uk.gov.defra.tracesx.soaprequest.dao.entities.CacheRequest.ChedCertificateHash;
 
 class CacheRequestTest {
 
@@ -14,8 +14,8 @@ class CacheRequestTest {
   @Test
   void verifyEqualsAndHashcode() {
     // Given
-    CacheRequest instance1 = new CacheRequest(ID, new ChedReference(VALUE), LocalDateTime.now());
-    CacheRequest instance2 = new CacheRequest(ID, new ChedReference(VALUE), LocalDateTime.now());
+    CacheRequest instance1 = new CacheRequest(ID, new ChedCertificateHash(VALUE), LocalDateTime.now());
+    CacheRequest instance2 = new CacheRequest(ID, new ChedCertificateHash(VALUE), LocalDateTime.now());
 
     //When
 
@@ -28,9 +28,9 @@ class CacheRequestTest {
   void verifyNotEqual() {
     // Given
     CacheRequest nullInstance = null;
-    CacheRequest instance1 = new CacheRequest(ID, new ChedReference(VALUE), LocalDateTime.now());
-    CacheRequest instance2 = new CacheRequest("Test_ID_2", new ChedReference(VALUE), LocalDateTime.now());
-    CacheRequest instance3 = new CacheRequest(ID, new ChedReference("RANDOM_VALUE"), LocalDateTime.now());
+    CacheRequest instance1 = new CacheRequest(ID, new ChedCertificateHash(VALUE), LocalDateTime.now());
+    CacheRequest instance2 = new CacheRequest("Test_ID_2", new ChedCertificateHash(VALUE), LocalDateTime.now());
+    CacheRequest instance3 = new CacheRequest(ID, new ChedCertificateHash("RANDOM_VALUE"), LocalDateTime.now());
 
     //Then
     assertThat(instance1.equals(nullInstance)).isFalse();

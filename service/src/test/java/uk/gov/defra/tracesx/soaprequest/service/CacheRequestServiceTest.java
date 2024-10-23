@@ -16,7 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.defra.tracesx.soaprequest.dao.entities.CacheRequest;
-import uk.gov.defra.tracesx.soaprequest.dao.entities.CacheRequest.ChedReference;
+import uk.gov.defra.tracesx.soaprequest.dao.entities.CacheRequest.ChedCertificateHash;
 import uk.gov.defra.tracesx.soaprequest.dao.repositories.CacheRequestRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -39,7 +39,7 @@ class CacheRequestServiceTest {
   }
 
   private List<CacheRequest> createDefaultCacheRequestEntity() {
-    return List.of(CacheRequest.builder().id(ID).chedReference( new ChedReference(VALUE)).createdDate(CREATED_DATE).build());
+    return List.of(CacheRequest.builder().id(ID).chedCertificateHash( new ChedCertificateHash(VALUE)).createdDate(CREATED_DATE).build());
   }
 
   @Test

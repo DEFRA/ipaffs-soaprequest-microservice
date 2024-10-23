@@ -9,6 +9,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.Clock;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -30,8 +31,9 @@ class CacheRequestResourceTest {
   private static final String VALUE = "TEST_VALUE";
 
   private final CacheRequestService cacheRequestService = mock(CacheRequestService.class);
+  private final Clock clock = Clock.systemUTC();
   private final CacheRequestResource cacheRequestResource = new CacheRequestResource(
-      cacheRequestService);
+      cacheRequestService, clock);
 
   private List<CacheRequestDto> requestBody;
 

@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.defra.tracesx.soaprequest.TestContainerConfig;
 import uk.gov.defra.tracesx.soaprequest.dao.entities.CacheRequest;
-import uk.gov.defra.tracesx.soaprequest.dao.entities.CacheRequest.ChedReference;
+import uk.gov.defra.tracesx.soaprequest.dao.entities.CacheRequest.ChedCertificateHash;
 import uk.gov.defra.tracesx.soaprequest.dao.repositories.CacheRequestRepository;
 import uk.gov.defra.tracesx.soaprequest.service.CacheRequestService;
 
@@ -27,7 +27,7 @@ class CacheRequestServiceIT {
   private static final String VALUE = "TEST_VALUE";
   private static final LocalDateTime CREATED_DATE = LocalDateTime.now();
 
-  CacheRequest cacheRequest = new CacheRequest(ID, new ChedReference(VALUE), CREATED_DATE);
+  CacheRequest cacheRequest = new CacheRequest(ID, new ChedCertificateHash(VALUE), CREATED_DATE);
   List<CacheRequest> cacheRequestList = List.of(cacheRequest);
 
   @Autowired
@@ -51,7 +51,7 @@ class CacheRequestServiceIT {
 
     assertThat(expectedCacheRequests).hasSize(1);
     assertThat(expectedCacheRequests.get(0).getId()).isEqualToIgnoringCase(ID);
-    assertThat(expectedCacheRequests.get(0).getChedReference().value()).isEqualTo(VALUE);
+    assertThat(expectedCacheRequests.get(0).getChedCertificateHash().value()).isEqualTo(VALUE);
     assertThat(expectedCacheRequests.get(0).getCreatedDate()).isNotNull();
   }
 
@@ -61,7 +61,7 @@ class CacheRequestServiceIT {
     cacheRequestRepository.save(cacheRequest);
 
     //When
-    cacheRequest.setChedReference(new ChedReference("New_Test_Value"));
+    cacheRequest.setChedCertificateHash(new ChedCertificateHash("New_Test_Value"));
     cacheRequest.setCreatedDate(LocalDateTime.now().plusDays(1L));
     cacheRequestService.create(cacheRequestList);
 

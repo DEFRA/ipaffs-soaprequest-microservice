@@ -2,6 +2,7 @@ package uk.gov.defra.tracesx.soaprequest.resource;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.defra.tracesx.soaprequest.dao.entities.CacheRequest;
-import uk.gov.defra.tracesx.soaprequest.dao.entities.CacheRequest.ChedReference;
+import uk.gov.defra.tracesx.soaprequest.dao.entities.CacheRequest.ChedCertificateHash;
 import uk.gov.defra.tracesx.soaprequest.exceptions.BadRequestBodyException;
 import uk.gov.defra.tracesx.soaprequest.service.CacheRequestService;
 
@@ -22,10 +23,12 @@ import uk.gov.defra.tracesx.soaprequest.service.CacheRequestService;
 public class CacheRequestResource {
 
   private final CacheRequestService cacheRequestService;
+  private final Clock clock;
 
   @Autowired
-  public CacheRequestResource(CacheRequestService cacheRequestService) {
+  public CacheRequestResource(CacheRequestService cacheRequestService, Clock clock) {
     this.cacheRequestService = cacheRequestService;
+    this.clock = clock;
   }
 
   @PostMapping(
@@ -63,16 +66,17 @@ public class CacheRequestResource {
   }
 
   private List<CacheRequest> mapToEntity(List<CacheRequestDto> cacheRequestDtos) {
-    return cacheRequestDtos.stream().map(CacheRequestDto::mapToEntity).toList();
+    return cacheRequestDtos.stream()
+        .map(cacheRequestDto -> CacheRequestDto.mapToEntity(cacheRequestDto, clock)).toList();
   }
 
   public record CacheRequestDto(String id, String value) {
 
-    private static CacheRequest mapToEntity(CacheRequestDto cacheRequestDtos) {
+    private static CacheRequest mapToEntity(CacheRequestDto cacheRequestDtos, Clock clock) {
       return CacheRequest.builder()
           .id(cacheRequestDtos.id())
-          .chedReference(new ChedReference(cacheRequestDtos.value()))
-          .createdDate(LocalDateTime.now())
+          .chedCertificateHash(new ChedCertificateHash(cacheRequestDtos.value()))
+          .createdDate(LocalDateTime.now(clock))
           .build();
     }
   }
