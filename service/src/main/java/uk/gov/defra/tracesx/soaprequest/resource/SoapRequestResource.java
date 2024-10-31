@@ -5,6 +5,7 @@ import static uk.gov.defra.tracesx.soaprequest.util.Constants.SOAP_REQUEST_ENDPO
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.slf4j.Logger;
@@ -65,10 +66,14 @@ public class SoapRequestResource {
 
   @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAuthority('soaprequest.read')")
-  public ResponseEntity<SoapRequestDto> getByRequestId(@RequestParam("requestId") Long requestId) {
+  public ResponseEntity<List<SoapRequestDto>> getAllByRequestId(
+      @RequestParam("requestId") Long requestId) {
     LOGGER.debug("GET requestId: {}", requestId);
-    Optional<SoapRequestDto> soapRequestDto = soapRequestService.getByRequestId(requestId);
-    return ResponseEntity.ok(soapRequestDto.orElseThrow(NotFoundException::new));
+    List<SoapRequestDto> soapRequestDtoList = soapRequestService.getAllByRequestId(requestId);
+    if (soapRequestDtoList.isEmpty()) {
+      throw new NotFoundException();
+    }
+    return ResponseEntity.ok(soapRequestDtoList);
   }
 
   @DeleteMapping(value = "/{id}")
