@@ -65,6 +65,8 @@ audit:
 logging:
   level:
     com.zaxxer.hikari: ${HIKARI_DEBUG_LEVEL:DEBUG}
+  pattern:
+    correlation: "[ConversationId:%X{ConversationId:-}] "
 networking:
   dnsCacheTtl: ${DNS_CACHE_TTL:20}
 features:
