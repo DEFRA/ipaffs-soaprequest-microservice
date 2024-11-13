@@ -1,5 +1,6 @@
 package uk.gov.defra.tracesx.soaprequest;
 
+import java.time.Clock;
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -27,5 +28,10 @@ public class SoapRequestConfiguration {
       return DataSourceBuilder.create().url(managedIdentityJdbcUrl).build();
     }
     return DataSourceBuilder.create().url(jdbcUrl).build();
+  }
+
+  @Bean
+  public Clock clock() {
+    return Clock.systemUTC();
   }
 }
