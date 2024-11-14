@@ -28,8 +28,6 @@ permissions:
     host: permissions${ENV_DOMAIN}
     port: 443
     url: ${PROTOCOL}://permissions${ENV_DOMAIN}
-    user: importer
-    password: ${PERMISSIONS_SERVICE_PASSWORD}
     connectionTimeout: 3000
     readTimeout: 3000
   security:
