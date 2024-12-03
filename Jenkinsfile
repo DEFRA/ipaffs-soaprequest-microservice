@@ -1,6 +1,6 @@
-@Library('pipeline-library') _
+@Library('pipeline-library@feature/IMTA-17194-sonar-test') _
 
-javaPipeline {
+javaPipelineSonarOnly {
     SERVICE_NAME = "soaprequest-microservice"
     SONARQUBE_PROJECT_NAME = "Imports-MS-SoapRequest"
     SERVICE_VERSION = "1.0"
