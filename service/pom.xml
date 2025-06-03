@@ -11,7 +11,7 @@
     <parent>
         <groupId>uk.gov.defra.tracesx</groupId>
         <artifactId>TracesX-SpringBoot-Common-Parent</artifactId>
-        <version>4.0.6</version>
+        <version>4.0.13</version>
     </parent>
 
     <dependencies>
