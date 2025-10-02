@@ -6,5 +6,5 @@ javaPipeline {
     SERVICE_VERSION = "1.0"
     ENVIRONMENT = "Sandpit"
     SELENIUM_BRANCH = "master"
-    JAVA_VERSION = "21.0.8-tem"
+    JAVA_VERSION = "21"
 }
