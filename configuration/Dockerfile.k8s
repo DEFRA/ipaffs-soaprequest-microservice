@@ -1,0 +1,30 @@
+FROM liquibase/liquibase:4.33.0
+
+WORKDIR /opt
+
+USER root
+
+ENV ACCEPT_EULA=Y
+
+RUN curl https://packages.microsoft.com/keys/microsoft.asc -o /etc/apt/trusted.gpg.d/microsoft.asc
+RUN curl https://packages.microsoft.com/config/ubuntu/22.04/prod.list -o /etc/apt/sources.list.d/microsoft.list
+RUN apt update && \
+    apt install mssql-tools18 unixodbc jq sqlcmd -y
+RUN ln -s /opt/mssql-tools18 /opt/mssql-tools
+
+ADD --chmod=755 https://github.com/manicminer/workload-identity-adal-bridge/releases/download/v0.4.1/workload-identity-adal-bridge-linux-amd64 /usr/local/bin/workload-identity-adal-bridge
+
+COPY setup-k8s.sh .
+COPY database/scripts/migrate-k8s.sh liquibase/
+COPY database/src/main/resources/drivers liquibase/lib
+COPY database/src/main/resources/libs    liquibase/lib
+COPY database/src/main/resources/changelogs liquibase/changelogs
+COPY database/src/main/resources/migrations.xml liquibase
+COPY database/src/main/resources/logback liquibase/lib
+
+RUN wget -P /liquibase/lib https://github.com/liquibase/liquibase/releases/download/v4.33.0/liquibase-azure-deps-4.33.0.jar
+RUN chown -R liquibase:liquibase /liquibase/lib /opt && chmod -R 0700 /opt
+
+USER liquibase:liquibase
+
+CMD ["/bin/sh", "setup-k8s.sh"]

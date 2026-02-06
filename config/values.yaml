@@ -1,0 +1,25 @@
+service: soaprequest-service
+
+container:
+  replicas: 1
+
+
+livenessProbe: {}
+
+azure:
+  adalBridge: true
+
+database:
+  enabled: true
+  databaseNames: [ "soaprequest" ]
+  migrations:
+    enabled: true
+
+externalSecret:
+  enabled: true
+  refreshInterval: 1h
+  secrets:
+    - secretKey: BASE_SERVICE_DB_PASSWORD
+      remoteKey: legacyDatabasePassword1
+    - secretKey: NEW_BASE_SERVICE_DB_PASSWORD
+      remoteKey: legacyDatabasePassword2

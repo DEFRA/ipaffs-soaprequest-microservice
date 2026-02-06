@@ -1,0 +1,40 @@
+repositories:
+  - name: acr
+    url: {{ requiredEnv "AZURE_CONTAINER_REGISTRY_HOST" }}
+    oci: true
+
+releases:
+  - name: soaprequest-backoffice
+    namespace: {{ requiredEnv "NAMESPACE" }}
+    version: 0.26.0
+    chart: acr/helm/v1/repo/backoffice
+    values:
+      - config/values.yaml
+    set:
+      - name: environment
+        value: {{ requiredEnv "ENVIRONMENT" }}
+      - name: azure.location
+        value: {{ requiredEnv "AZURE_LOCATION" }}
+
+  - name: soaprequest-webapp
+    namespace: {{ requiredEnv "NAMESPACE" }}
+    version: 0.34.0
+    chart: acr/helm/v1/repo/webapp
+    values:
+      - config/values.yaml
+      - config/{{ requiredEnv "ENVIRONMENT" | lower }}/values.yaml
+    set:
+      - name: environment
+        value: {{ requiredEnv "ENVIRONMENT" }}
+      - name: azure.clientId
+        value: {{ requiredEnv "AZURE_MANAGED_IDENTITY_CLIENT_ID" }}
+      - name: azure.location
+        value: {{ requiredEnv "AZURE_LOCATION" }}
+      - name: container.image
+        value: {{ requiredEnv "AZURE_CONTAINER_REGISTRY_HOST" }}/{{ requiredEnv "CONTAINER_IMAGE" }}
+      - name: database.migrations.clientId
+        value: {{ requiredEnv "AZURE_MANAGED_IDENTITY_MIGRATIONS_CLIENT_ID" }}
+      - name: database.migrations.image
+        value: {{ requiredEnv "AZURE_CONTAINER_REGISTRY_HOST" }}/{{ requiredEnv "MIGRATIONS_IMAGE" }}
+      - name: database.principalName
+        value: {{ requiredEnv "AZURE_MANAGED_IDENTITY_PRINCIPAL_NAME" }}

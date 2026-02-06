@@ -1,0 +1,74 @@
+#https://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
+server:
+  port: 8000
+management:
+  endpoint:
+    health:
+      show-details: "NEVER"
+  endpoints:
+    web:
+      exposure:
+        include: health, info
+      base-path: /admin
+      path-mapping:
+        health: health-check
+  health:
+    defaults:
+      enabled: false
+  info:
+    env:
+      enabled: true
+info:
+  app:
+    name: soapRequest microservice
+    version: 1.0
+permissions:
+  service:
+    scheme: http
+    host: permissions-service
+    port: 80
+    url: http://permissions-service
+    connectionTimeout: 3000
+    readTimeout: 3000
+  security:
+    token-feature-switch: false
+spring:
+  application:
+    name: soaprequest-microservice
+  main:
+    allow-bean-definition-overriding: true
+  security:
+    jwt:
+      jwks: ${JWT_WELL_KNOWNS}
+      iss: ${JWT_CERT_ISSUER}
+      aud: ${JWT_AUDIENCE}
+  datasource:
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    url: ${DATABASE_DB_CONNECTION_STRING_SOAPREQUEST}
+    managed-identity-url: ${DATABASE_DB_CONNECTION_STRING_SOAPREQUEST}
+    dialect: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    initialize: false
+    hikari:
+      leakDetectionThreshold: 5000
+      connectionTimeout: 15000
+      validationTimeout: 5000
+  sql:
+    init:
+      continue-on-error: true
+  threads:
+    virtual:
+      enabled: true
+audit:
+  create: true
+  read: true
+  update: false
+  delete: true
+logging:
+  level:
+    com.zaxxer.hikari: ERROR
+  pattern:
+    correlation: "[ConversationId:%X{ConversationId:-}] "
+networking:
+  dnsCacheTtl: 20
+features:
+  enable-managed-identity-auth: true
