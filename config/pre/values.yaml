@@ -1,0 +1,2 @@
+config:
+  SPRING_PROFILES_ACTIVE: "k8s"
