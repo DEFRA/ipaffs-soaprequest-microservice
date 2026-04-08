@@ -11,7 +11,7 @@ azure:
 
 database:
   enabled: true
-  databaseNames: [ "soaprequest" ]
+  databaseNames: [ "soaprequest-microservice" ]
   migrations:
     enabled: true
 

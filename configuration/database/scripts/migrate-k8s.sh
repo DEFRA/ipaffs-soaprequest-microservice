@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 
 liquibase --driver="com.microsoft.sqlserver.jdbc.SQLServerDriver" \
-    --url=${DATABASE_DB_CONNECTION_STRING_SOAPREQUEST} \
+    --url=${DATABASE_DB_CONNECTION_STRING_SOAPREQUEST_MICROSERVICE} \
     --changeLogFile="migrations.xml" \
     --username="${DATABASE_DB_USER}" \
     --password="${DATABASE_DB_PASSWORD}" \

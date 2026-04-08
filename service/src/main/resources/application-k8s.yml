@@ -44,8 +44,8 @@ spring:
       aud: ${JWT_AUDIENCE}
   datasource:
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
-    url: ${DATABASE_DB_CONNECTION_STRING_SOAPREQUEST}
-    managed-identity-url: ${DATABASE_DB_CONNECTION_STRING_SOAPREQUEST}
+    url: ${DATABASE_DB_CONNECTION_STRING_SOAPREQUEST_MICROSERVICE}
+    managed-identity-url: ${DATABASE_DB_CONNECTION_STRING_SOAPREQUEST_MICROSERVICE}
     dialect: com.microsoft.sqlserver.jdbc.SQLServerDriver
     initialize: false
     hikari:
