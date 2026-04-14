@@ -1,2 +1,5 @@
 config:
   SPRING_PROFILES_ACTIVE: "k8s"
+database:
+  migrations:
+    enabled: false
