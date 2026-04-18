@@ -1,5 +1,9 @@
 config:
   SPRING_PROFILES_ACTIVE: "k8s"
+
+azure:
+  sqlServerHostname: tstimpdbssqa001.database.windows.net
+
 database:
   migrations:
     enabled: false
