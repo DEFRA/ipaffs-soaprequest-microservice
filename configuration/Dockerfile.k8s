@@ -1,4 +1,8 @@
-FROM liquibase/liquibase:4.33.0
+ARG IMAGE_ACR=docker.io
+ARG IMAGE_REPOSITORY=liquibase/liquibase
+ARG IMAGE_TAG=4.33.0
+
+FROM ${IMAGE_ACR}/${IMAGE_REPOSITORY}:${IMAGE_TAG}
 
 WORKDIR /opt
 
