@@ -1,2 +1,20 @@
 config:
   SPRING_PROFILES_ACTIVE: "k8s"
+
+azure:
+  sqlServerHostname: prdimpdbssqa001.database.windows.net
+
+database:
+  legacyBaseServiceDbUserAd: "SA-AZURE-IMP-SQL-SOAPR-PRD@Defra.onmicrosoft.com"
+  legacyManagedIdentityUser: "prd-imp-soaprequest-sql"
+  migrations:
+    enabled: false
+
+externalSecret:
+  enabled: true
+  refreshInterval: 1h
+  secrets:
+    - secretKey: BASE_SERVICE_DB_PASSWORD
+      remoteKey: soapRequestDatabasePassword
+    - secretKey: NEW_BASE_SERVICE_DB_PASSWORD
+      remoteKey: soapRequestDatabasePasswordNew
