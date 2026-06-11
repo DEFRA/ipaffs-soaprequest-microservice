@@ -7,7 +7,5 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-env
-
 cd ..
 [ -n "$MANAGED_IDENTITY_USERNAME" ] && ./mi-k8s.sh "$MANAGED_IDENTITY_USERNAME"
