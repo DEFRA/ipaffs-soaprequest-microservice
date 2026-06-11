@@ -18,7 +18,7 @@ RUN ln -s /opt/mssql-tools18 /opt/mssql-tools
 
 ADD --chmod=755 https://github.com/manicminer/workload-identity-adal-bridge/releases/download/v0.4.1/workload-identity-adal-bridge-linux-amd64 /usr/local/bin/workload-identity-adal-bridge
 
-COPY setup-k8s.sh .
+COPY setup-k8s.sh mi-k8s.sh ./
 COPY database/scripts/migrate-k8s.sh liquibase/
 COPY database/src/main/resources/drivers liquibase/lib
 COPY database/src/main/resources/libs    liquibase/lib
