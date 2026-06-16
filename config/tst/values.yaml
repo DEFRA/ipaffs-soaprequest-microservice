@@ -11,7 +11,7 @@ database:
   legacyBaseServiceDbUserAd: "SA-AZURE-IMP-SQL-SOAPR-TST@Defra.onmicrosoft.com"
   legacyManagedIdentityUser: "tst-imp-soaprequest-sql"
   migrations:
-    enabled: false
+    enabled: true
 
 externalSecret:
   enabled: true
