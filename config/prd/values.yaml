@@ -11,7 +11,7 @@ database:
   legacyBaseServiceDbUserAd: "SA-AZURE-IMP-SQL-SOAPR-PRD@Defra.onmicrosoft.com"
   legacyManagedIdentityUser: "prd-imp-soaprequest-sql"
   migrations:
-    enabled: false
+    enabled: true
 
 externalSecret:
   enabled: true
