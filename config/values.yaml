@@ -3,6 +3,13 @@ service: soaprequest-service
 container:
   replicas: 1
 
+readinessProbe:
+  httpGet:
+    path: /admin/health-check
+    port: 8000
+  initialDelaySeconds: 10
+  periodSeconds: 5
+
 config:
   JDK_JAVA_OPTIONS: "-XX:MaxRAMPercentage=60.0"
 
@@ -28,3 +35,4 @@ externalSecret:
       remoteKey: legacyDatabasePassword1
     - secretKey: NEW_BASE_SERVICE_DB_PASSWORD
       remoteKey: legacyDatabasePassword2
+
