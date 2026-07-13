@@ -66,6 +66,7 @@ audit:
 logging:
   level:
     com.zaxxer.hikari: ERROR
+    com.azure.identity.ManagedIdentityCredential: ERROR
   pattern:
     correlation: "[ConversationId:%X{ConversationId:-}] "
 networking:
