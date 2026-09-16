@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-## mi-aks.sh
+## mi.sh
 ##
 ## Creates a SQL Server principal for an externally defined Azure Managed Identity and grants it privileges.
 ##

@@ -1,8 +1,7 @@
 container:
   replicas: 3
 
-config:
-  SPRING_PROFILES_ACTIVE: "k8s"
+config: []
 
 azure:
   sqlServerHostname: preimpdbssqa001.database.windows.net

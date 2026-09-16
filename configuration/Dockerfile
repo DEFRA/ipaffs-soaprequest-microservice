@@ -1,29 +1,34 @@
-ARG LINUX_BASE_IMAGE
+ARG IMAGE_ACR=docker.io
+ARG IMAGE_REPOSITORY=liquibase/liquibase
+ARG IMAGE_TAG=4.33.0
 
-FROM sndeuxfesacr001.azurecr.io/$LINUX_BASE_IMAGE
-
-# Needed for running sqlcmd and bcp
-RUN echo 'en_US.UTF-8 UTF-8' > /etc/locale.gen
-
-# Copy setup script
-COPY setup.sh /opt
-
-# Copy database migration script
-COPY database/scripts/migrate.sh /opt/liquibase
-
-# Copy database drivers
-COPY database/src/main/resources/drivers /opt/liquibase/lib
-COPY database/src/main/resources/libs    /opt/liquibase/lib
-
-# Copy changelogs
-COPY database/src/main/resources/changelogs /opt/liquibase/changelogs
-COPY database/src/main/resources/migrations.xml /opt/liquibase
-
-# Copy logback.xml and dependencies
-COPY database/src/main/resources/logback /opt/liquibase/lib
-
-RUN chmod +x /opt/liquibase/liquibase && ln -s /opt/liquibase/liquibase /usr/local/bin/ && sed -i 's/bash/sh/' /opt/liquibase/liquibase && chmod +x /opt/setup.sh && chmod +x /opt/liquibase/migrate.sh
+FROM ${IMAGE_ACR}/${IMAGE_REPOSITORY}:${IMAGE_TAG}
 
 WORKDIR /opt
+
+USER root
+
+ENV ACCEPT_EULA=Y
+
+RUN curl https://packages.microsoft.com/keys/microsoft.asc -o /etc/apt/trusted.gpg.d/microsoft.asc
+RUN curl https://packages.microsoft.com/config/ubuntu/22.04/prod.list -o /etc/apt/sources.list.d/microsoft.list
+RUN apt update && \
+    apt install mssql-tools18 unixodbc jq sqlcmd -y
+RUN ln -s /opt/mssql-tools18 /opt/mssql-tools
+
+ADD --chmod=755 https://github.com/manicminer/workload-identity-adal-bridge/releases/download/v0.4.1/workload-identity-adal-bridge-linux-amd64 /usr/local/bin/workload-identity-adal-bridge
+
+COPY setup.sh mi.sh ./
+COPY database/scripts/migrate.sh liquibase/
+COPY database/src/main/resources/drivers liquibase/lib
+COPY database/src/main/resources/libs    liquibase/lib
+COPY database/src/main/resources/changelogs liquibase/changelogs
+COPY database/src/main/resources/migrations.xml liquibase
+COPY database/src/main/resources/logback liquibase/lib
+
+RUN wget -P /liquibase/lib https://github.com/liquibase/liquibase/releases/download/v4.33.0/liquibase-azure-deps-4.33.0.jar
+RUN chown -R liquibase:liquibase /liquibase/lib /opt && chmod -R 0700 /opt
+
+USER liquibase:liquibase
 
 CMD ["/bin/sh", "setup.sh"]

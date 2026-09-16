@@ -1,6 +1,6 @@
 #https://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
 server:
-  port: ${SERVICE_PORT}
+  port: 8000
 management:
   endpoint:
     health:
@@ -21,13 +21,13 @@ management:
 info:
   app:
     name: soapRequest microservice
-    version: ${API_VERSION}
+    version: 1.0
 permissions:
   service:
-    scheme: https
-    host: permissions${ENV_DOMAIN}
-    port: 443
-    url: ${PROTOCOL}://permissions${ENV_DOMAIN}
+    scheme: http
+    host: permissions-service
+    port: 80
+    url: http://permissions-service
     connectionTimeout: 3000
     readTimeout: 3000
   security:
@@ -39,19 +39,19 @@ spring:
     allow-bean-definition-overriding: true
   security:
     jwt:
-      jwks: ${SECURITY_JWT_JWKS}
-      iss: ${SECURITY_JWT_ISS}
-      aud: ${SECURITY_JWT_AUD}
+      jwks: ${JWT_JWKS}
+      iss: ${JWT_CERT_ISSUER}
+      aud: ${JWT_AUDIENCE}
   datasource:
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
-    url: ${JDBC_URL}
-    managed-identity-url: ${MANAGED_IDENTITY_JDBC_URL}
+    url: ${DATABASE_DB_CONNECTION_STRING_SOAPREQUEST_MICROSERVICE}
+    managed-identity-url: ${DATABASE_DB_CONNECTION_STRING_SOAPREQUEST_MICROSERVICE}
     dialect: com.microsoft.sqlserver.jdbc.SQLServerDriver
     initialize: false
     hikari:
-      leakDetectionThreshold: ${HIKARI_LEAK_DETECTION_THRESHOLD:2000}
-      connectionTimeout: ${HIKARI_CONNECTION_TIMEOUT:15000}
-      validationTimeout: ${HIKARI_VALIDATION_TIMEOUT:5000}
+      leakDetectionThreshold: 5000
+      connectionTimeout: 15000
+      validationTimeout: 5000
   sql:
     init:
       continue-on-error: true
@@ -65,10 +65,11 @@ audit:
   delete: true
 logging:
   level:
-    com.zaxxer.hikari: ${HIKARI_DEBUG_LEVEL:DEBUG}
+    com.zaxxer.hikari: ERROR
+    com.azure.identity.ManagedIdentityCredential: ERROR
   pattern:
     correlation: "[ConversationId:%X{ConversationId:-}] "
 networking:
-  dnsCacheTtl: ${DNS_CACHE_TTL:20}
+  dnsCacheTtl: 20
 features:
-  enable-managed-identity-auth: ${ENABLE_MANAGED_IDENTITY_AUTH:false}
+  enable-managed-identity-auth: true

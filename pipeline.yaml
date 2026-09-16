@@ -41,7 +41,7 @@ variables:
   - name: serviceName
     value: soaprequest-service
   - name: dockerFile
-    value: Dockerfile.k8s
+    value: Dockerfile
 
 stages:
   - template: /pipelines/templates/java-template.yaml@ipaffs-infra
