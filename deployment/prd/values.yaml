@@ -1,20 +1,11 @@
 container:
   replicas: 3
-
-config: []
-
 azure:
   sqlServerHostname: prdimpdbssqa001.database.windows.net
-
 database:
   legacyBaseServiceDbUserAd: "SA-AZURE-IMP-SQL-SOAPR-PRD@Defra.onmicrosoft.com"
   legacyManagedIdentityUser: "prd-imp-soaprequest-sql"
-  migrations:
-    enabled: true
-
 externalSecret:
-  enabled: true
-  refreshInterval: 1h
   secrets:
     - secretKey: BASE_SERVICE_DB_PASSWORD
       remoteKey: soapRequestDatabasePassword
