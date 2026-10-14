@@ -16,6 +16,7 @@
 
     <properties>
         <java.version>21</java.version>
+        <testcontainers.version>2.0.5</testcontainers.version>
     </properties>
 
     <dependencies>
@@ -51,14 +52,14 @@
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
-            <artifactId>mssqlserver</artifactId> <!-- or MySQL, depending on your DB -->
+            <artifactId>testcontainers-mssqlserver</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
 
     <build>
         <!-- Keep filename static to avoid updating the Dockerfile -->
-        <finalName>TracesX_SoapRequest</finalName>
+        <finalName>application</finalName>
         <plugins>
 
             <plugin>
@@ -94,6 +95,27 @@
                                 </artifactItem>
                             </artifactItems>
                         </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <configuration>
+                    <!-- CacheRequestRepositoryIT and CacheRequestServiceIT have never run (there
+                         was no Failsafe) and don't currently start a context, so only the image
+                         smoke test runs until they're fixed -->
+                    <includes>
+                        <include>**/ImageSmokeIT.java</include>
+                    </includes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>
