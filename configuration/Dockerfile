@@ -16,8 +16,6 @@ RUN apt update && \
     apt install mssql-tools18 unixodbc jq sqlcmd -y
 RUN ln -s /opt/mssql-tools18 /opt/mssql-tools
 
-ADD --chmod=755 https://github.com/manicminer/workload-identity-adal-bridge/releases/download/v0.4.1/workload-identity-adal-bridge-linux-amd64 /usr/local/bin/workload-identity-adal-bridge
-
 COPY setup.sh mi.sh ./
 COPY database/scripts/migrate.sh liquibase/
 COPY database/src/main/resources/drivers liquibase/lib
