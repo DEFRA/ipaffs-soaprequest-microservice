@@ -10,27 +10,27 @@
 
     <parent>
         <groupId>uk.gov.defra.tracesx</groupId>
-        <artifactId>TracesX-SpringBoot-Common-Parent</artifactId>
-        <version>4.0.18</version>
+        <artifactId>tracesx-springboot-common-parent</artifactId>
+        <version>5.0.6</version>
+        <relativePath/>
     </parent>
 
     <properties>
         <java.version>21</java.version>
-        <testcontainers.version>2.0.5</testcontainers.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>uk.gov.defra.tracesx</groupId>
-            <artifactId>TracesX-SpringBoot-Common-Health</artifactId>
+            <artifactId>tracesx-springboot-common-health</artifactId>
         </dependency>
         <dependency>
             <groupId>uk.gov.defra.tracesx</groupId>
-            <artifactId>TracesX-SpringBoot-Common-Logging</artifactId>
+            <artifactId>tracesx-springboot-common-logging</artifactId>
         </dependency>
         <dependency>
             <groupId>uk.gov.defra.tracesx</groupId>
-            <artifactId>TracesX-SpringBoot-Common-Security</artifactId>
+            <artifactId>tracesx-springboot-common-security</artifactId>
         </dependency>
         <dependency>
             <groupId>com.github.erosb</groupId>
@@ -63,7 +63,6 @@
         <dependency>
             <groupId>org.mock-server</groupId>
             <artifactId>mockserver-client-java</artifactId>
-            <version>5.15.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
