@@ -1,0 +1,24 @@
+{
+  "interactiveLogin": true,
+  "httpServer": "NettyWrapper",
+  "tokenCallbacks": [
+    {
+      "issuerId": "default",
+      "tokenExpiry": 120,
+      "requestMappings": [
+        {
+          "requestParam": "client_id",
+          "match": "inspector",
+          "claims": {
+            "roles": ["Inspector"],
+            "sub": "4850c6e5-cb72-eb11-a812-000d3a23baf0",
+            "aud": [
+              "integration-test"
+            ],
+            "customer_id": "767ceb6a-2144-e911-aaaa-000d3a29b5de"
+          }
+        }
+      ]
+    }
+  ]
+}

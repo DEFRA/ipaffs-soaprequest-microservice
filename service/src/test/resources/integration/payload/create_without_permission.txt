@@ -1,0 +1,5 @@
+403
+Content-Type: application/json
+Location: null
+
+{"timestamp":"<timestamp>","status":403,"error":"Forbidden","path":"/soaprequest"}
