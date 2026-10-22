@@ -1,0 +1,23 @@
+info:
+  app:
+    version: 1.0
+
+monitoring:
+  type: log
+  event-hub:
+    environment: integration
+
+features:
+  enable-managed-identity-auth: false
+
+spring:
+  # The tables come from setup-db.sql, as the changelogs create Azure AD users
+  liquibase:
+    enabled: false
+  # TestContainerConfig's data source is the one used; these only have to resolve
+  datasource:
+    url: jdbc:sqlserver://not-used
+    managed-identity-url: not-used
+  jpa:
+    hibernate:
+      ddl-auto: none

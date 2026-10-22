@@ -10,27 +10,27 @@
 
     <parent>
         <groupId>uk.gov.defra.tracesx</groupId>
-        <artifactId>TracesX-SpringBoot-Common-Parent</artifactId>
-        <version>4.0.18</version>
+        <artifactId>tracesx-springboot-common-parent</artifactId>
+        <version>5.0.6</version>
+        <relativePath/>
     </parent>
 
     <properties>
         <java.version>21</java.version>
-        <testcontainers.version>2.0.5</testcontainers.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>uk.gov.defra.tracesx</groupId>
-            <artifactId>TracesX-SpringBoot-Common-Health</artifactId>
+            <artifactId>tracesx-springboot-common-health</artifactId>
         </dependency>
         <dependency>
             <groupId>uk.gov.defra.tracesx</groupId>
-            <artifactId>TracesX-SpringBoot-Common-Logging</artifactId>
+            <artifactId>tracesx-springboot-common-logging</artifactId>
         </dependency>
         <dependency>
             <groupId>uk.gov.defra.tracesx</groupId>
-            <artifactId>TracesX-SpringBoot-Common-Security</artifactId>
+            <artifactId>tracesx-springboot-common-security</artifactId>
         </dependency>
         <dependency>
             <groupId>com.github.erosb</groupId>
@@ -53,6 +53,21 @@
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>testcontainers-mssqlserver</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers-mockserver</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mock-server</groupId>
+            <artifactId>mockserver-client-java</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webflux</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -104,10 +119,11 @@
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <configuration>
                     <!-- CacheRequestRepositoryIT and CacheRequestServiceIT have never run (there
-                         was no Failsafe) and don't currently start a context, so only the image
-                         smoke test runs until they're fixed -->
+                         was no Failsafe) and don't currently start a context, so they're left out
+                         until they're fixed -->
                     <includes>
                         <include>**/ImageSmokeIT.java</include>
+                        <include>**/PayloadContractIT.java</include>
                     </includes>
                 </configuration>
                 <executions>

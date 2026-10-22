@@ -1,0 +1,5 @@
+200
+Content-Type: application/json
+Location: null
+
+[{"id":"<id-1>","requestId":<requestId-1>,"username":"inspector-one","query":"<soap:Envelope>first</soap:Envelope>"}]

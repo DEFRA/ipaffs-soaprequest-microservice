@@ -37,6 +37,8 @@ spring:
     name: soaprequest-microservice
   main:
     allow-bean-definition-overriding: true
+  jackson:
+    use-jackson2-defaults: true
   security:
     jwt:
       jwks: ${JWT_JWKS}

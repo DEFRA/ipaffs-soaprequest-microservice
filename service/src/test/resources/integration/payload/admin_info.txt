@@ -1,0 +1,5 @@
+200
+Content-Type: application/vnd.spring-boot.actuator.v3+json
+Location: null
+
+{"app":{"version":1.0,"name":"soapRequest microservice"}}

@@ -4,10 +4,10 @@ import static org.slf4j.LoggerFactory.getLogger;
 import static uk.gov.defra.tracesx.soaprequest.audit.AuditRequestType.DELETE;
 import static uk.gov.defra.tracesx.soaprequest.audit.AuditRequestType.READ;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import tools.jackson.databind.JsonNode;
 import uk.gov.defra.tracesx.soaprequest.audit.dao.entities.Audit;
 import uk.gov.defra.tracesx.soaprequest.audit.dao.repositories.AuditRepository;
 

@@ -1,0 +1,5 @@
+type=CREATE | entity_type=SOAP | entity_id=<requestId-1> | user_id=4850c6e5-cb72-eb11-a812-000d3a23baf0 | data={"id":"<id-1>","requestId":<requestId-1>,"username":"inspector-one","query":"<soap:Envelope>first</soap:Envelope>"}
+type=CREATE | entity_type=SOAP | entity_id=<requestId-2> | user_id=4850c6e5-cb72-eb11-a812-000d3a23baf0 | data={"id":"<id-2>","requestId":<requestId-2>,"username":"inspector-two","query":"<soap:Envelope>second "quoted"</soap:Envelope>"}
+type=DELETE | entity_type=SOAP | entity_id=<requestId-2> | user_id=4850c6e5-cb72-eb11-a812-000d3a23baf0 | data={"id":"<id-2>","requestId":<requestId-2>,"username":"inspector-two","query":"<soap:Envelope>second "quoted"</soap:Envelope>"}
+type=READ | entity_type=SOAP | entity_id=<requestId-1> | user_id=4850c6e5-cb72-eb11-a812-000d3a23baf0 | data={"id":"<id-1>","requestId":<requestId-1>,"username":"inspector-one","query":"<soap:Envelope>first</soap:Envelope>"}
+type=READ | entity_type=SOAP | entity_id=<requestId-1> | user_id=4850c6e5-cb72-eb11-a812-000d3a23baf0 | data={"id":"<id-1>","requestId":<requestId-1>,"username":"inspector-one","query":"<soap:Envelope>first</soap:Envelope>"}

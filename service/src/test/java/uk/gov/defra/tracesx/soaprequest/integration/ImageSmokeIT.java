@@ -2,7 +2,6 @@ package uk.gov.defra.tracesx.soaprequest.integration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -26,6 +25,7 @@ import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.mssqlserver.MSSQLServerContainer;
 import org.testcontainers.utility.DockerImageName;
+import tools.jackson.databind.JsonNode;
 
 /**
  * Builds the service image from the real Dockerfile and starts it the way Kubernetes does
@@ -102,7 +102,7 @@ class ImageSmokeIT {
         .retrieve()
         .body(JsonNode.class);
 
-    assertThat(health.get("status").asText()).isEqualTo("UP");
+    assertThat(health.get("status").asString()).isEqualTo("UP");
   }
 
   @Test

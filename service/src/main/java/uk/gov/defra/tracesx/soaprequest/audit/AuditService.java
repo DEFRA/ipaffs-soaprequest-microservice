@@ -1,6 +1,6 @@
 package uk.gov.defra.tracesx.soaprequest.audit;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import tools.jackson.databind.JsonNode;
 
 public interface AuditService {
 
