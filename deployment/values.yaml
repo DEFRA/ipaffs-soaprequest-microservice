@@ -7,13 +7,14 @@ readinessProbe:
     port: 8000
   initialDelaySeconds: 10
   periodSeconds: 5
-config: []
+config:
+  JDK_JAVA_OPTIONS: "-XX:+UseG1GC -XX:MaxRAMPercentage=60.0"
 resources:
   requests:
     cpu: 250m
-    memory: 2Gi
+    memory: 1.5Gi
   limits:
-    memory: 2Gi
+    memory: 1.5Gi
 database:
   enabled: true
   workloadIdentity:
