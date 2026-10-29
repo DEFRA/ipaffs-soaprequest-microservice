@@ -11,3 +11,4 @@ docker/vault/config/core
 docker/vault/config/logical
 docker/vault/config/sys
 .env
+configuration/liquibase-deps/target/
