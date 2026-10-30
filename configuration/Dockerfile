@@ -2,25 +2,38 @@ ARG IMAGE_ACR=docker.io
 ARG IMAGE_REPOSITORY=liquibase/liquibase
 ARG IMAGE_TAG=5.0.4
 ARG MAVEN_IMAGE=maven:3.9.11-eclipse-temurin-21-noble
+ARG GO_IMAGE=golang:1.27.3-bookworm
 
-# Resolve the JDBC driver and Azure Identity jars and fetch the go-sqlcmd
-# release in a throwaway stage so that neither Maven nor bzip2 ends up in
-# the migrations image.
+# Resolve the JDBC driver and Azure Identity jars in a throwaway stage so
+# that Maven does not end up in the migrations image.
 FROM ${IMAGE_ACR}/${MAVEN_IMAGE} AS deps
-
-ARG SQLCMD_VERSION=v1.10.0
-ARG SQLCMD_SHA256=92516d98c63d99b0994de5b61350c91f6915f9b76f139a59039fbcb225c2e987
 
 WORKDIR /build
 
 COPY liquibase-deps/pom.xml .
 RUN mvn -B -q package
 
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends bzip2 ca-certificates curl && \
-    curl -fsSL -o sqlcmd.tar.bz2 "https://github.com/microsoft/go-sqlcmd/releases/download/${SQLCMD_VERSION}/sqlcmd-linux-amd64.tar.bz2" && \
-    echo "${SQLCMD_SHA256}  sqlcmd.tar.bz2" | sha256sum -c - && \
-    tar -xjf sqlcmd.tar.bz2 sqlcmd
+# Build go-sqlcmd from source. The published binaries are compiled with the
+# Go toolchain and golang.org/x module versions of their release date, which
+# accumulate vulnerability findings; building here keeps both current.
+FROM ${IMAGE_ACR}/${GO_IMAGE} AS sqlcmd
+
+ARG SQLCMD_VERSION=v1.10.0
+ARG SQLCMD_COMMIT=affbc17e1e0e97b0bb625ef8185afea3d746067f
+ARG GOLANG_X_NET_VERSION=v0.62.0
+ARG GOLANG_X_CRYPTO_VERSION=v0.58.0
+ARG GOLANG_X_TEXT_VERSION=v0.43.0
+ARG GOLANG_X_SYS_VERSION=v0.49.0
+
+WORKDIR /src
+RUN git clone --quiet --depth 1 --branch "${SQLCMD_VERSION}" https://github.com/microsoft/go-sqlcmd.git . && \
+    test "$(git rev-parse HEAD)" = "${SQLCMD_COMMIT}" && \
+    go get "golang.org/x/net@${GOLANG_X_NET_VERSION}" \
+           "golang.org/x/crypto@${GOLANG_X_CRYPTO_VERSION}" \
+           "golang.org/x/text@${GOLANG_X_TEXT_VERSION}" \
+           "golang.org/x/sys@${GOLANG_X_SYS_VERSION}" && \
+    go mod tidy && \
+    CGO_ENABLED=0 go build -trimpath -ldflags="-s -w -X main.version=${SQLCMD_VERSION}" -o /out/sqlcmd ./cmd/modern
 
 FROM ${IMAGE_ACR}/${IMAGE_REPOSITORY}:${IMAGE_TAG}
 
@@ -35,7 +48,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/* && \
     rm -f /liquibase/bin/lpm
 
-COPY --from=deps /build/sqlcmd /usr/local/bin/sqlcmd
+COPY --from=sqlcmd /out/sqlcmd /usr/local/bin/sqlcmd
 COPY --from=deps /build/target/lib/*.jar /liquibase/lib/
 
 COPY setup.sh mi.sh ./

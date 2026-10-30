@@ -19,7 +19,30 @@
     <azure-identity.version>1.18.2</azure-identity.version>
     <mssql-jdbc.version>13.4.0.jre11</mssql-jdbc.version>
     <slf4j.version>1.7.36</slf4j.version>
+    <netty.version>4.1.139.Final</netty.version>
+    <jackson.version>2.22.4</jackson.version>
   </properties>
+
+  <!-- azure-identity declares older netty and jackson releases with known
+       vulnerabilities; manage them up to current patch releases. -->
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-bom</artifactId>
+        <version>${netty.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson</groupId>
+        <artifactId>jackson-bom</artifactId>
+        <version>${jackson.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
   <dependencies>
     <dependency>
