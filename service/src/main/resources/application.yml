@@ -25,9 +25,9 @@ info:
 permissions:
   service:
     scheme: http
-    host: permissions-service
+    host: referencedata
     port: 80
-    url: http://permissions-service
+    url: http://referencedata
     connectionTimeout: 3000
     readTimeout: 3000
   security:
