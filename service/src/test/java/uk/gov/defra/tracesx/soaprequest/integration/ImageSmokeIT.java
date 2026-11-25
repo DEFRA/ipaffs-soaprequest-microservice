@@ -156,7 +156,6 @@ class ImageSmokeIT {
     // The service doesn't call the JWKS URL until it gets a token, which these checks don't send
     return Map.of(
         "DATABASE_DB_CONNECTION_STRING_SOAPREQUEST_MICROSERVICE", jdbcUrl,
-        "FEATURES_ENABLE_MANAGED_IDENTITY_AUTH", "false",
         "JWT_JWKS", "http://oauth.invalid/jwks",
         "JWT_CERT_ISSUER", "http://oauth.invalid",
         "JWT_AUDIENCE", "integration-test",

@@ -11,7 +11,7 @@
     <parent>
         <groupId>uk.gov.defra.tracesx</groupId>
         <artifactId>tracesx-springboot-common-parent</artifactId>
-        <version>5.0.8</version>
+        <version>5.0.17</version>
         <relativePath/>
     </parent>
 
@@ -20,6 +20,10 @@
     </properties>
 
     <dependencies>
+    <dependency>
+      <groupId>uk.gov.defra.tracesx</groupId>
+      <artifactId>tracesx-springboot-common-azure-sql</artifactId>
+    </dependency>
         <dependency>
             <groupId>uk.gov.defra.tracesx</groupId>
             <artifactId>tracesx-springboot-common-health</artifactId>
